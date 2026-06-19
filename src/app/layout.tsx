@@ -34,6 +34,8 @@ export const metadata: Metadata = {
     locale: "tr_TR",
     siteName: SITE_NAME,
   },
+  // AdSense site doğrulaması için <meta name="google-adsense-account" ...>
+  other: { "google-adsense-account": SITE.adsenseClient },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
