@@ -36,6 +36,10 @@ export const metadata: Metadata = {
   },
   // AdSense site doğrulaması için <meta name="google-adsense-account" ...>
   other: { "google-adsense-account": SITE.adsenseClient },
+  // Google Search Console (token girilince <meta name="google-site-verification" ...>)
+  ...(SITE.googleSiteVerification
+    ? { verification: { google: SITE.googleSiteVerification } }
+    : {}),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

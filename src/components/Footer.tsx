@@ -39,6 +39,8 @@ export function Footer() {
             Bilgi
           </h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-500">
+            <li><Link href="/blog" className="hover:text-neon">Blog</Link></li>
+            <li><Link href="/orijinal" className="hover:text-neon">Oynava Originals</Link></li>
             <li><Link href="/sss" className="hover:text-neon">SSS</Link></li>
             <li><Link href="/kunye" className="hover:text-neon">Kontak ve Künye</Link></li>
             <li><Link href="/isbirlikleri" className="hover:text-neon">İş Birlikleri ve Ortaklar</Link></li>

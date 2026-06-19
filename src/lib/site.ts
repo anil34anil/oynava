@@ -18,6 +18,10 @@ export const SITE = {
   // Google AdSense yayıncı kimliği (herkese açık; sayfa kaynağında zaten görünür).
   adsenseClient: "ca-pub-1026618703580570",
 
+  // Google Search Console doğrulama token'ı (meta yöntemi). GSC'de site eklenince
+  // verilen "content" değerini buraya yapıştır; <head>'e otomatik eklenir.
+  googleSiteVerification: "",
+
   // Site sahibi bilgileri (KVKK "Veri Sorumlusu").
   // Bireysel, reklam destekli aşamada: e-posta ile iletişim; adres yayınlanmıyor.
   // Para ile satışa geçince (e-ticaret) bir adres (örn. sanal ofis) eklenmeli.

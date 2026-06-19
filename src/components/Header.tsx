@@ -26,7 +26,7 @@ export function Header() {
       <nav className="border-t border-line/60 bg-surface/60">
         <div className="container-x flex items-center gap-1 overflow-x-auto py-2 text-sm">
           <Link
-            href="/orijinal/golge-savascisi"
+            href="/orijinal"
             className="whitespace-nowrap rounded-lg bg-neon-lime/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-lime hover:bg-neon-lime/20"
           >
             ★ Originals
@@ -36,6 +36,12 @@ export function Header() {
             className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/5 hover:text-neon"
           >
             Tüm Oyunlar
+          </Link>
+          <Link
+            href="/blog"
+            className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/5 hover:text-neon"
+          >
+            Blog
           </Link>
           <Link
             href="/favorilerim"
