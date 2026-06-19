@@ -14,4 +14,10 @@ export const ORIGINALS: Original[] = [
     emoji: "🏎️",
     desc: "Engellerden kaç, jetonları topla, hızlandıkça skoru yükselt.",
   },
+  {
+    slug: "zindan-avcisi",
+    title: "Zindan Avcısı",
+    emoji: "🛡️",
+    desc: "Diablo türü aksiyon-RPG: ganimet topla, seviye atla, boss'ları yen.",
+  },
 ];

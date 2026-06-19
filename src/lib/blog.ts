@@ -13,6 +13,28 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "aksiyon-rpg-hack-and-slash-turu-rehberi",
+    title: "Aksiyon-RPG ve Hack & Slash Türü: Yeni Başlayanlar İçin Rehber",
+    date: "2026-06-20",
+    excerpt:
+      "Tepeden görünüşlü hack & slash oyunları neden bu kadar bağımlılık yapar? Ganimet, seviye ve boss savaşlarının mantığı.",
+    body: [
+      "Aksiyon rol yapma oyunları (Aksiyon-RPG), hızlı tempolu dövüş ile karakter geliştirmeyi bir araya getiren bir türdür. 'Hack & slash' (vur-kır) adı verilen alt türde ise çok sayıda düşmanı yenmek, ganimet toplamak ve giderek güçlenmek esastır.",
+      "## Türün temel mekanikleri",
+      "- Ganimet (loot): Yenilen düşmanlar eşya, altın veya güçlendirme düşürür. Bunları toplamak ilerlemenin temelidir.",
+      "- Seviye atlama: Deneyim puanı (XP) topladıkça karakterin güçlenir; daha çok hasar verir, daha dayanıklı olursun.",
+      "- Dalgalar ve boss'lar: Düşmanlar dalgalar hâlinde gelir; belirli aralıklarla güçlü bir 'boss' ile karşılaşırsın.",
+      "## Neden bu kadar keyifli?",
+      "Sürekli bir ilerleme hissi verir: her ganimet, her seviye seni biraz daha güçlü yapar. 'Bir dalga daha' deyip oynamaya devam etmek çok kolaydır. Basit kontroller, derin bir gelişim döngüsüyle birleşir.",
+      "## Yeni başlayanlar için ipuçları",
+      "- Sürekli hareket et; tek yerde durma, düşmanlar seni kuşatır.",
+      "- Ganimetleri ıskalama; can ve güç düşürenleri öncelikle topla.",
+      "- Boss'larda sabırlı ol: vur-kaç taktiğiyle hasar al-ver dengesini koru.",
+      "## Tarayıcıda denemek ister misin?",
+      "Oynava'ya özel geliştirdiğimiz Zindan Avcısı, tam da bu türde, tamamen özgün bir aksiyon-RPG'dir. İndirme gerektirmez, doğrudan tarayıcında akıcı çalışır ve skorundan jeton kazandırır. Originals bölümünden hemen oynayabilirsin.",
+    ],
+  },
+  {
     slug: "tarayicida-oynanan-ucretsiz-oyunlar-rehberi",
     title: "Tarayıcıda Oynanan Ücretsiz Oyunlar: Başlangıç Rehberi",
     date: "2026-06-10",
