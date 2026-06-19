@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { HousePromo } from "./HousePromo";
 
 /**
  * Google AdSense reklam yuvası.
- * .env.local içine NEXT_PUBLIC_ADSENSE_CLIENT eklenince gerçek reklam basar;
- * eklenmemişse "Reklam Alanı" placeholder'ı gösterir (geliştirme görünümü).
+ * NEXT_PUBLIC_ADSENSE_CLIENT + slot tanımlıysa gerçek reklam basar;
+ * tanımlı değilse boş kalmasın diye kendi tanıtım banner'ımızı (HousePromo) gösterir.
  */
 export function AdSlot({
   slot,
@@ -29,13 +30,7 @@ export function AdSlot({
   }, [client]);
 
   if (!client || !slot) {
-    return (
-      <div
-        className={`grid min-h-[100px] place-items-center rounded-xl border border-dashed border-line bg-white/[0.02] text-xs uppercase tracking-widest text-slate-600 ${className}`}
-      >
-        Reklam Alanı
-      </div>
-    );
+    return <HousePromo format={format} className={className} />;
   }
 
   return (
