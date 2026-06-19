@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Orbitron", system-ui, sans-serif;
+  --font-body: "Rajdhani", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-base text-slate-200 font-body antialiased;
+  background-image:
+    radial-gradient(circle at 15% -10%, rgba(168, 85, 247, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 0%, rgba(0, 229, 255, 0.12), transparent 45%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* İnce neon kaydırma çubuğu */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0d18;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#00e5ff55, #a855f755);
+  border-radius: 8px;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
+  }
+
+  .neon-text {
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.55);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5
+           font-display text-sm font-semibold uppercase tracking-wider
+           transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-neon text-base shadow-glow hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,229,255,.6)];
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-white/5 text-slate-200 hover:border-neon hover:text-white;
+  }
+
+  .card-base {
+    @apply rounded-2xl border border-line bg-card/80 backdrop-blur;
+  }
+
+  /* Yasal/bilgi sayfaları metin biçimi */
+  .legal-prose h2 {
+    @apply mt-8 font-display text-xl font-bold text-white;
+  }
+  .legal-prose h3 {
+    @apply mt-5 font-display text-base font-semibold text-neon;
+  }
+  .legal-prose p {
+    @apply leading-relaxed text-slate-300;
+  }
+  .legal-prose ul {
+    @apply list-disc space-y-1 pl-6 text-slate-300;
+  }
+  .legal-prose a {
+    @apply text-neon hover:underline;
+  }
+  .legal-prose strong {
+    @apply text-white;
+  }
+
+  /* Yükleme iskeleti parıltısı */
+  .skeleton {
+    @apply relative overflow-hidden bg-white/5;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full animate-shimmer
+           bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    content: "";
+  }
+}
