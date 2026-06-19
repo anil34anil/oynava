@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AdFrame } from "@/components/AdFrame";
 import { CookieConsent } from "@/components/CookieConsent";
+import { SITE } from "@/lib/site";
 
 const display = Orbitron({
   subsets: ["latin"],
@@ -36,8 +37,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // AdSense yayıncı kimliğini .env.local'e ekleyince script yüklenir.
-  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  // AdSense yayıncı kimliği (site.ts'te tanımlı; env override edebilir).
+  const adsenseClient = SITE.adsenseClient || process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
   return (
     <html lang="tr" className={`${display.variable} ${body.variable}`}>

@@ -15,6 +15,9 @@ export const SITE = {
   url: "https://oynava.com",
   launchYear: 2026,
 
+  // Google AdSense yayıncı kimliği (herkese açık; sayfa kaynağında zaten görünür).
+  adsenseClient: "ca-pub-1026618703580570",
+
   // Site sahibi bilgileri (KVKK "Veri Sorumlusu").
   // Bireysel, reklam destekli aşamada: e-posta ile iletişim; adres yayınlanmıyor.
   // Para ile satışa geçince (e-ticaret) bir adres (örn. sanal ofis) eklenmeli.

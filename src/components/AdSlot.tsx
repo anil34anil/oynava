@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { HousePromo } from "./HousePromo";
+import { SITE } from "@/lib/site";
 
 /**
  * Google AdSense reklam yuvası.
@@ -17,17 +18,18 @@ export function AdSlot({
   format?: string;
   className?: string;
 }) {
-  const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  const client = SITE.adsenseClient || process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
   useEffect(() => {
-    if (!client) return;
+    // Yalnızca gerçek bir <ins> (client + slot) varken push et.
+    if (!client || !slot) return;
     try {
       // @ts-expect-error adsbygoogle global
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       /* yoksay */
     }
-  }, [client]);
+  }, [client, slot]);
 
   if (!client || !slot) {
     return <HousePromo format={format} className={className} />;
