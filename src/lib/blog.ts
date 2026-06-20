@@ -13,6 +13,32 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "bulmaca-oyunlari-beyne-faydalari",
+    title: "Bulmaca ve Zekâ Oyunları: Beyne Faydaları ve En Sevilen Türler",
+    date: "2026-06-20",
+    excerpt:
+      "Bulmaca oyunları sadece eğlenceli değil; hafıza, dikkat ve problem çözme becerini de geliştirir. Türler ve ipuçları.",
+    body: [
+      "Bulmaca ve zekâ oyunları, hızlı reflekslerden çok düşünmeyi, planlamayı ve örüntü tanımayı ödüllendirir. Kısa molalarda oynanabilecek kadar pratik, ustalaşması ise yıllar alacak kadar derin olabilirler.",
+      "## Beyne faydaları",
+      "- Hafıza ve dikkat: Eşleştirme ve hatırlama temelli oyunlar kısa süreli hafızayı çalıştırır.",
+      "- Problem çözme: Her seviye, çözüme giden yolu planlamanı ister; bu beceri günlük hayata da yansır.",
+      "- Odaklanma: Bir bulmacaya dalmak, dikkat süresini uzatmaya yardımcı olabilir.",
+      "Bu etkiler mucize değildir; ama düzenli, ölçülü oynamak keyifli bir zihinsel egzersizdir.",
+      "## En sevilen bulmaca türleri",
+      "- Eşleştirme (match-3): Aynı renk/sembolleri yan yana getirerek patlatma.",
+      "- Mantık bulmacaları: Sudoku, akış (flow) ve blok yerleştirme gibi kurallı oyunlar.",
+      "- Kelime oyunları: Harflerden kelime üretme, bulmaca çözme.",
+      "- Fizik tabanlı bulmacalar: Nesneleri doğru noktaya ulaştırmak için yer çekimi ve momentumu kullanma.",
+      "## Yeni başlayanlar için ipuçları",
+      "- Aceleci olma; çoğu bulmacada hız değil, doğru hamle önemlidir.",
+      "- Birkaç hamle ileriyi düşün; anlık çözümler seni köşeye sıkıştırabilir.",
+      "- Takıldığında kısa bir mola ver; göz gezdirdiğinde çözüm çoğu zaman netleşir.",
+      "## Nereden başlamalı?",
+      "Oynava'nın Bulmaca kategorisinde her seviyeye uygun yüzlerce ücretsiz oyun var. İndirme gerektirmeden, doğrudan tarayıcından oynayabilir; favorilerine ekleyip kaldığın yerden devam edebilirsin.",
+    ],
+  },
+  {
     slug: "aksiyon-rpg-hack-and-slash-turu-rehberi",
     title: "Aksiyon-RPG ve Hack & Slash Türü: Yeni Başlayanlar İçin Rehber",
     date: "2026-06-20",
