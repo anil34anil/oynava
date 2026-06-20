@@ -27,8 +27,8 @@ const FEED_URL =
 // GameDistribution canlı feed (sayfalı). Tek sayfa = 100 oyun.
 const GD_FEED = "https://catalog.api.gamedistribution.com/api/v1.0/rss/All/?format=json&amount=100";
 
-// GamePix canlı feed (sayfalı, kaliteli/3D oyunlar). Revenue için kendi sid'inle değiştir.
-const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "";
+// GamePix canlı feed (sayfalı, kaliteli/3D oyunlar). sid = Oynava yayıncı kimliği (gelir buna yazılır).
+const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "92818";
 const GP_FEED = `https://feeds.gamepix.com/v2/json?sid=${GAMEPIX_SID}&pagination=48`;
 
 // Üç kaynaktan gömülü gerçek katalog (feed kopsa bile site dolu kalır)
