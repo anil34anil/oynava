@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -52,6 +53,10 @@ export default function LoginPage() {
         >
           Kayıt Ol
         </button>
+      </div>
+
+      <div className="flex justify-center">
+        <GoogleLoginButton />
       </div>
 
       <form onSubmit={submit} className="card-base space-y-4 p-6">

@@ -31,7 +31,12 @@ export function ProfileChip() {
         href="/profil"
         className="flex items-center gap-2 rounded-lg border border-line bg-card px-2 py-1.5 hover:border-neon"
       >
-        <span className="text-lg">{avatar}</span>
+        {avatar.startsWith("http") ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={avatar} alt="" className="h-6 w-6 rounded-full" referrerPolicy="no-referrer" />
+        ) : (
+          <span className="text-lg">{avatar}</span>
+        )}
         <span className="hidden max-w-[100px] truncate text-sm text-slate-300 lg:inline">{name}</span>
       </Link>
     </div>

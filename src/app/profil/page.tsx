@@ -41,8 +41,13 @@ export default function ProfilePage() {
       </div>
 
       <div className="card-base flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-start">
-        <div className="grid h-24 w-24 shrink-0 place-items-center rounded-2xl bg-white/5 text-5xl shadow-glow">
-          {profile.avatar}
+        <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white/5 text-5xl shadow-glow">
+          {user?.avatar?.startsWith("http") ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+          ) : (
+            profile.avatar
+          )}
         </div>
         <div className="flex-1 space-y-3">
           <label className="block text-xs uppercase tracking-wider text-slate-500">Kullanıcı adı</label>

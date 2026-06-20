@@ -22,6 +22,11 @@ export const SITE = {
   // verilen "content" değerini buraya yapıştır; <head>'e otomatik eklenir.
   googleSiteVerification: "",
 
+  // Google ile Giriş (Google Identity Services) — OAuth Client ID.
+  // console.cloud.google.com → OAuth client (Web) → yetkili origin: https://oynava.com
+  // Boşsa "Google ile giriş" butonu gizlenir; e-posta girişi yine çalışır.
+  googleClientId: "",
+
   // Site sahibi bilgileri (KVKK "Veri Sorumlusu").
   // Bireysel, reklam destekli aşamada: e-posta ile iletişim; adres yayınlanmıyor.
   // Para ile satışa geçince (e-ticaret) bir adres (örn. sanal ofis) eklenmeli.

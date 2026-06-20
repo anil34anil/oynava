@@ -14,10 +14,11 @@ import { useCallback, useEffect, useState } from "react";
 
 export type Account = {
   email: string;
-  salt: string;
-  hash: string;
+  salt?: string;
+  hash?: string;
   username: string;
   avatar: string;
+  provider?: "password" | "google";
   createdAt: number;
 };
 
@@ -104,8 +105,33 @@ export function useAuth() {
       email = email.trim().toLowerCase();
       const acc = readAccounts()[email];
       if (!acc) return { ok: false, error: "Böyle bir hesap yok. Kayıt ol." };
+      if (acc.provider === "google" || !acc.salt || !acc.hash) {
+        return { ok: false, error: "Bu hesap Google ile oluşturuldu. 'Google ile devam et' ile giriş yap." };
+      }
       const hash = await hashPw(password, acc.salt);
       if (hash !== acc.hash) return { ok: false, error: "Şifre hatalı." };
+      localStorage.setItem(K_SESSION, email);
+      window.dispatchEvent(new Event("oh:auth"));
+      return { ok: true };
+    },
+    [],
+  );
+
+  /** Google ile giriş: GIS'ten gelen profil bilgisiyle hesabı oluştur/güncelle. */
+  const loginWithGoogle = useCallback(
+    (profile: { email: string; name?: string; picture?: string }) => {
+      const email = profile.email.trim().toLowerCase();
+      if (!email) return { ok: false };
+      const accounts = readAccounts();
+      const existing = accounts[email];
+      accounts[email] = {
+        email,
+        provider: "google",
+        username: profile.name || existing?.username || email.split("@")[0],
+        avatar: profile.picture || existing?.avatar || "🎮",
+        createdAt: existing?.createdAt ?? Date.now(),
+      };
+      writeAccounts(accounts);
       localStorage.setItem(K_SESSION, email);
       window.dispatchEvent(new Event("oh:auth"));
       return { ok: true };
@@ -128,5 +154,5 @@ export function useAuth() {
     window.dispatchEvent(new Event("oh:auth"));
   }, []);
 
-  return { user, ready, register, login, logout, updateAccount };
+  return { user, ready, register, login, loginWithGoogle, logout, updateAccount };
 }

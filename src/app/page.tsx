@@ -12,9 +12,17 @@ const CAT_ICON: Record<string, string> = {
   bulmaca: "🧩", zeka: "♟️", io: "🌐", kiz: "💖", cocuk: "🧸", arcade: "🕹️", "3d": "🧊",
 };
 
+const PREMIUM_CATS = ["3d", "aksiyon", "yaris", "io"];
+
 export default async function HomePage() {
   const games = await getGames();
-  const featured = games[0];
+
+  // Öne çıkan havuzu: önce GamePix (kaliteli), sonra premium türler — Hero bunları döndürür.
+  const premiumPool = games
+    .filter((g) => g.id.startsWith("gp-") || /premium|3d/i.test(g.tags) || PREMIUM_CATS.includes(categorySlug(g)))
+    .sort((a, b) => (b.id.startsWith("gp-") ? 1 : 0) - (a.id.startsWith("gp-") ? 1 : 0));
+  const featuredPool = (premiumPool.length >= 5 ? premiumPool : games).slice(0, 8);
+
   const popular = games.slice(0, 18);
 
   const rows = CATEGORIES.map((c) => ({
@@ -24,7 +32,7 @@ export default async function HomePage() {
 
   return (
     <div className="container-x space-y-10 py-6">
-      <Hero game={featured} />
+      <Hero games={featuredPool} />
 
       {/* Kategori hızlı erişim ikonları */}
       <section>
