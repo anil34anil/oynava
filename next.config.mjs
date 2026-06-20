@@ -7,6 +7,8 @@ const nextConfig = {
       { protocol: "https", hostname: "img.gamemonetize.com" },
       { protocol: "https", hostname: "img.gamemonetize.net" },
       { protocol: "https", hostname: "img.gamedistribution.com" },
+      { protocol: "https", hostname: "img.gamepix.com" },
+      { protocol: "https", hostname: "**.gamepix.com" },
       { protocol: "https", hostname: "**.gamemonetize.com" },
     ],
   },

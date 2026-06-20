@@ -26,6 +26,12 @@ export function Header() {
       <nav className="border-t border-line/60 bg-surface/60">
         <div className="container-x flex items-center gap-1 overflow-x-auto py-2 text-sm">
           <Link
+            href="/premium"
+            className="whitespace-nowrap rounded-lg bg-neon-purple/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-purple hover:bg-neon-purple/20"
+          >
+            ✦ Premium
+          </Link>
+          <Link
             href="/orijinal"
             className="whitespace-nowrap rounded-lg bg-neon-lime/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-lime hover:bg-neon-lime/20"
           >

@@ -9,6 +9,7 @@
 
 import seed from "@/data/games.seed.json";
 import gdSeed from "@/data/games.gd.seed.json";
+import gpSeed from "@/data/games.gp.seed.json";
 import { Game, categorySlug } from "./catalog";
 
 export type { Game } from "./catalog";
@@ -26,9 +27,26 @@ const FEED_URL =
 // GameDistribution canlı feed (sayfalı). Tek sayfa = 100 oyun.
 const GD_FEED = "https://catalog.api.gamedistribution.com/api/v1.0/rss/All/?format=json&amount=100";
 
-// İki kaynaktan gömülü gerçek katalog (feed kopsa bile site dolu kalır)
+// GamePix canlı feed (sayfalı, kaliteli/3D oyunlar). Revenue için kendi sid'inle değiştir.
+const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "";
+const GP_FEED = `https://feeds.gamepix.com/v2/json?sid=${GAMEPIX_SID}&pagination=48`;
+
+// Üç kaynaktan gömülü gerçek katalog (feed kopsa bile site dolu kalır)
 const GD_SEED = (gdSeed as Game[]).filter((g) => g.id && g.url);
-const SEED = mergeUnique([...(seed as Game[]).filter((g) => g.id && g.url), ...GD_SEED]);
+const GP_SEED = applySid((gpSeed as Game[]).filter((g) => g.id && g.url));
+const SEED = mergeUnique([
+  ...(seed as Game[]).filter((g) => g.id && g.url),
+  ...GD_SEED,
+  ...GP_SEED,
+]);
+
+/** GamePix embed url'lerindeki sid'i kendi yayıncı sid'inle değiştirir (gelir için). */
+function applySid(list: Game[]): Game[] {
+  if (!GAMEPIX_SID) return list;
+  return list.map((g) =>
+    g.id.startsWith("gp-") ? { ...g, url: g.url.replace(/([?&]sid=)[^&]*/, `$1${GAMEPIX_SID}`) } : g,
+  );
+}
 
 /** id'ye göre tekilleştirerek birleştirir (ilk gelen kazanır). */
 function mergeUnique(lists: Game[]): Game[] {
@@ -71,6 +89,41 @@ async function fetchGameDistribution(pages = 3): Promise<Game[]> {
   return out;
 }
 
+/** GamePix: birkaç sayfayı canlı çek, normalize et (kaliteli/3D oyunlar). */
+async function fetchGamePix(pages = 4): Promise<Game[]> {
+  const out: Game[] = [];
+  for (let p = 1; p <= pages; p++) {
+    try {
+      const r = await fetch(`${GP_FEED}&page=${p}`, {
+        headers: { "User-Agent": "OyunPortali/1.0" },
+        next: { revalidate: 3600 },
+      });
+      if (!r.ok) break;
+      const d = (await r.json()) as any;
+      const items: any[] = d?.items ?? [];
+      if (items.length === 0) break;
+      for (const g of items) {
+        if (!g?.id || !g?.url) continue;
+        out.push({
+          id: "gp-" + g.id,
+          title: (g.title || "").trim(),
+          description: g.description || "",
+          instructions: "",
+          url: g.url,
+          category: g.category || "Arcade",
+          tags: `${g.category || ""}, premium`,
+          thumb: g.banner_image || g.image,
+          width: String(g.width || 800),
+          height: String(g.height || 600),
+        });
+      }
+    } catch {
+      break;
+    }
+  }
+  return applySid(out);
+}
+
 let _cache: { at: number; games: Game[] } | null = null;
 const MEM_TTL = 1000 * 60 * 10; // 10 dk bellek-içi cache
 
@@ -96,20 +149,25 @@ async function fetchFeed(): Promise<Game[]> {
 }
 
 /**
- * İki kaynağı (GameMonetize + GameDistribution) paralel çeker, birleştirir.
- * Her iki kaynak da koparsa gömülü birleşik kataloğa (SEED) düşer → site asla boş kalmaz.
+ * Üç kaynağı (GameMonetize + GameDistribution + GamePix) paralel çeker, birleştirir.
+ * Kaynaklar koparsa gömülü birleşik kataloğa (SEED) düşer → site asla boş kalmaz.
  */
 export async function getGames(): Promise<Game[]> {
   if (_cache && Date.now() - _cache.at < MEM_TTL) return _cache.games;
 
-  const [gm, gd] = await Promise.allSettled([fetchFeed(), fetchGameDistribution()]);
+  const [gm, gd, gp] = await Promise.allSettled([
+    fetchFeed(),
+    fetchGameDistribution(),
+    fetchGamePix(),
+  ]);
 
   const gmGames = gm.status === "fulfilled" ? gm.value : [];
   const gdGames = gd.status === "fulfilled" ? gd.value : [];
+  const gpGames = gp.status === "fulfilled" ? gp.value : [];
 
   // Canlı veriyi HER ZAMAN gömülü seed ile birleştir: taze kayıtlar öne gelir,
-  // seed boşlukları doldurur → katalog asla seed sayısının (~3300) altına düşmez.
-  const games = mergeUnique([...gmGames, ...gdGames, ...SEED]);
+  // seed boşlukları doldurur → katalog asla seed sayısının altına düşmez.
+  const games = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]);
 
   _cache = { at: Date.now(), games };
   return games;
