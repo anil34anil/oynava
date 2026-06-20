@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/catalog";
 import { SITE } from "@/lib/site";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
     <footer className="mt-16 border-t border-line bg-surface/60">
       <div className="container-x grid gap-8 py-10 md:grid-cols-4">
         <div>
-          <div className="font-display text-lg font-black tracking-widest text-white neon-text">
-            OYNAVA
-          </div>
-          <p className="mt-1 text-sm font-semibold text-neon">Bir tık, bin oyun</p>
+          <Logo />
+          <p className="mt-2 text-sm font-semibold text-neon">Bir tık, bin oyun</p>
           <p className="mt-2 max-w-xs text-sm text-slate-500">
             Binlerce ücretsiz HTML5 oyun. İndirme yok, kurulum yok — tarayıcında
             akıcı oyna.
@@ -39,8 +38,8 @@ export function Footer() {
             Bilgi
           </h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-500">
+            <li><Link href="/premium" className="hover:text-neon">Premium Oyunlar</Link></li>
             <li><Link href="/blog" className="hover:text-neon">Blog</Link></li>
-            <li><Link href="/orijinal" className="hover:text-neon">Oynava Originals</Link></li>
             <li><Link href="/sss" className="hover:text-neon">SSS</Link></li>
             <li><Link href="/kunye" className="hover:text-neon">Kontak ve Künye</Link></li>
             <li><Link href="/isbirlikleri" className="hover:text-neon">İş Birlikleri ve Ortaklar</Link></li>
@@ -69,7 +68,7 @@ export function Footer() {
 
       <div className="border-t border-line/60 py-4 text-center text-xs text-slate-600">
         © {SITE.launchYear} - {new Date().getFullYear()} OYNAVA · Tüm hakları saklıdır.
-        Oyunlar GameMonetize ve GameDistribution ağları üzerinden sunulmaktadır.
+        Oyunlar GameMonetize, GameDistribution ve GamePix ağları üzerinden sunulmaktadır.
       </div>
     </footer>
   );

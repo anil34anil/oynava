@@ -11,14 +11,14 @@ export function HousePromo({ format = "auto", className = "" }: { format?: strin
   if (vertical) {
     return (
       <Link
-        href="/orijinal/golge-savascisi"
-        className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-xl border border-neon-lime/30 bg-gradient-to-b from-neon-lime/10 to-neon-purple/10 p-4 text-center transition hover:border-neon-lime ${className}`}
+        href="/premium"
+        className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-xl border border-neon-purple/30 bg-gradient-to-b from-neon-purple/10 to-neon/10 p-4 text-center transition hover:border-neon-purple ${className}`}
       >
-        <span className="text-xs font-semibold uppercase tracking-widest text-neon-lime">★ Originals</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-neon-purple">✦ Premium</span>
         <span className="text-4xl">🎮</span>
-        <span className="font-display text-sm font-bold text-white">Gölge Savaşçısı</span>
-        <span className="text-xs text-slate-400">Bize özel oyun. Oyna, jeton kazan.</span>
-        <span className="btn-primary mt-1 py-1.5 text-xs">▶ Oyna</span>
+        <span className="font-display text-sm font-bold text-white">Premium Oyunlar</span>
+        <span className="text-xs text-slate-400">En kaliteli 3D & WebGL oyunlar.</span>
+        <span className="btn-primary mt-1 py-1.5 text-xs">Keşfet</span>
       </Link>
     );
   }

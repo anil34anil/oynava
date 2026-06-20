@@ -2,18 +2,14 @@ import Link from "next/link";
 import { CATEGORIES } from "@/lib/catalog";
 import { SearchBar } from "./SearchBar";
 import { ProfileChip } from "./ProfileChip";
+import { Logo } from "./Logo";
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-base/80 backdrop-blur-xl">
       <div className="container-x flex h-16 items-center gap-4">
-        <Link href="/" className="group flex shrink-0 items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-neon text-base font-display text-lg font-black shadow-glow">
-            O
-          </span>
-          <span className="font-display text-xl font-black tracking-widest text-white neon-text group-hover:text-neon">
-            OYNAVA
-          </span>
+        <Link href="/" className="shrink-0 transition hover:opacity-90">
+          <Logo />
         </Link>
 
         <div className="mx-auto hidden max-w-xl flex-1 md:block">
@@ -29,13 +25,7 @@ export function Header() {
             href="/premium"
             className="whitespace-nowrap rounded-lg bg-neon-purple/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-purple hover:bg-neon-purple/20"
           >
-            ✦ Premium
-          </Link>
-          <Link
-            href="/orijinal"
-            className="whitespace-nowrap rounded-lg bg-neon-lime/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-lime hover:bg-neon-lime/20"
-          >
-            ★ Originals
+            ✦ Premium Oyunlar
           </Link>
           <Link
             href="/oyunlar"

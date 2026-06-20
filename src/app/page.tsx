@@ -7,12 +7,16 @@ import { AdSlot } from "@/components/AdSlot";
 
 export const revalidate = 3600;
 
+const CAT_ICON: Record<string, string> = {
+  aksiyon: "💥", macera: "🗺️", yaris: "🏎️", spor: "⚽", dovus: "🥊",
+  bulmaca: "🧩", zeka: "♟️", io: "🌐", kiz: "💖", cocuk: "🧸", arcade: "🕹️", "3d": "🧊",
+};
+
 export default async function HomePage() {
   const games = await getGames();
   const featured = games[0];
   const popular = games.slice(0, 18);
 
-  // Her kategoriden bir şerit
   const rows = CATEGORIES.map((c) => ({
     cat: c,
     items: games.filter((g) => categorySlug(g) === c.slug).slice(0, 12),
@@ -22,40 +26,56 @@ export default async function HomePage() {
     <div className="container-x space-y-10 py-6">
       <Hero game={featured} />
 
-      {/* Oynava Originals tanıtım */}
+      {/* Kategori hızlı erişim ikonları */}
+      <section>
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/kategori/${c.slug}`}
+              className="group flex flex-col items-center gap-1.5 rounded-2xl border border-line bg-card/60 py-3 transition hover:-translate-y-0.5 hover:border-neon hover:bg-card"
+            >
+              <span className="text-2xl transition group-hover:scale-110">{CAT_ICON[c.slug] ?? "🎮"}</span>
+              <span className="px-1 text-center text-[11px] font-semibold leading-tight text-slate-400 group-hover:text-neon">
+                {c.tr}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Premium tanıtım banner */}
       <Link
-        href="/orijinal/golge-savascisi"
-        className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-neon-lime/30 bg-gradient-to-r from-neon-lime/10 to-neon-purple/10 p-6 transition hover:border-neon-lime"
+        href="/premium"
+        className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-neon-purple/30 bg-gradient-to-r from-neon-purple/15 via-card to-neon/10 p-6 transition hover:border-neon-purple"
       >
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-widest text-neon-lime">
-            ★ Oynava Originals
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-neon-purple/20 blur-3xl" />
+        <div className="relative">
+          <span className="text-xs font-semibold uppercase tracking-widest text-neon-purple">
+            ✦ Premium Oyunlar
           </span>
-          <h2 className="mt-1 font-display text-2xl font-black text-white">Gölge Savaşçısı</h2>
+          <h2 className="mt-1 font-display text-2xl font-black text-white">Yüksek Grafikli 3D & WebGL Oyunlar</h2>
           <p className="mt-1 max-w-md text-sm text-slate-400">
-            Bize özel, telifsiz aksiyon-survival. Oyna, hayatta kal, jeton kazan.
+            En kaliteli yarış, FPS, .io savaş ve 3D oyunlar — ücretsiz, indirme yok.
           </p>
         </div>
-        <span className="btn-primary shrink-0 group-hover:scale-105">▶ Oyna</span>
+        <span className="btn-primary relative shrink-0 group-hover:scale-105">Keşfet →</span>
       </Link>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 
       <section>
-        <div className="mb-4 flex items-end justify-between">
-          <h2 className="font-display text-2xl font-bold text-white">🔥 Popüler Oyunlar</h2>
-        </div>
+        <h2 className="mb-4 font-display text-2xl font-bold text-white">🔥 Popüler Oyunlar</h2>
         <GameGrid games={popular} priorityCount={6} />
       </section>
 
       {rows.map(({ cat, items }) => (
         <section key={cat.slug}>
           <div className="mb-4 flex items-end justify-between">
-            <h2 className="font-display text-xl font-bold text-white">{cat.tr}</h2>
-            <Link
-              href={`/kategori/${cat.slug}`}
-              className="text-sm font-semibold text-neon hover:underline"
-            >
+            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
+              <span>{CAT_ICON[cat.slug] ?? "🎮"}</span> {cat.tr}
+            </h2>
+            <Link href={`/kategori/${cat.slug}`} className="text-sm font-semibold text-neon hover:underline">
               Tümünü gör →
             </Link>
           </div>
