@@ -25,7 +25,7 @@ export const SITE = {
   // Google ile Giriş (Google Identity Services) — OAuth Client ID.
   // console.cloud.google.com → OAuth client (Web) → yetkili origin: https://oynava.com
   // Boşsa "Google ile giriş" butonu gizlenir; e-posta girişi yine çalışır.
-  googleClientId: "",
+  googleClientId: "399656444068-385ogelqn0v7f5mhgf82p4s6hu24ckpc.apps.googleusercontent.com",
 
   // Site sahibi bilgileri (KVKK "Veri Sorumlusu").
   // Bireysel, reklam destekli aşamada: e-posta ile iletişim; adres yayınlanmıyor.

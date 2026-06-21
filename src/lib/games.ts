@@ -11,6 +11,7 @@ import seed from "@/data/games.seed.json";
 import gdSeed from "@/data/games.gd.seed.json";
 import gpSeed from "@/data/games.gp.seed.json";
 import { Game, categorySlug } from "./catalog";
+import { searchTerms, normalizeTr } from "./tr";
 
 export type { Game } from "./catalog";
 export {
@@ -184,13 +185,12 @@ export async function getByCategory(slug: string): Promise<Game[]> {
 }
 
 export async function searchGames(q: string): Promise<Game[]> {
-  const term = q.trim().toLowerCase();
-  if (!term) return [];
+  // Türkçe terimi İngilizce karşılıklarıyla genişlet + Türkçe karakter normalizasyonu.
+  const terms = searchTerms(q);
+  if (terms.length === 0) return [];
   const games = await getGames();
-  return games.filter(
-    (g) =>
-      g.title.toLowerCase().includes(term) ||
-      g.tags.toLowerCase().includes(term) ||
-      g.category.toLowerCase().includes(term),
-  );
+  return games.filter((g) => {
+    const hay = normalizeTr(`${g.title} ${g.tags} ${g.category}`);
+    return terms.some((t) => hay.includes(t));
+  });
 }
