@@ -4,6 +4,8 @@ import { categorySlug, CATEGORIES } from "@/lib/catalog";
 import { Hero } from "@/components/Hero";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -32,6 +34,30 @@ export default async function HomePage() {
 
   return (
     <div className="container-x space-y-10 py-6">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE.name,
+            url: SITE.url,
+            inLanguage: "tr-TR",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: { "@type": "EntryPoint", urlTemplate: `${SITE.url}/ara?q={search_term_string}` },
+              "query-input": "required name=search_term_string",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE.name,
+            url: SITE.url,
+            slogan: SITE.slogan,
+            logo: `${SITE.url}/icon.svg`,
+          },
+        ]}
+      />
       <Hero games={featuredPool} />
 
       {/* Kategori hızlı erişim ikonları */}

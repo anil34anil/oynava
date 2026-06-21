@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { POSTS, getPost } from "@/lib/blog";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE } from "@/lib/site";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -10,10 +12,33 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = getPost(params.slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: { title: post.title, description: post.excerpt, type: "article", publishedTime: post.date },
+  };
 }
 
-/** body satırlarını basit biçimlendirir: "## " başlık, "- " madde, diğer paragraf. */
+/** Satır içi [metin](/yol) linklerini <Link>'e çevirir. */
+function inline(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let last = 0, m: RegExpExecArray | null, k = 0;
+  while ((m = re.exec(text))) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    parts.push(
+      <Link key={k++} href={m[2]}>
+        {m[1]}
+      </Link>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
+/** body satırlarını biçimlendirir: "## " başlık, "- " madde, diğer paragraf; satır içi link destekli. */
 function renderBody(body: string[]) {
   const out: React.ReactNode[] = [];
   let list: string[] = [];
@@ -22,7 +47,7 @@ function renderBody(body: string[]) {
       out.push(
         <ul key={`ul-${key}`}>
           {list.map((li, i) => (
-            <li key={i}>{li.replace(/^-\s*/, "")}</li>
+            <li key={i}>{inline(li.replace(/^-\s*/, ""))}</li>
           ))}
         </ul>,
       );
@@ -37,7 +62,7 @@ function renderBody(body: string[]) {
       list.push(line);
     } else {
       flush(i);
-      out.push(<p key={i}>{line}</p>);
+      out.push(<p key={i}>{inline(line)}</p>);
     }
   });
   flush(body.length);
@@ -50,6 +75,20 @@ export default function PostPage({ params }: { params: { slug: string } }) {
 
   return (
     <article className="container-x max-w-3xl py-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.excerpt,
+          datePublished: post.date,
+          dateModified: post.date,
+          inLanguage: "tr-TR",
+          mainEntityOfPage: `${SITE.url}/blog/${post.slug}`,
+          author: { "@type": "Organization", name: SITE.name },
+          publisher: { "@type": "Organization", name: SITE.name, logo: { "@type": "ImageObject", url: `${SITE.url}/icon.svg` } },
+        }}
+      />
       <nav className="mb-4 text-sm text-slate-500">
         <Link href="/blog" className="hover:text-neon">Blog</Link> / {post.title}
       </nav>

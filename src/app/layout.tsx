@@ -22,18 +22,22 @@ const body = Rajdhani({
 const SITE_NAME = "OYNAVA";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: {
     default: `${SITE_NAME} — Binlerce Ücretsiz Oyun, Tarayıcıda Oyna`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
     "Aksiyon, yarış, 3D, .io ve bulmaca oyunları. İndirme yok, kurulum yok — doğrudan tarayıcında akıcı oyna. Binlerce ücretsiz HTML5 oyun.",
-  keywords: ["ücretsiz oyun", "online oyun", "html5 oyun", "tarayıcı oyunları", "3d oyun", "io oyunları"],
+  keywords: ["ücretsiz oyun", "online oyun", "html5 oyun", "tarayıcı oyunları", "3d oyun", "io oyunları", "bedava oyun", "oyun oyna"],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "tr_TR",
     siteName: SITE_NAME,
+    url: SITE.url,
   },
+  twitter: { card: "summary_large_image" },
   // AdSense site doğrulaması için <meta name="google-adsense-account" ...>
   other: { "google-adsense-account": SITE.adsenseClient },
   // Google Search Console (token girilince <meta name="google-site-verification" ...>)

@@ -2,9 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getGameById, getByCategory, categorySlug } from "@/lib/games";
 import { trInstructions, trDescription } from "@/lib/tr";
+import { slugifyTitle } from "@/lib/catalog";
 import { GamePlayer } from "@/components/GamePlayer";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -15,10 +18,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const game = await getGameById(params.id);
   if (!game) return {};
+  const desc = trDescription(game).slice(0, 160);
   return {
     title: `${game.title} — Ücretsiz Oyna`,
-    description: game.description?.slice(0, 160) || `${game.title} oyununu tarayıcında ücretsiz oyna.`,
-    openGraph: { images: [game.thumb] },
+    description: desc,
+    alternates: { canonical: `/oyun/${game.id}/${slugifyTitle(game.title)}` },
+    openGraph: { title: `${game.title} — Ücretsiz Oyna`, description: desc, images: [game.thumb], type: "article" },
   };
 }
 
@@ -30,8 +35,37 @@ export default async function GamePage({ params }: { params: { id: string } }) {
     .filter((g) => g.id !== game.id)
     .slice(0, 12);
 
+  const url = `${SITE.url}/oyun/${game.id}/${slugifyTitle(game.title)}`;
+
   return (
     <div className="container-x grid gap-6 py-6 lg:grid-cols-[1fr_320px]">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "VideoGame",
+            name: game.title,
+            url,
+            image: game.thumb,
+            description: trDescription(game),
+            inLanguage: "tr-TR",
+            applicationCategory: "Game",
+            operatingSystem: "Web Browser (HTML5)",
+            genre: game.category,
+            offers: { "@type": "Offer", price: "0", priceCurrency: "TRY" },
+            publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: SITE.url },
+              { "@type": "ListItem", position: 2, name: game.category, item: `${SITE.url}/oyunlar` },
+              { "@type": "ListItem", position: 3, name: game.title, item: url },
+            ],
+          },
+        ]}
+      />
       <div className="space-y-6">
         <nav className="text-sm text-slate-500">
           <span className="text-neon">{game.category}</span> / {game.title}
