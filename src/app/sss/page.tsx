@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/LegalLayout";
+import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
+
+// FAQPage şeması için düz metin S-C (Google "Sıkça Sorulan Sorular" zengin sonucu)
+const FAQ_LD: { q: string; a: string }[] = [
+  { q: `${SITE.name} nedir?`, a: `${SITE.name}, tarayıcıda çalışan binlerce ücretsiz HTML5 oyunu bir araya getiren bir oyun portalıdır. İndirme veya kurulum gerekmez.` },
+  { q: `${SITE.name} ücretsiz mi?`, a: "Evet, oyunların tamamı ücretsizdir. Gelir, oyun aralarında ve sayfalarda gösterilen reklamlardan sağlanır." },
+  { q: "Oyunları oynamak için üye olmam gerekir mi?", a: "Hayır. Oyunları üye olmadan oynayabilirsin. İstersen favorilerini kaydetmek için hesap oluşturabilirsin." },
+  { q: "Oyunlar mobil cihazda çalışır mı?", a: "Evet, oyunların büyük çoğunluğu telefon ve tablette de akıcı şekilde çalışır." },
+  { q: "Oyun açılmazsa ne yapmalıyım?", a: "Sayfayı yenile, reklam engelleyiciyi kapat, tarayıcı önbelleğini temizle veya farklı bir tarayıcı dene." },
+];
 
 export const metadata: Metadata = {
   title: "Sıkça Sorulan Sorular (SSS)",
@@ -115,6 +125,17 @@ const QA: { q: string; a: React.ReactNode }[] = [
 export default function SSSPage() {
   return (
     <LegalLayout title="Sıkça Sorulan Sorular">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQ_LD.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }}
+      />
       {QA.map((item, i) => (
         <div key={i}>
           <h2>{item.q}</h2>

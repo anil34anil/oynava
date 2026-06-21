@@ -54,6 +54,15 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   futbolcu: ["football", "soccer player"], penalti: ["penalty"], kale: ["goalkeeper", "goal"],
   yuzme: ["swim", "swimming"], kayak: ["ski", "snowboard"], paten: ["skate", "skating"],
   hazine: ["treasure"], buyucu: ["wizard", "mage"], peri: ["fairy"], cadi: ["witch"],
+  korsan: ["pirate"], kovboy: ["cowboy"], polis: ["police", "cop"], hirsiz: ["thief", "robber"],
+  itfaiye: ["firefighter", "fire truck"], maden: ["mining", "mine"], okcu: ["archery", "bow", "arrow"],
+  noel: ["christmas", "santa"], cadilar: ["halloween"], buz: ["ice"], kar: ["snow"],
+  yapboz: ["jigsaw", "puzzle"], kelime: ["word"], matematik: ["math", "number"], harf: ["letter", "alphabet"],
+  poker: ["poker"], slot: ["slot", "casino"], tetris: ["block", "blocks"],
+  maymun: ["monkey"], aslan: ["lion"], penguen: ["penguin"], tavuk: ["chicken"], kelebek: ["butterfly"],
+  deniz: ["sea", "ocean"], ada: ["island"], orman: ["forest", "jungle"], saray: ["castle"],
+  restoran: ["restaurant"], pizza: ["pizza"], burger: ["burger"], sebze: ["vegetable"],
+  kuafor: ["hair salon", "hairdresser"], tirnak: ["nail"], aile: ["family"], ikiz: ["twins"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

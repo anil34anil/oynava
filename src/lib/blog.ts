@@ -13,6 +13,48 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "mobilde-en-iyi-ucretsiz-oyunlar",
+    title: "Mobilde Oynanabilecek En İyi Ücretsiz Oyunlar",
+    date: "2026-06-21",
+    excerpt:
+      "Telefonuna hiçbir şey indirmeden, tarayıcıdan oynayabileceğin en iyi ücretsiz mobil oyunlar ve türleri.",
+    body: [
+      "Telefonunda yer kaplayan oyunlardan sıkıldıysan iyi haber: en eğlenceli oyunların çoğunu artık hiçbir şey indirmeden, doğrudan mobil tarayıcından oynayabilirsin. İşte mobilde en iyi çalışan ücretsiz oyun türleri.",
+      "## Dokunmatik kontrole uygun türler",
+      "- Arcade ve gündelik oyunlar: tek parmakla, kısa molalarda.",
+      "- Bulmaca ve eşleştirme: dokunmatikle çok rahat oynanır.",
+      "- .io oyunları: mobilde sürükle-bırak kontrolüyle akıcı.",
+      "## Neden indirmeden oynamak avantajlı?",
+      "Depolama alanı harcamazsın, güncelleme beklemezsin ve tek bağlantıyla anında başlarsın. Tarayıcı oyunları telefonun hafızasını şişirmez.",
+      "## Performans ipuçları",
+      "- Arka plandaki uygulamaları kapat.",
+      "- İyi bir Wi-Fi veya stabil mobil veri kullan.",
+      "- Oyunu tam ekran modunda oyna.",
+      "## Nereden başlamalı?",
+      "Oynava tamamen mobil uyumludur. [Arcade](/kategori/arcade), [Bulmaca](/kategori/bulmaca) ve [.io oyunları](/kategori/io) kategorileri mobilde özellikle keyiflidir. Tümüne [Tüm Oyunlar](/oyunlar) sayfasından da ulaşabilirsin.",
+    ],
+  },
+  {
+    slug: "kiz-oyunlari-giydirme-makyaj-rehberi",
+    title: "Kız Oyunları: Giydirme, Makyaj ve Dekorasyon Rehberi",
+    date: "2026-06-21",
+    excerpt:
+      "Giydirme, makyaj, yemek ve dekorasyon... Yaratıcılığını konuşturabileceğin ücretsiz kız oyunlarının türleri.",
+    body: [
+      "Kız oyunları, yaratıcılığı ve stil duygusunu ön plana çıkaran, her yaştan oyuncunun keyif aldığı geniş bir türdür. İşte en popüler alt türler ve ne sunduğu.",
+      "## Giydirme oyunları",
+      "Karakterlere kıyafet, aksesuar ve saç modeli seçerek kombinler oluşturursun. Moda zevkini deneme alanı gibidir.",
+      "## Makyaj ve bakım oyunları",
+      "Makyaj, cilt bakımı ve kuaför temalı oyunlar. Adım adım dönüşümler izlemek keyiflidir.",
+      "## Yemek ve dekorasyon oyunları",
+      "Pasta yapmaktan oda dekore etmeye kadar; planlama ve estetik bir arada.",
+      "## Neden bu kadar seviliyor?",
+      "Stres atmaya uygun, sakin ve ödüllendirici bir oynanışları var. Acele ettirmez; kendi temponda yaratırsın.",
+      "## Nereden oynanır?",
+      "Oynava'nın [Kız Oyunları kategorisinde](/kategori/kiz) yüzlerce ücretsiz giydirme, makyaj ve dekorasyon oyunu var. Türkçe 'giydirme', 'makyaj' veya 'yemek' araması da çalışır. Hepsi ücretsiz ve indirmesiz.",
+    ],
+  },
+  {
     slug: "en-iyi-ucretsiz-futbol-oyunlari",
     title: "En İyi Ücretsiz Futbol Oyunları (Tarayıcıda Oyna)",
     date: "2026-06-21",
