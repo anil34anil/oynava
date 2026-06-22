@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getGames, categorySlug, CATEGORIES, slugifyTitle } from "@/lib/games";
 import { POSTS } from "@/lib/blog";
+import { SITE } from "@/lib/site";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
+const BASE = SITE.url;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const games = await getGames();

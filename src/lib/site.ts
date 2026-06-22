@@ -12,7 +12,9 @@ export const SITE = {
   slogan: "Bir tık, bin oyun",
   // TODO: gerçek domainini yaz
   domain: "oynava.com",
-  url: "https://oynava.com",
+  // Vercel'de apex (oynava.com) www'ye 308 yönlendirme yapıyor; gerçek (yönlendirmesiz)
+  // adres www'li olduğu için canonical/sitemap/JSON-LD hep bunu kullanmalı.
+  url: "https://www.oynava.com",
   launchYear: 2026,
 
   // Google AdSense yayıncı kimliği (herkese açık; sayfa kaynağında zaten görünür).
