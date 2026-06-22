@@ -13,6 +13,47 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "arcade-oyunlari-en-iyi-turler",
+    title: "Arcade Oyunları: En İyi Türler ve Yüksek Skor İpuçları",
+    date: "2026-06-22",
+    excerpt:
+      "Kısa molalarda hızlı eğlence arayanlar için arcade oyunlarının en sevilen türleri ve yüksek skor yapmanın püf noktaları.",
+    body: [
+      "Arcade oyunları, oyun dünyasının en eski ve en sade köşesidir: basit kontroller, hızlı başlangıç, anında eğlence. Uzun öğrenme eğrisi yoktur; bir oyuna birkaç saniyede alışır, dakikalar içinde skor kovalamaya başlarsın.",
+      "## En sevilen arcade türleri",
+      "- Sonsuz koşu (endless runner): Engellerden kaçarak ne kadar uzağa gidebileceğini test edersin.",
+      "- Atış galerisi: Hedefleri vurarak puan topladığın, refleks odaklı oyunlar.",
+      "- Beceri/denge oyunları: Tek dokunuşla zamanlama gerektiren, basit ama bağımlılık yapan mekanikler.",
+      "- Klasik patlatma ve toplama oyunları: Renk eşleştirme veya nesne toplama temelli, kısa seanslık oyunlar.",
+      "## Yüksek skor için ipuçları",
+      "- Sabit bir ritim bul; panikleyip hızlanmak çoğu zaman hata yaptırır.",
+      "- Her oyunun bir 'güvenli bölge' deseni vardır; ilk denemelerde bunu öğrenmeye odaklan.",
+      "- Skor tablosundaki en iyi süreni geçmeyi hedef koy, rakiple değil kendinle yarış.",
+      "## Nereden oynanır?",
+      "Oynava'nın [Arcade kategorisinde](/kategori/arcade) klasik ve modern arcade oyunlarının en iyileri ücretsiz ve indirmesiz oynanır. Bulmaca sevenler [Bulmaca kategorisine](/kategori/bulmaca) de bakabilir; tamamı tarayıcıda anında açılır.",
+    ],
+  },
+  {
+    slug: "korku-ve-zombi-oyunlari-rehberi",
+    title: "Korku ve Zombi Oyunları: Gerilimi Sevenler İçin Rehber",
+    date: "2026-06-22",
+    excerpt:
+      "Karanlık koridorlar, zombi dalgaları ve gerilim dolu hikâyeler: tarayıcıda oynanan korku ve zombi oyunlarının en sevilen türleri.",
+    body: [
+      "Korku ve zombi oyunları, gerilimi ve hayatta kalma içgüdüsünü ön plana çıkaran bir türdür. Amaç çoğu zaman basittir: hayatta kal, kaynaklarını yönet, doğru anda saldır veya kaç.",
+      "## En sevilen alt türler",
+      "- Zombi hayatta kalma: Dalgalar hâlinde gelen zombilere karşı barikat kurup direnmek.",
+      "- Atmosferik korku: Karanlık mekânlarda ipuçlarını takip ederek ilerlemek, ani sürprizlerle karşılaşmak.",
+      "- Aksiyonlu zombi avı: Silah ve ekipmanla büyük zombi kalabalıklarını temizlemek.",
+      "## Gerilimi yönetmenin yolları",
+      "- Kaynaklarını (mühimmat, can, barikat malzemesi) erken tüketmek yerine biriktir.",
+      "- Sesli ipuçlarına dikkat et; çoğu oyun tehlikeyi görmeden önce duyurur.",
+      "- Dar koridorlarda köşeye sıkışmaktan kaçın; her zaman bir geri çekilme yolun olsun.",
+      "## Nereden oynanır?",
+      "Oynava'nın [Aksiyon kategorisinde](/kategori/aksiyon) zombi hayatta kalma ve gerilim dolu oyunların en iyileri ücretsiz olarak bulunur. Daha yüksek grafikli deneyimler için [Premium Oyunlar](/premium) bölümüne de göz atabilirsin.",
+    ],
+  },
+  {
     slug: "macera-oyunlari-nasil-oynanir",
     title: "Macera Oyunları Nasıl Oynanır? En İyi Türler ve İpuçları",
     date: "2026-06-22",

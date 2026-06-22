@@ -76,6 +76,12 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   takim: ["team"], lig: ["league"], turnuva: ["tournament", "championship"],
   oda: ["room", "escape room"], anahtar: ["key"], sandik: ["chest", "box"],
   define: ["treasure"], harita: ["map"], pusula: ["compass"],
+  sehir: ["city"], kasaba: ["town"],
+  basket: ["basketball"], berber: ["barber", "hair salon"], dedektif: ["detective"],
+  casus: ["spy"], kurtarma: ["rescue"], tamirci: ["mechanic", "repair"],
+  kamp: ["camp", "camping"], patlama: ["explosion", "blast"], yangin: ["fire"],
+  soygun: ["heist", "robbery"], casino: ["casino"], zindan: ["dungeon"],
+  gladyator: ["gladiator"], samuray: ["samurai"], ejder: ["dragon"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

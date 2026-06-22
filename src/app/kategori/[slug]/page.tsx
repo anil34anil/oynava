@@ -63,6 +63,16 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: SITE.url },
+            { "@type": "ListItem", position: 2, name: `${cat.tr} Oyunları`, item: `${SITE.url}/kategori/${cat.slug}` },
+          ],
+        }}
+      />
       <div className="flex items-center gap-3">
         <h1 className="font-display text-3xl font-black text-white neon-text">{cat.tr} Oyunları</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">

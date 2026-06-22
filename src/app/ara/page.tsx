@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { searchGames } from "@/lib/games";
 import { GameGrid } from "@/components/GameGrid";
 
 export const dynamic = "force-dynamic";
+
+// Arama sonucu sayfaları ince/yinelenen içerik sayılır; Google önerisi: noindex, follow.
+export const metadata: Metadata = {
+  title: "Oyun Ara — Ücretsiz Oyunlar",
+  description: "Binlerce ücretsiz oyun arasında ara: aksiyon, yarış, bulmaca ve daha fazlası tarayıcında anında oynanır.",
+  robots: { index: false, follow: true },
+};
 
 export default async function SearchPage({
   searchParams,
