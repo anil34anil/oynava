@@ -63,6 +63,19 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   deniz: ["sea", "ocean"], ada: ["island"], orman: ["forest", "jungle"], saray: ["castle"],
   restoran: ["restaurant"], pizza: ["pizza"], burger: ["burger"], sebze: ["vegetable"],
   kuafor: ["hair salon", "hairdresser"], tirnak: ["nail"], aile: ["family"], ikiz: ["twins"],
+  bistro: ["bistro", "diner"], kafe: ["cafe", "coffee shop"], dondurmaci: ["ice cream", "ice cream shop"],
+  doner: ["kebab", "shawarma"], simit: ["bagel"], firin: ["bakery"], cikolata: ["chocolate"],
+  kabugu: ["shell"], orumcekadam: ["spiderman"], yarasa: ["bat", "batman"],
+  uzayli: ["alien"], kurt: ["wolf"],
+  fil: ["elephant"], zurafa: ["giraffe"], yunus: ["dolphin"], ahtapot: ["octopus"],
+  ari: ["bee"], solucan: ["worm"], bocek: ["bug", "insect"],
+  labirent: ["maze", "labyrinth"], merdiven: ["ladder"], kopru: ["bridge"],
+  vinc: ["crane"], traktor: ["tractor"], forklift: ["forklift"], itfaiyearaci: ["fire truck"],
+  ambulans: ["ambulance"], helikopterci: ["chopper"], denizalti: ["submarine"],
+  golcup: ["trophy", "cup"], madalya: ["medal"], sampiyon: ["champion"],
+  takim: ["team"], lig: ["league"], turnuva: ["tournament", "championship"],
+  oda: ["room", "escape room"], anahtar: ["key"], sandik: ["chest", "box"],
+  define: ["treasure"], harita: ["map"], pusula: ["compass"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

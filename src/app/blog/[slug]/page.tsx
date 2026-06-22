@@ -98,6 +98,27 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       </p>
       <div className="legal-prose mt-6 space-y-4">{renderBody(post.body)}</div>
 
+      {(() => {
+        const related = POSTS.filter((p) => p.slug !== post.slug)
+          .sort((a, b) => b.date.localeCompare(a.date))
+          .slice(0, 3);
+        if (!related.length) return null;
+        return (
+          <div className="mt-10 border-t border-line pt-6">
+            <h2 className="font-display text-lg font-bold text-white">İlgili Yazılar</h2>
+            <ul className="mt-3 space-y-2">
+              {related.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/blog/${p.slug}`} className="text-neon hover:underline">
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })()}
+
       <div className="mt-10 border-t border-line pt-6">
         <Link href="/oyunlar" className="btn-primary">🎮 Oyunlara Göz At</Link>
       </div>

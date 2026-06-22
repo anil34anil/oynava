@@ -13,6 +13,66 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "macera-oyunlari-nasil-oynanir",
+    title: "Macera Oyunları Nasıl Oynanır? En İyi Türler ve İpuçları",
+    date: "2026-06-22",
+    excerpt:
+      "Keşif, bulmaca ve hikâye bir arada: macera oyunlarının en sevilen alt türleri ve yeni başlayanlar için pratik ipuçları.",
+    body: [
+      "Macera oyunları, hızlı reflekslerden çok keşfetmeyi, gözlem yapmayı ve hikâyenin içine girmeyi sever. Bir haritayı adım adım açmak ya da kilitli bir kapının şifresini çözmek, bu türün en tatmin edici anlarıdır.",
+      "## En sevilen macera alt türleri",
+      "- Kaçış (escape) oyunları: Kapalı bir mekândan ipuçlarını birleştirerek çıkmaya çalışırsın.",
+      "- Keşif/platform macera: Haritayı gezerek gizli alanları ve eşyaları bulursun.",
+      "- Hikâye odaklı macera: Diyaloglar ve seçimlerle ilerleyen, atmosferi yoğun oyunlar.",
+      "## Yeni başlayanlar için ipuçları",
+      "- Aceleci olma; çoğu macera bulmacasında gözlem hız kadar önemlidir.",
+      "- Ekrandaki her detayı incele; ipuçları genelde göz önünde ama dikkat ister.",
+      "- Takıldığın bir yerde geriye dönüp daha önce topladığın eşyaları kontrol et.",
+      "## Nereden başlamalı?",
+      "Oynava'nın [Macera kategorisinde](/kategori/macera) keşif, kaçış ve hikâye odaklı yüzlerce ücretsiz oyun var. Bulmaca sevenler [Bulmaca kategorisine](/kategori/bulmaca) de göz atabilir; tamamı indirmeden, doğrudan tarayıcıda oynanır.",
+    ],
+  },
+  {
+    slug: "dovus-oyunlari-rehberi-boks-ve-kombo",
+    title: "Dövüş Oyunları Rehberi: Boks, Kombo ve Ring Taktikleri",
+    date: "2026-06-22",
+    excerpt:
+      "Dövüş oyunlarında zamanlama neden hızdan daha önemli? Boks, ringde taktik ve kombo yapmanın temelleri.",
+    body: [
+      "Dövüş oyunları, refleks kadar zamanlama ve okuma gerektiren bir türdür. Rakibinin hareketini önceden sezip doğru anda vurmak, ham hızdan çok daha değerlidir.",
+      "## Türün temel mekanikleri",
+      "- Zamanlama: Doğru anda vurmak ya da blok yapmak, ardı ardına tuşa basmaktan daha etkilidir.",
+      "- Kombo: Belirli vuruş sıraları üst üste eklenince daha çok hasar verir.",
+      "- Mesafe kontrolü: Ringde/arenada doğru mesafeyi tutmak, hem saldırıyı hem savunmayı kolaylaştırır.",
+      "## Boks oyunlarına özel ipuçları",
+      "- Sürekli yumruk atmak yerine rakibin açığını bekle.",
+      "- Blok ve yana kaçma, can barını korumanın en ucuz yoludur.",
+      "- Enerji/stamina barı düşükken saldırıya geçme; karşı atağa açık kalırsın.",
+      "## Nereden oynanır?",
+      "Oynava'nın [Dövüş kategorisinde](/kategori/dovus) boks, ringde dövüş ve kombo tabanlı yüzlerce ücretsiz oyun var. Aksiyon sevenler [Aksiyon kategorisine](/kategori/aksiyon) de bakabilir; hepsi indirmesiz ve tarayıcı üzerinden anında oynanır.",
+    ],
+  },
+  {
+    slug: "zeka-ve-strateji-oyunlari-nasil-gelistirilir",
+    title: "Zekâ ve Strateji Oyunları: Mantığını Geliştiren En İyi Türler",
+    date: "2026-06-22",
+    excerpt:
+      "Satranç, kule savunması ve mantık bulmacaları: strateji oyunları planlama becerini nasıl geliştirir, hangi türden başlamalısın?",
+    body: [
+      "Zekâ ve strateji oyunları, anlık reflekslerden çok birkaç hamle ileriyi görmeyi ödüllendirir. Her karar bir sonrakini etkiler; bu yüzden sabırlı oynayan oyuncular genelde daha iyi sonuç alır.",
+      "## En sevilen strateji türleri",
+      "- Klasik masa oyunları: Satranç ve tavla gibi kurallı, derin oyunlar.",
+      "- Kule savunması (tower defense): Kaynaklarını doğru yere yerleştirip dalgaları durdurursun.",
+      "- Mantık bulmacaları: Sınırlı hamleyle hedefe ulaşmayı gerektiren bulmacalar.",
+      "## Stratejini geliştirmenin yolları",
+      "- Her hamleden önce \"bu hamle bana ne kazandırır, rakibe ne kaybettirir\" diye sor.",
+      "- Kaynaklarını (zaman, altın, enerji) erken harcamak yerine biriktirip doğru anda kullan.",
+      "- Kaybettiğin oyunları tekrar gözden geçir; hatanın nerede olduğunu görmek en hızlı öğrenme yoludur.",
+      "## Nereden başlamalı?",
+      "Oynava'nın [Zekâ & Strateji kategorisinde](/kategori/zeka) kule savunması, satranç ve mantık bulmacaları yüzlerce ücretsiz oyun olarak seni bekliyor. Bulmaca sevenler [Bulmaca kategorisine](/kategori/bulmaca) de bakabilir.",
+    ],
+  },
+  {
     slug: "mobilde-en-iyi-ucretsiz-oyunlar",
     title: "Mobilde Oynanabilecek En İyi Ücretsiz Oyunlar",
     date: "2026-06-21",

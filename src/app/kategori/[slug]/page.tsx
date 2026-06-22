@@ -14,18 +14,18 @@ export function generateStaticParams() {
 
 // Her kategori için özgün Türkçe tanıtım metni (SEO içeriği)
 const CAT_INTRO: Record<string, string> = {
-  aksiyon: "Tempolu nişancı, savaş ve macera oyunları burada. Reflekslerini test et, düşmanları alt et ve aksiyonun tadını çıkar.",
-  macera: "Keşfedilecek dünyalar, çözülecek bulmacalar ve sürükleyici hikâyeler. Macera oyunlarıyla yeni diyarlara açıl.",
-  yaris: "Araba, motor ve drift oyunları! Hızın doruğunda yarış, rakiplerini geç, pistin kralı ol.",
-  spor: "Futbol, basketbol ve daha fazlası. Sevdiğin sporu tarayıcında oyna, şampiyonluğa koş.",
-  dovus: "Boks, dövüş ve güreş oyunları. Yumrukları savur, kombolarını yap, ringin hâkimi sen ol.",
-  bulmaca: "Zekânı çalıştıran bulmaca ve eşleştirme oyunları. Rahatla, düşün ve seviyeleri tek tek çöz.",
-  zeka: "Strateji, mantık ve zekâ oyunları. Planla, taktik kur ve her hamlede bir adım önde ol.",
-  io: "Çok oyunculu .io arenalarında dünyanın dört bir yanından oyuncularla yarış, büyü ve hayatta kal.",
-  kiz: "Giydirme, makyaj, yemek ve dekorasyon oyunları. Yaratıcılığını konuştur, kendi stilini yarat.",
-  cocuk: "Çocuklar için eğitici ve eğlenceli, güvenli oyunlar. Öğrenirken eğlenmenin tam zamanı.",
-  arcade: "Hızlı, eğlenceli ve bağımlılık yapan arcade oyunları. Kısa molalarda yüksek skorun peşine düş.",
-  "3d": "Yüksek grafikli 3D ve WebGL oyunlar. Tarayıcında konsol hissi veren akıcı oyun deneyimi.",
+  aksiyon: "Tempolu nişancı, savaş ve macera oyunları burada. Reflekslerini test et, düşmanları alt et ve aksiyonun tadını çıkar. Tüm aksiyon oyunları ücretsiz ve indirmeden, doğrudan tarayıcında oynanır.",
+  macera: "Keşfedilecek dünyalar, çözülecek bulmacalar ve sürükleyici hikâyeler. Macera oyunlarıyla yeni diyarlara açıl. Kaçış odası ve keşif temalı en iyi macera oyunları burada toplandı.",
+  yaris: "Araba, motor ve drift oyunları! Hızın doruğunda yarış, rakiplerini geç, pistin kralı ol. Ücretsiz yarış oyunlarının en iyileri, indirmeden ve üyeliksiz tarayıcında.",
+  spor: "Futbol, basketbol ve daha fazlası. Sevdiğin sporu tarayıcında oyna, şampiyonluğa koş. Penaltıdan turnuva moduna kadar en sevilen ücretsiz spor oyunları burada.",
+  dovus: "Boks, dövüş ve güreş oyunları. Yumrukları savur, kombolarını yap, ringin hâkimi sen ol. Ücretsiz dövüş oyunlarının en iyileri, indirmeden anında oynanır.",
+  bulmaca: "Zekânı çalıştıran bulmaca ve eşleştirme oyunları. Rahatla, düşün ve seviyeleri tek tek çöz. Match-3, mantık ve kelime bulmacaları dahil en geniş ücretsiz koleksiyon.",
+  zeka: "Strateji, mantık ve zekâ oyunları. Planla, taktik kur ve her hamlede bir adım önde ol. Satranç, kule savunması ve mantık bulmacaları burada ücretsiz oynanır.",
+  io: "Çok oyunculu .io arenalarında dünyanın dört bir yanından oyuncularla yarış, büyü ve hayatta kal. Tüm .io oyunları tarayıcıda, üyelik gerekmeden anında başlar.",
+  kiz: "Giydirme, makyaj, yemek ve dekorasyon oyunları. Yaratıcılığını konuştur, kendi stilini yarat. Ücretsiz kız oyunlarının en yenileri ve en sevilenleri burada.",
+  cocuk: "Çocuklar için eğitici ve eğlenceli, güvenli oyunlar. Öğrenirken eğlenmenin tam zamanı. Tüm içerikler yaşa uygun ve ebeveyn dostu seçildi.",
+  arcade: "Hızlı, eğlenceli ve bağımlılık yapan arcade oyunları. Kısa molalarda yüksek skorun peşine düş. Klasik arcade keyfini hiçbir şey indirmeden tarayıcında yaşa.",
+  "3d": "Yüksek grafikli 3D ve WebGL oyunlar. Tarayıcında konsol hissi veren akıcı oyun deneyimi. En kaliteli 3D oyunlar için Premium Oyunlar bölümüne de bakabilirsin.",
 };
 
 export async function generateMetadata({

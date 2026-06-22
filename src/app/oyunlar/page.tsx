@@ -5,8 +5,9 @@ import { InfiniteGrid } from "@/components/InfiniteGrid";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Tüm Oyunlar",
-  description: "Binlerce ücretsiz HTML5 oyunun tamamı tek sayfada — sonsuz kaydır, oyna.",
+  title: "Tüm Oyunlar — Ücretsiz Oyna",
+  description: "Binlerce ücretsiz HTML5 oyunun tamamı tek sayfada — sonsuz kaydır, indirmeden anında oyna.",
+  alternates: { canonical: "/oyunlar" },
 };
 
 export default async function AllGamesPage() {
