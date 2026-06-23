@@ -25,7 +25,7 @@ export function Header() {
             href="/online"
             className="flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-400/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-emerald-400 hover:bg-emerald-400/20"
           >
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Online
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Online Oyunlar
           </Link>
           <Link
             href="/premium"

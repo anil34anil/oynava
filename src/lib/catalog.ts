@@ -45,13 +45,16 @@ export function categoryBySlug(slug: string) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-// Online (çok oyunculu / canlı / .io) oyun göstergeleri
-const ONLINE_RE = /multiplayer|online|\bmmo\b|\bpvp\b|battle.?royale|real.?time|\.io|iogames|io games|co-?op/i;
+// GERÇEK online (çok oyunculu) göstergeleri. Sağlayıcılar "online/multiplayer"
+// etiketini gevşek koyduğu için ETİKETE GÜVENMİYORUZ; sadece güçlü/kesin sinyaller:
+//  - başlıkta ".io" (gerçek .io çok oyunculu tür) veya "mmo" / "battle royale"
+//  - birincil kategorisi tam olarak ".io" / "io"
+const ONLINE_TITLE_RE = /\.io\b|\bmmo\b|battle\s?royale/i;
+const ONLINE_CAT_RE = /^\s*\.?io( games)?\s*$/i;
 
-/** Oyun online/çok oyunculu mu? (.io kategorisi veya multiplayer/online etiketleri) */
+/** Oyun GERÇEKTEN online/çok oyunculu mu? (gevşek etiketler hariç) */
 export function isOnline(game: Game): boolean {
-  if (categorySlug(game) === "io") return true;
-  return ONLINE_RE.test(`${game.title} ${game.tags} ${game.category}`);
+  return ONLINE_TITLE_RE.test(game.title) || ONLINE_CAT_RE.test(game.category || "");
 }
 
 export function slugifyTitle(title: string): string {
