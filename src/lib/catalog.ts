@@ -45,6 +45,15 @@ export function categoryBySlug(slug: string) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
+// Online (çok oyunculu / canlı / .io) oyun göstergeleri
+const ONLINE_RE = /multiplayer|online|\bmmo\b|\bpvp\b|battle.?royale|real.?time|\.io|iogames|io games|co-?op/i;
+
+/** Oyun online/çok oyunculu mu? (.io kategorisi veya multiplayer/online etiketleri) */
+export function isOnline(game: Game): boolean {
+  if (categorySlug(game) === "io") return true;
+  return ONLINE_RE.test(`${game.title} ${game.tags} ${game.category}`);
+}
+
 export function slugifyTitle(title: string): string {
   return title
     .toLowerCase()

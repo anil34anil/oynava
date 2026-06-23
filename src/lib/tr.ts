@@ -82,6 +82,8 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   kamp: ["camp", "camping"], patlama: ["explosion", "blast"], yangin: ["fire"],
   soygun: ["heist", "robbery"], casino: ["casino"], zindan: ["dungeon"],
   gladyator: ["gladiator"], samuray: ["samurai"], ejder: ["dragon"],
+  fps: ["fps", "shooter", "first person shooter", "shooting"], online: ["online", "multiplayer", ".io"],
+  cokoyunculu: ["multiplayer", "online"], arena: ["arena", "battle"], sniper: ["sniper", "shooting"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

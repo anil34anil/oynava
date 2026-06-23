@@ -11,7 +11,7 @@ import seed from "@/data/games.seed.json";
 import gdSeed from "@/data/games.gd.seed.json";
 import gpSeed from "@/data/games.gp.seed.json";
 import pgmSeed from "@/data/games.pgm.seed.json";
-import { Game, categorySlug } from "./catalog";
+import { Game, categorySlug, isOnline } from "./catalog";
 import { searchTerms, normalizeTr } from "./tr";
 
 export type { Game } from "./catalog";
@@ -192,6 +192,11 @@ export async function getGameById(id: string): Promise<Game | null> {
 export async function getByCategory(slug: string): Promise<Game[]> {
   const games = await getGames();
   return games.filter((g) => categorySlug(g) === slug);
+}
+
+export async function getOnline(): Promise<Game[]> {
+  const games = await getGames();
+  return games.filter(isOnline);
 }
 
 export async function searchGames(q: string): Promise<Game[]> {

@@ -22,6 +22,12 @@ export function Header() {
       <nav className="border-t border-line/60 bg-surface/60">
         <div className="container-x flex items-center gap-1 overflow-x-auto py-2 text-sm">
           <Link
+            href="/online"
+            className="flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-400/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-emerald-400 hover:bg-emerald-400/20"
+          >
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Online
+          </Link>
+          <Link
             href="/premium"
             className="whitespace-nowrap rounded-lg bg-neon-purple/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-purple hover:bg-neon-purple/20"
           >

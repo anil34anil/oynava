@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getGames } from "@/lib/games";
-import { categorySlug, CATEGORIES } from "@/lib/catalog";
+import { categorySlug, CATEGORIES, isOnline } from "@/lib/catalog";
 import { Hero } from "@/components/Hero";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -26,6 +26,7 @@ export default async function HomePage() {
   const featuredPool = (premiumPool.length >= 5 ? premiumPool : games).slice(0, 8);
 
   const popular = games.slice(0, 18);
+  const online = games.filter(isOnline).slice(0, 12);
 
   const rows = CATEGORIES.map((c) => ({
     cat: c,
@@ -102,6 +103,27 @@ export default async function HomePage() {
         <h2 className="mb-4 font-display text-2xl font-bold text-white">🔥 Popüler Oyunlar</h2>
         <GameGrid games={popular} priorityCount={6} />
       </section>
+
+      {/* Online Oyunlar widget'ı */}
+      {online.length > 0 && (
+        <section className="rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.04] p-5">
+          <div className="mb-4 flex items-end justify-between">
+            <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-white">
+              <span className="flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Canlı
+              </span>
+              🌐 Online Oyunlar
+            </h2>
+            <Link href="/online" className="text-sm font-semibold text-emerald-400 hover:underline">
+              Tümünü gör →
+            </Link>
+          </div>
+          <p className="mb-4 max-w-2xl text-sm text-slate-400">
+            Çok oyunculu .io arenaları ve online FPS — dünyanın dört bir yanından oyuncularla canlı rekabet.
+          </p>
+          <GameGrid games={online} />
+        </section>
+      )}
 
       {rows.map(({ cat, items }) => (
         <section key={cat.slug}>
