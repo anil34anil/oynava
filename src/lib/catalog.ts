@@ -45,16 +45,25 @@ export function categoryBySlug(slug: string) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-// GERÇEK online (çok oyunculu) göstergeleri. Sağlayıcılar "online/multiplayer"
-// etiketini gevşek koyduğu için ETİKETE GÜVENMİYORUZ; sadece güçlü/kesin sinyaller:
-//  - başlıkta ".io" (gerçek .io çok oyunculu tür) veya "mmo" / "battle royale"
-//  - birincil kategorisi tam olarak ".io" / "io"
+// GERÇEK online (çok oyunculu) tespiti. Gevşek tek-kelime "online/multiplayer"
+// ETİKETLERİNE güvenmiyoruz (sağlayıcılar tek kişilik oyunlara da koyuyor); bunun
+// yerine başlık + KATEGORİ + AÇIKLAMA metnini güçlü ifadelerle analiz ediyoruz.
 const ONLINE_TITLE_RE = /\.io\b|\bmmo\b|battle\s?royale/i;
 const ONLINE_CAT_RE = /^\s*\.?io( games)?\s*$/i;
+// Açıklama/talimattaki güçlü online ifadeleri:
+const ONLINE_TEXT_RE =
+  /\bmmo\b|massively multiplayer|battle\s?royale|online multiplayer|real-?time multiplayer|multiplayer\s+(fps|shooter|shooting|game)|(pvp|player\s?vs\s?player)\s+(multiplayer|online|battle|game)|(multiplayer|online)\s+pvp|other players online|players online|online\s+(pvp|battle|arena|shooter|fps)|\bmatchmaking\b|ranked\s+(match|mode)/i;
+// Yerel (aynı cihaz) çok oyunculuyu online sayma:
+const LOCAL_ONLY_RE = /same (device|computer|keyboard|screen|pc)|on one device|local multiplayer|hot-?seat/i;
 
-/** Oyun GERÇEKTEN online/çok oyunculu mu? (gevşek etiketler hariç) */
+/** Oyun GERÇEKTEN online/çok oyunculu mu? (başlık + kategori + açıklama analizi) */
 export function isOnline(game: Game): boolean {
-  return ONLINE_TITLE_RE.test(game.title) || ONLINE_CAT_RE.test(game.category || "");
+  if (ONLINE_TITLE_RE.test(game.title) || ONLINE_CAT_RE.test(game.category || "")) return true;
+  const text = `${game.description || ""} ${game.instructions || ""} ${game.title}`;
+  if (!ONLINE_TEXT_RE.test(text)) return false;
+  // "aynı cihazda" gibi yerel ifade varsa ve online ipucu yoksa, online sayma
+  if (LOCAL_ONLY_RE.test(text) && !/online|\.io|battle\s?royale/i.test(text)) return false;
+  return true;
 }
 
 export function slugifyTitle(title: string): string {
