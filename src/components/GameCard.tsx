@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Game, slugifyTitle } from "@/lib/catalog";
 import { FavoriteButton } from "./FavoriteButton";
+import { LikeButton } from "./LikeButton";
 
 export function GameCard({ game, priority = false }: { game: Game; priority?: boolean }) {
   return (
@@ -34,7 +35,10 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         <h3 className="truncate font-display text-sm font-semibold text-slate-100 group-hover:text-neon">
           {game.title}
         </h3>
-        <p className="mt-0.5 truncate text-xs text-slate-500">{game.category}</p>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <p className="truncate text-xs text-slate-500">{game.category}</p>
+          <LikeButton id={game.id} />
+        </div>
       </div>
     </Link>
   );
