@@ -18,10 +18,11 @@ const PREMIUM_CATS = ["3d", "aksiyon", "yaris", "io"];
 export default async function PremiumPage() {
   const all = await getGames();
 
-  const premium = all
-    .filter((g) => g.id.startsWith("gp-") || /premium|3d/i.test(g.tags) || PREMIUM_CATS.includes(categorySlug(g)))
-    // GamePix (kalite sıralı) önce, sonra diğer yüksek-grafikli türler
-    .sort((a, b) => (b.id.startsWith("gp-") ? 1 : 0) - (a.id.startsWith("gp-") ? 1 : 0));
+  const isPremium = (g: (typeof all)[number]) =>
+    g.id.startsWith("pgm-") || g.id.startsWith("gp-") || /premium|3d/i.test(g.tags) || PREMIUM_CATS.includes(categorySlug(g));
+  // Playgama (premium hissi) ve GamePix (kaliteli) en üstte
+  const prio = (g: (typeof all)[number]) => (g.id.startsWith("pgm-") ? 0 : g.id.startsWith("gp-") ? 1 : 2);
+  const premium = all.filter(isPremium).sort((a, b) => prio(a) - prio(b));
 
   return (
     <div className="container-x space-y-6 py-6">

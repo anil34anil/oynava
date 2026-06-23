@@ -170,9 +170,15 @@ export async function getGames(): Promise<Game[]> {
   const gdGames = gd.status === "fulfilled" ? gd.value : [];
   const gpGames = gp.status === "fulfilled" ? gp.value : [];
 
-  // Canlı veriyi HER ZAMAN gömülü seed ile birleştir: taze kayıtlar öne gelir,
-  // seed boşlukları doldurur → katalog asla seed sayısının altına düşmez.
-  const games = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]);
+  // Canlı veriyi HER ZAMAN gömülü seed ile birleştir.
+  const merged = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]);
+
+  // En son eklenen + premium hissi veren kaynaklar her kategoride EN ÜSTTE:
+  // Playgama (en yeni) → GamePix (premium) → GameDistribution → GameMonetize.
+  // (Array.sort kararlıdır; aynı kaynak içi sıra korunur.)
+  const rank = (g: Game) =>
+    g.id.startsWith("pgm-") ? 0 : g.id.startsWith("gp-") ? 1 : g.id.startsWith("gd-") ? 2 : 3;
+  const games = [...merged].sort((a, b) => rank(a) - rank(b));
 
   _cache = { at: Date.now(), games };
   return games;
