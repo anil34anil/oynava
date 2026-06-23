@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SITE } from "@/lib/site";
-import { useAuth, accountExists } from "@/lib/auth";
+import { useAuth, accountExists, usernameChecks, generateUsername } from "@/lib/auth";
 import { GoogleLoginButton } from "./GoogleLoginButton";
 import { LOGIN_MODAL_EVENT } from "@/lib/useLoginModal";
 
-type Step = "choose" | "password";
+type Step = "choose" | "password" | "username";
 
 /**
  * CrazyGames tarzı sağdan açılan giriş paneli. Birden çok seçenek sunar:
@@ -16,11 +16,12 @@ type Step = "choose" | "password";
  */
 export function LoginModal() {
   const router = useRouter();
-  const { login, register } = useAuth();
+  const { login, register, updateAccount } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("choose");
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
+  const [username, setUsername] = useState("");
   const [isExisting, setIsExisting] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -50,6 +51,7 @@ export function LoginModal() {
     setStep("choose");
     setEmail("");
     setPw("");
+    setUsername("");
     setErr(null);
     setBusy(false);
   }
@@ -81,8 +83,28 @@ export function LoginModal() {
     setBusy(true);
     const res = isExisting ? await login(email, pw) : await register(email, pw);
     setBusy(false);
-    if (res.ok) done();
-    else setErr(res.error ?? "Bir hata oluştu.");
+    if (!res.ok) {
+      setErr(res.error ?? "Bir hata oluştu.");
+      return;
+    }
+    // Yeni kayıt → CrazyGames gibi kullanıcı adı belirleme adımı; giriş → bitti
+    if (isExisting) {
+      done();
+    } else {
+      setUsername(generateUsername());
+      setStep("username");
+    }
+  }
+
+  function submitUsername(e: React.FormEvent) {
+    e.preventDefault();
+    const name = username.trim();
+    if (!usernameChecks(name).valid) {
+      setErr("Kullanıcı adı kurallara uymuyor.");
+      return;
+    }
+    updateAccount({ username: name });
+    done();
   }
 
   const fbReady = Boolean(SITE.facebookAppId);
@@ -121,16 +143,20 @@ export function LoginModal() {
 
         <div className="mx-auto mt-8 w-full max-w-sm">
           <h2 className="text-center font-display text-2xl font-black text-ink">
-            {step === "password"
-              ? isExisting
-                ? "Tekrar hoş geldin"
-                : "Hesabını oluştur"
-              : "Giriş yap veya kaydol"}
+            {step === "username"
+              ? "Kullanıcı adınızı ayarlayın"
+              : step === "password"
+                ? isExisting
+                  ? "Tekrar hoş geldin"
+                  : "Hesabını oluştur"
+                : "Giriş yap veya kaydol"}
           </h2>
           <p className="mt-2 text-center text-sm text-slate-400">
-            {step === "password"
-              ? email
-              : "Oyunlarını, favorilerini ve jetonlarını kaydet."}
+            {step === "username"
+              ? "Toplulukta seni bu isimle görecekler."
+              : step === "password"
+                ? email
+                : "Oyunlarını, favorilerini ve jetonlarını kaydet."}
           </p>
 
           {step === "choose" ? (
@@ -176,7 +202,7 @@ export function LoginModal() {
                 </button>
               </form>
             </div>
-          ) : (
+          ) : step === "password" ? (
             <form onSubmit={submitPassword} className="mt-8 space-y-3">
               <input
                 type="password"
@@ -203,15 +229,79 @@ export function LoginModal() {
                 ← E-postayı değiştir
               </button>
             </form>
+          ) : (
+            <form onSubmit={submitUsername} className="mt-8 space-y-3">
+              <div className="relative">
+                <input
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setErr(null);
+                  }}
+                  maxLength={20}
+                  autoFocus
+                  aria-label="Kullanıcı adı"
+                  className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 pr-12 text-ink outline-none focus:border-neon"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername(generateUsername());
+                    setErr(null);
+                  }}
+                  aria-label="Rastgele kullanıcı adı"
+                  title="Rastgele üret"
+                  className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-500 hover:bg-black/[0.05] hover:text-neon"
+                >
+                  🔀
+                </button>
+              </div>
+
+              {(() => {
+                const c = usernameChecks(username.trim());
+                const Row = ({ ok, label }: { ok: boolean; label: string }) => (
+                  <div
+                    className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm ${
+                      ok ? "bg-neon/10 text-neon" : "bg-black/[0.04] text-slate-500"
+                    }`}
+                  >
+                    <span>{ok ? "✓" : "○"}</span> {label}
+                  </div>
+                );
+                return (
+                  <div className="space-y-1.5">
+                    <Row ok={c.lengthOk} label="6 ila 20 karakter" />
+                    <Row ok={c.charsOk} label="Sadece harfler, sayılar, '.' ve '_'" />
+                  </div>
+                );
+              })()}
+
+              {err && <p className="text-sm text-neon-pink">⚠ {err}</p>}
+
+              <button
+                type="submit"
+                disabled={!usernameChecks(username.trim()).valid}
+                className="btn-primary w-full justify-center py-3 disabled:opacity-50"
+              >
+                Devam et
+              </button>
+
+              <p className="text-center text-xs leading-relaxed text-slate-500">
+                Herhangi bir bildirimde bulunmadan toksik ve uygunsuz kullanıcı adlarına sahip hesapları{" "}
+                <strong className="text-ink">kalıcı olarak yasaklarız</strong>. Topluluğu herkes için güvenli tutalım!
+              </p>
+            </form>
           )}
 
-          <p className="mt-8 text-center text-xs leading-relaxed text-slate-600">
-            Devam ederek{" "}
-            <a href="/yas-degerlendirmesi" className="underline hover:text-slate-400">
-              kullanım koşullarını
-            </a>{" "}
-            kabul etmiş olursun. Hesabın şu an bu cihazda güvenli (hash&apos;li) saklanır.
-          </p>
+          {step !== "username" && (
+            <p className="mt-8 text-center text-xs leading-relaxed text-slate-600">
+              Devam ederek{" "}
+              <a href="/yas-degerlendirmesi" className="underline hover:text-slate-400">
+                kullanım koşullarını
+              </a>{" "}
+              kabul etmiş olursun. Hesabın şu an bu cihazda güvenli (hash&apos;li) saklanır.
+            </p>
+          )}
         </div>
       </aside>
     </>

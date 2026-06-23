@@ -58,7 +58,27 @@ export function accountExists(email: string): boolean {
   return Boolean(readAccounts()[email.trim().toLowerCase()]);
 }
 
-export type AuthUser = { email: string; username: string; avatar: string };
+// ── Kullanıcı adı (CrazyGames tarzı kurulum) ──────────────────────────────
+// Kurallar: 6-20 karakter; sadece harf, sayı, "." ve "_".
+const USERNAME_RE = /^[A-Za-z0-9._]+$/;
+
+export function usernameChecks(name: string): { lengthOk: boolean; charsOk: boolean; valid: boolean } {
+  const lengthOk = name.length >= 6 && name.length <= 20;
+  const charsOk = name.length > 0 && USERNAME_RE.test(name);
+  return { lengthOk, charsOk, valid: lengthOk && charsOk };
+}
+
+/** Rastgele, uygun (6-20, geçerli karakter) bir kullanıcı adı üretir. */
+export function generateUsername(): string {
+  const adj = ["Hizli", "Gizli", "Cesur", "Vahsi", "Sessiz", "Kara", "Altin", "Mavi", "Kizil", "Yildiz", "Gece", "Simsek", "Kurt", "Sahin", "Buz"];
+  const noun = ["Kaplan", "Avci", "Ninja", "Komando", "Nisanci", "Kartal", "Pars", "Aslan", "Korsan", "Robot", "Fenix", "Golge", "Ejder", "Pilot"];
+  const a = adj[Math.floor(Math.random() * adj.length)];
+  const n = noun[Math.floor(Math.random() * noun.length)];
+  const num = Math.floor(Math.random() * 900 + 10); // 10-909
+  return `${a}${n}${num}`;
+}
+
+export type AuthUser = { email: string; username: string; avatar: string; createdAt?: number };
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -68,7 +88,7 @@ export function useAuth() {
     const sync = () => {
       const email = localStorage.getItem(K_SESSION);
       const acc = email ? readAccounts()[email] : null;
-      setUser(acc ? { email: acc.email, username: acc.username, avatar: acc.avatar } : null);
+      setUser(acc ? { email: acc.email, username: acc.username, avatar: acc.avatar, createdAt: acc.createdAt } : null);
       setReady(true);
     };
     sync();
