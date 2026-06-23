@@ -9,9 +9,17 @@
  * kalır — site KV bağlanana kadar beğeni sayıları hep 0/false döner, build/SSR
  * çökmez.
  */
-import { kv } from "@vercel/kv";
+import { createClient } from "@vercel/kv";
 
-export const kvEnabled = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+// Vercel KV (eski) `KV_REST_API_URL`/`KV_REST_API_TOKEN` adlarını kullanır; yeni
+// Upstash Marketplace entegrasyonu ise `UPSTASH_REDIS_REST_URL`/`..._TOKEN` ekler.
+// İkisini de destekle ki hangi entegrasyon eklenmiş olursa olsun çalışsın.
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+export const kvEnabled = Boolean(KV_URL && KV_TOKEN);
+
+const kv = kvEnabled ? createClient({ url: KV_URL!, token: KV_TOKEN! }) : (null as never);
 
 const LIKED_GAMES_SET = "oh:liked_games"; // beğenisi olan tüm oyun id'leri
 

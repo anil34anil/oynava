@@ -21,7 +21,13 @@ function decodeJwt(token: string): any {
   }
 }
 
-export function GoogleLoginButton() {
+export function GoogleLoginButton({
+  showDivider = true,
+  onSuccess,
+}: {
+  showDivider?: boolean;
+  onSuccess?: () => void;
+} = {}) {
   const router = useRouter();
   const { loginWithGoogle } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
@@ -39,7 +45,8 @@ export function GoogleLoginButton() {
           const p = decodeJwt(resp.credential);
           if (p?.email) {
             loginWithGoogle({ email: p.email, name: p.name, picture: p.picture });
-            router.push("/profil");
+            if (onSuccess) onSuccess();
+            else router.push("/profil");
           }
         },
       });
@@ -66,16 +73,18 @@ export function GoogleLoginButton() {
       s.addEventListener("load", init);
       return () => s?.removeEventListener("load", init);
     }
-  }, [clientId, loginWithGoogle, router]);
+  }, [clientId, loginWithGoogle, router, onSuccess]);
 
   if (!clientId) return null;
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex w-full flex-col items-center gap-3">
       <div ref={ref} />
-      <div className="flex w-full items-center gap-3 text-xs text-slate-600">
-        <span className="h-px flex-1 bg-line" /> veya <span className="h-px flex-1 bg-line" />
-      </div>
+      {showDivider && (
+        <div className="flex w-full items-center gap-3 text-xs text-slate-600">
+          <span className="h-px flex-1 bg-line" /> veya <span className="h-px flex-1 bg-line" />
+        </div>
+      )}
     </div>
   );
 }

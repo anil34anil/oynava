@@ -29,6 +29,13 @@ export const SITE = {
   // Boşsa "Google ile giriş" butonu gizlenir; e-posta girişi yine çalışır.
   googleClientId: "399656444068-385ogelqn0v7f5mhgf82p4s6hu24ckpc.apps.googleusercontent.com",
 
+  // Facebook ile giriş — Facebook for Developers'ta uygulama açıp App ID al.
+  // Boşsa buton "yakında" durumunda gösterilir (kurulum tamamlanınca aktifleşir).
+  facebookAppId: "",
+  // Apple ile giriş — Apple Developer hesabı (yıllık ücretli) + Service ID gerekir.
+  // Boşsa buton "yakında" durumunda gösterilir.
+  appleClientId: "",
+
   // Site sahibi bilgileri (KVKK "Veri Sorumlusu").
   // Bireysel, reklam destekli aşamada: e-posta ile iletişim; adres yayınlanmıyor.
   // Para ile satışa geçince (e-ticaret) bir adres (örn. sanal ofis) eklenmeli.

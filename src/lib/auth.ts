@@ -53,6 +53,11 @@ function validEmail(e: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 }
 
+/** Bu e-postayla daha önce kayıt olunmuş mu? (modal: giriş mi kayıt mı kararı için) */
+export function accountExists(email: string): boolean {
+  return Boolean(readAccounts()[email.trim().toLowerCase()]);
+}
+
 export type AuthUser = { email: string; username: string; avatar: string };
 
 export function useAuth() {

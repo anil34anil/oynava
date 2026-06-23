@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { useProfile } from "@/lib/useLocalProfile";
 import { useAuth } from "@/lib/auth";
+import { useOpenLogin } from "@/lib/useLoginModal";
 
 export function ProfileChip() {
   const { profile, coins } = useProfile();
   const { user, ready } = useAuth();
+  const openLogin = useOpenLogin();
 
   if (ready && !user) {
     return (
-      <Link href="/giris" className="btn-primary py-2 text-xs">
-        Giriş / Kayıt
-      </Link>
+      <button onClick={openLogin} className="btn-primary py-2 text-xs">
+        Giriş yap
+      </button>
     );
   }
 

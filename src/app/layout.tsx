@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AdFrame } from "@/components/AdFrame";
 import { CookieConsent } from "@/components/CookieConsent";
+import { LoginModal } from "@/components/LoginModal";
 import { SITE } from "@/lib/site";
 
 const display = Orbitron({
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <CookieConsent />
+        <LoginModal />
       </body>
     </html>
   );

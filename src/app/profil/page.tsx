@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useProfile, useFavorites, useRecent } from "@/lib/useLocalProfile";
 import { useAuth } from "@/lib/auth";
+import { useOpenLogin } from "@/lib/useLoginModal";
 import { SHOP_ITEMS } from "@/lib/shop";
 
 export default function ProfilePage() {
   const { profile, coins, owned, save } = useProfile();
   const { user, logout, updateAccount } = useAuth();
+  const openLogin = useOpenLogin();
   const { ids: favs } = useFavorites();
   const recent = useRecent();
   const [name, setName] = useState(profile.username);
@@ -36,7 +38,7 @@ export default function ProfilePage() {
             <button onClick={logout} className="btn-ghost py-2 text-xs">Çıkış Yap</button>
           </div>
         ) : (
-          <Link href="/giris" className="btn-primary py-2 text-xs">Giriş Yap / Kayıt Ol</Link>
+          <button onClick={openLogin} className="btn-primary py-2 text-xs">Giriş Yap / Kayıt Ol</button>
         )}
       </div>
 
