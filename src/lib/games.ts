@@ -10,6 +10,7 @@
 import seed from "@/data/games.seed.json";
 import gdSeed from "@/data/games.gd.seed.json";
 import gpSeed from "@/data/games.gp.seed.json";
+import pgmSeed from "@/data/games.pgm.seed.json";
 import { Game, categorySlug } from "./catalog";
 import { searchTerms, normalizeTr } from "./tr";
 
@@ -32,13 +33,16 @@ const GD_FEED = "https://catalog.api.gamedistribution.com/api/v1.0/rss/All/?form
 const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "92818";
 const GP_FEED = `https://feeds.gamepix.com/v2/json?sid=${GAMEPIX_SID}&pagination=48`;
 
-// Üç kaynaktan gömülü gerçek katalog (feed kopsa bile site dolu kalır)
+// Gömülü gerçek katalog (feed kopsa bile site dolu kalır). Playgama statik seed'dir
+// (canlı feed'i yok; gameURL'leri CLID taşır → gelir Oynava'ya yazılır).
 const GD_SEED = (gdSeed as Game[]).filter((g) => g.id && g.url);
 const GP_SEED = applySid((gpSeed as Game[]).filter((g) => g.id && g.url));
+const PGM_SEED = (pgmSeed as Game[]).filter((g) => g.id && g.url);
 const SEED = mergeUnique([
   ...(seed as Game[]).filter((g) => g.id && g.url),
   ...GD_SEED,
   ...GP_SEED,
+  ...PGM_SEED,
 ]);
 
 /** GamePix embed url'lerindeki sid'i kendi yayıncı sid'inle değiştirir (gelir için). */
