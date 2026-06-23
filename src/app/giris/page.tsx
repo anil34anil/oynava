@@ -28,7 +28,7 @@ export default function LoginPage() {
     return (
       <div className="container-x grid max-w-md gap-4 py-16 text-center">
         <div className="text-5xl">{user.avatar}</div>
-        <h1 className="font-display text-2xl font-black text-white">Giriş yapıldı</h1>
+        <h1 className="font-display text-2xl font-black text-ink">Giriş yapıldı</h1>
         <p className="text-slate-400">{user.email}</p>
         <div className="flex justify-center gap-3">
           <button onClick={() => router.push("/profil")} className="btn-primary">Profilim</button>
@@ -43,13 +43,13 @@ export default function LoginPage() {
       <div className="flex rounded-xl border border-line bg-card p-1 font-display text-sm">
         <button
           onClick={() => setMode("login")}
-          className={`flex-1 rounded-lg py-2 ${mode === "login" ? "bg-neon text-base" : "text-slate-400"}`}
+          className={`flex-1 rounded-lg py-2 ${mode === "login" ? "bg-neon text-[#fffdf8]" : "text-slate-400"}`}
         >
           Giriş Yap
         </button>
         <button
           onClick={() => setMode("register")}
-          className={`flex-1 rounded-lg py-2 ${mode === "register" ? "bg-neon text-base" : "text-slate-400"}`}
+          className={`flex-1 rounded-lg py-2 ${mode === "register" ? "bg-neon text-[#fffdf8]" : "text-slate-400"}`}
         >
           Kayıt Ol
         </button>
@@ -60,7 +60,7 @@ export default function LoginPage() {
       </div>
 
       <form onSubmit={submit} className="card-base space-y-4 p-6">
-        <h1 className="font-display text-xl font-bold text-white">
+        <h1 className="font-display text-xl font-bold text-ink">
           {mode === "login" ? "Hesabına giriş yap" : "Yeni hesap oluştur"}
         </h1>
 
@@ -73,7 +73,7 @@ export default function LoginPage() {
             placeholder="ornek@eposta.com"
             autoComplete="email"
             required
-            className="w-full rounded-xl border border-line bg-base/60 px-4 py-2.5 text-white outline-none focus:border-neon"
+            className="w-full rounded-xl border border-line bg-base/60 px-4 py-2.5 text-ink outline-none focus:border-neon"
           />
         </div>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
             placeholder="En az 6 karakter"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             required
-            className="w-full rounded-xl border border-line bg-base/60 px-4 py-2.5 text-white outline-none focus:border-neon"
+            className="w-full rounded-xl border border-line bg-base/60 px-4 py-2.5 text-ink outline-none focus:border-neon"
           />
         </div>
 

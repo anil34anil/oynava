@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const staticUrls = ["/oyunlar", "/online", "/premium", "/blog", "/sss", "/kunye", "/isbirlikleri", "/yas-degerlendirmesi", "/veri-koruma", "/erisilebilirlik"].map(
+  const staticUrls = ["/oyunlar", "/online", "/fps", "/premium", "/blog", "/sss", "/kunye", "/isbirlikleri", "/yas-degerlendirmesi", "/veri-koruma", "/erisilebilirlik"].map(
     (p) => ({ url: `${BASE}${p}`, changeFrequency: "monthly" as const, priority: 0.5 }),
   );
 

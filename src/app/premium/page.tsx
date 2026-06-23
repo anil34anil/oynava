@@ -43,7 +43,7 @@ export default async function PremiumPage() {
         <span className="rounded-full border border-neon-purple/40 bg-neon-purple/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-neon-purple">
           ✦ Premium
         </span>
-        <h1 className="font-display text-3xl font-black text-white neon-text">Premium Oyunlar</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">Premium Oyunlar</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">{premium.length} oyun</span>
       </div>
       <p className="max-w-2xl text-slate-400">

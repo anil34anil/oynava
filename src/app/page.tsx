@@ -89,7 +89,7 @@ export default async function HomePage() {
           <span className="text-xs font-semibold uppercase tracking-widest text-neon-purple">
             ✦ Premium Oyunlar
           </span>
-          <h2 className="mt-1 font-display text-2xl font-black text-white">Yüksek Grafikli 3D & WebGL Oyunlar</h2>
+          <h2 className="mt-1 font-display text-2xl font-black text-ink">Yüksek Grafikli 3D & WebGL Oyunlar</h2>
           <p className="mt-1 max-w-md text-sm text-slate-400">
             En kaliteli yarış, FPS, .io savaş ve 3D oyunlar — ücretsiz, indirme yok.
           </p>
@@ -100,7 +100,7 @@ export default async function HomePage() {
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 
       <section>
-        <h2 className="mb-4 font-display text-2xl font-bold text-white">🔥 Popüler Oyunlar</h2>
+        <h2 className="mb-4 font-display text-2xl font-bold text-ink">🔥 Popüler Oyunlar</h2>
         <GameGrid games={popular} priorityCount={6} />
       </section>
 
@@ -108,7 +108,7 @@ export default async function HomePage() {
       {online.length > 0 && (
         <section className="rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.04] p-5">
           <div className="mb-4 flex items-end justify-between">
-            <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-white">
+            <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-ink">
               <span className="flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Canlı
               </span>
@@ -128,7 +128,7 @@ export default async function HomePage() {
       {rows.map(({ cat, items }) => (
         <section key={cat.slug}>
           <div className="mb-4 flex items-end justify-between">
-            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
+            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
               <span>{CAT_ICON[cat.slug] ?? "🎮"}</span> {cat.tr}
             </h2>
             <Link href={`/kategori/${cat.slug}`} className="text-sm font-semibold text-neon hover:underline">

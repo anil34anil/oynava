@@ -74,7 +74,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         }}
       />
       <div className="flex items-center gap-3">
-        <h1 className="font-display text-3xl font-black text-white neon-text">{cat.tr} Oyunları</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">{cat.tr} Oyunları</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">
           {games.length} oyun
         </span>

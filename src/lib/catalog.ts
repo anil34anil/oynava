@@ -66,6 +66,19 @@ export function isOnline(game: Game): boolean {
   return true;
 }
 
+// FPS / Nişancı alt-bölümü — Blast Buddies tarzı blocky/3D online nişancılar dahil.
+// Başlık + kategori + etiket + açıklamayı nişancı ifadeleriyle tarar.
+const FPS_RE =
+  /\bfps\b|first[-\s]?person|third[-\s]?person shooter|shooter|shooting|sniper|battle\s?royale|pixel\s?gun|blocky\s?combat|counter[-\s]?(strike|craft)|gun\s?(game|fight)|deathmatch|\bwarfare\b/i;
+const FPS_TEXT_RE =
+  /first[-\s]?person shooter|\bfps\b|battle\s?royale|aim (and|&) shoot|shooter game|shoot(ing)? (enemies|opponents|players)/i;
+
+/** Oyun bir nişancı/FPS oyunu mu? (başlık + kategori + etiket + açıklama analizi) */
+export function isFpsShooter(game: Game): boolean {
+  if (FPS_RE.test(`${game.title} ${game.category} ${game.tags}`)) return true;
+  return FPS_TEXT_RE.test(`${game.description || ""} ${game.instructions || ""}`);
+}
+
 export function slugifyTitle(title: string): string {
   return title
     .toLowerCase()

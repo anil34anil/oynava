@@ -25,7 +25,7 @@ export default async function AdminVotesPage() {
   return (
     <div className="container-x space-y-6 py-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-black text-white">👍 Oylanan Oyunlar</h1>
+        <h1 className="font-display text-2xl font-black text-ink">👍 Oylanan Oyunlar</h1>
         <AdminLogoutButton />
       </div>
 
@@ -48,7 +48,7 @@ export default async function AdminVotesPage() {
                 return (
                   <tr key={v.gameId} className="border-b border-line/50">
                     <td className="px-4 py-3 text-slate-500">{i + 1}</td>
-                    <td className="px-4 py-3 font-semibold text-white">
+                    <td className="px-4 py-3 font-semibold text-ink">
                       {game ? (
                         <Link href={`/oyun/${game.id}/${slugifyTitle(game.title)}`} className="hover:text-neon">
                           {game.title}

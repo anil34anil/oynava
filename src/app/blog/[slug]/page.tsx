@@ -103,7 +103,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <nav className="mb-4 text-sm text-slate-500">
         <Link href="/blog" className="hover:text-neon">Blog</Link> / {post.title}
       </nav>
-      <h1 className="font-display text-3xl font-black text-white neon-text">{post.title}</h1>
+      <h1 className="font-display text-3xl font-black text-ink neon-text">{post.title}</h1>
       <p className="mt-2 text-xs text-slate-500">
         {new Date(post.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
       </p>
@@ -116,7 +116,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         if (!related.length) return null;
         return (
           <div className="mt-10 border-t border-line pt-6">
-            <h2 className="font-display text-lg font-bold text-white">İlgili Yazılar</h2>
+            <h2 className="font-display text-lg font-bold text-ink">İlgili Yazılar</h2>
             <ul className="mt-3 space-y-2">
               {related.map((p) => (
                 <li key={p.slug}>

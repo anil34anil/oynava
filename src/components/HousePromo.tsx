@@ -16,7 +16,7 @@ export function HousePromo({ format = "auto", className = "" }: { format?: strin
       >
         <span className="text-xs font-semibold uppercase tracking-widest text-neon-purple">✦ Premium</span>
         <span className="text-4xl">🎮</span>
-        <span className="font-display text-sm font-bold text-white">Premium Oyunlar</span>
+        <span className="font-display text-sm font-bold text-ink">Premium Oyunlar</span>
         <span className="text-xs text-slate-400">En kaliteli 3D & WebGL oyunlar.</span>
         <span className="btn-primary mt-1 py-1.5 text-xs">Keşfet</span>
       </Link>
@@ -29,7 +29,7 @@ export function HousePromo({ format = "auto", className = "" }: { format?: strin
       className={`relative flex items-center justify-center gap-4 overflow-hidden rounded-xl border border-neon/30 bg-gradient-to-r from-neon/10 to-neon-purple/10 px-6 text-center transition hover:border-neon ${className}`}
     >
       <span className="text-2xl">🔥</span>
-      <span className="font-display text-sm font-bold text-white sm:text-base">
+      <span className="font-display text-sm font-bold text-ink sm:text-[1rem]">
         Binlerce ücretsiz oyun seni bekliyor
       </span>
       <span className="btn-primary py-1.5 text-xs">Tüm Oyunlar →</span>

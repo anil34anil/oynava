@@ -11,7 +11,7 @@ export default function FavoritesPage() {
   return (
     <div className="container-x space-y-10 py-6">
       <section className="space-y-4">
-        <h1 className="font-display text-3xl font-black text-white neon-text">♥ Favorilerim</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">♥ Favorilerim</h1>
         <GameListFromIds
           ids={favs}
           empty={
@@ -26,7 +26,7 @@ export default function FavoritesPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="font-display text-2xl font-bold text-white">🕒 Son Oynananlar</h2>
+        <h2 className="font-display text-2xl font-bold text-ink">🕒 Son Oynananlar</h2>
         <GameListFromIds
           ids={recent}
           empty={<p className="text-slate-500">Henüz oyun oynamadın.</p>}

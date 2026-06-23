@@ -29,7 +29,7 @@ export default function ShopPage() {
   return (
     <div className="container-x space-y-8 py-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-black text-white neon-text">Mağaza</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">Mağaza</h1>
         <div className="rounded-xl border border-line bg-card px-4 py-2 font-display text-lg text-neon">
           🪙 {coins} jeton
         </div>
@@ -37,14 +37,14 @@ export default function ShopPage() {
 
       {/* Gerçek-para uyarısı (dürüstlük) */}
       <div className="card-base border-neon-purple/40 p-4 text-sm text-slate-400">
-        <strong className="text-white">Not:</strong> Kozmetikler <em>sanal jetonla</em> alınır.
+        <strong className="text-ink">Not:</strong> Kozmetikler <em>sanal jetonla</em> alınır.
         Aşağıdaki jeton paketleri gerçek ödeme entegrasyonu (Stripe) bağlanınca aktif olur —
         şu an demo amaçlıdır, gerçek tahsilat yapmaz.
       </div>
 
       {groups.map((g) => (
         <section key={g.kind} className="space-y-3">
-          <h2 className="font-display text-xl font-bold text-white">{g.title}</h2>
+          <h2 className="font-display text-xl font-bold text-ink">{g.title}</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {SHOP_ITEMS.filter((i) => i.kind === g.kind).map((item) => {
               const isOwned = owned.includes(item.id);
@@ -60,7 +60,7 @@ export default function ShopPage() {
                   >
                     {item.kind === "theme" ? "🎨" : item.value}
                   </div>
-                  <div className="font-display text-sm font-semibold text-white">{item.name}</div>
+                  <div className="font-display text-sm font-semibold text-ink">{item.name}</div>
                   <p className="text-xs text-slate-500">{item.desc}</p>
                   <button
                     onClick={() => handleBuy(item)}
@@ -76,7 +76,7 @@ export default function ShopPage() {
       ))}
 
       <section className="space-y-3">
-        <h2 className="font-display text-xl font-bold text-white">💳 Jeton Paketleri</h2>
+        <h2 className="font-display text-xl font-bold text-ink">💳 Jeton Paketleri</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           {COIN_PACKS.map((p) => (
             <div key={p.id} className="card-base flex items-center justify-between p-5">
@@ -96,7 +96,7 @@ export default function ShopPage() {
       </section>
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-neon bg-card px-5 py-3 text-sm text-white shadow-glow">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-neon bg-card px-5 py-3 text-sm text-ink shadow-glow">
           {toast}
         </div>
       )}

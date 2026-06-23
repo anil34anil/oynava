@@ -113,14 +113,14 @@ export function LoginModal() {
           <button
             onClick={close}
             aria-label="Kapat"
-            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-white/5 hover:text-white"
+            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-black/[0.05] hover:text-ink"
           >
             ✕
           </button>
         </div>
 
         <div className="mx-auto mt-8 w-full max-w-sm">
-          <h2 className="text-center font-display text-2xl font-black text-white">
+          <h2 className="text-center font-display text-2xl font-black text-ink">
             {step === "password"
               ? isExisting
                 ? "Tekrar hoş geldin"
@@ -144,7 +144,7 @@ export function LoginModal() {
               <SocialButton
                 icon="f"
                 label="Facebook ile devam et"
-                className="bg-[#1877f2] text-white hover:bg-[#1668d8]"
+                className="bg-[#1877f2] text-[#fff] hover:bg-[#1668d8]"
                 ready={fbReady}
                 onClick={() => setErr("Facebook ile giriş yakında — kurulum için Facebook uygulaması (App ID) gerekiyor.")}
               />
@@ -168,7 +168,7 @@ export function LoginModal() {
                   placeholder="E-postanı gir"
                   autoComplete="email"
                   autoFocus
-                  className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-white outline-none focus:border-neon"
+                  className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-ink outline-none focus:border-neon"
                 />
                 {err && <p className="text-sm text-neon-pink">⚠ {err}</p>}
                 <button type="submit" className="btn-primary w-full justify-center py-3">
@@ -185,7 +185,7 @@ export function LoginModal() {
                 placeholder={isExisting ? "Şifren" : "Bir şifre belirle (en az 6 karakter)"}
                 autoComplete={isExisting ? "current-password" : "new-password"}
                 autoFocus
-                className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-white outline-none focus:border-neon"
+                className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-ink outline-none focus:border-neon"
               />
               {err && <p className="text-sm text-neon-pink">⚠ {err}</p>}
               <button type="submit" disabled={busy} className="btn-primary w-full justify-center py-3 disabled:opacity-60">

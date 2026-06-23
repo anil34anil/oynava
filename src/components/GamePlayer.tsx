@@ -40,7 +40,7 @@ export function GamePlayer({ game }: { game: Game }) {
               backgroundPosition: "center",
             }}
           >
-            <span className="grid h-20 w-20 place-items-center rounded-full bg-neon text-3xl text-base shadow-glow transition group-hover:scale-110">
+            <span className="grid h-20 w-20 place-items-center rounded-full bg-neon text-3xl text-[#fffdf8] shadow-glow transition group-hover:scale-110">
               ▶
             </span>
             <span className="absolute bottom-6 font-display text-sm uppercase tracking-widest text-white">

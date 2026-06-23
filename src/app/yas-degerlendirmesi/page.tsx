@@ -30,7 +30,7 @@ export default function YasPage() {
         {PEGI.map((p) => (
           <div key={p.age} className="flex items-start gap-3 rounded-xl border border-line bg-card p-3">
             <span
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-lg font-display font-black text-white"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-lg font-display font-black text-ink"
               style={{ background: p.color }}
             >
               {p.age}

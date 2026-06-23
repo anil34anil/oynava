@@ -30,7 +30,7 @@ export function Hero({ games }: { games: Game[] }) {
           <span className="inline-flex items-center gap-2 rounded-full border border-neon/40 bg-neon/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-neon">
             <span className="h-2 w-2 animate-pulse rounded-full bg-neon" /> Öne Çıkan
           </span>
-          <h1 className="mt-4 font-display text-3xl font-black leading-tight text-white md:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-black leading-tight text-ink md:text-5xl">
             {game?.title ?? "Tarayıcında Akıcı Oyun Deneyimi"}
           </h1>
           <p className="mt-3 line-clamp-2 max-w-md text-slate-400">
@@ -50,7 +50,7 @@ export function Hero({ games }: { games: Game[] }) {
                   key={idx}
                   onClick={() => setI(idx)}
                   aria-label={`Öne çıkan ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${idx === i ? "w-6 bg-neon" : "w-1.5 bg-white/20 hover:bg-white/40"}`}
+                  className={`h-1.5 rounded-full transition-all ${idx === i ? "w-6 bg-neon" : "w-1.5 bg-black/15 hover:bg-black/30"}`}
                 />
               ))}
             </div>
@@ -74,7 +74,7 @@ export function Hero({ games }: { games: Game[] }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-transparent to-transparent" />
           <span className="absolute inset-0 grid place-items-center opacity-0 transition group-hover:opacity-100">
-            <span className="grid h-16 w-16 place-items-center rounded-full bg-neon/90 text-2xl text-base shadow-glow">▶</span>
+            <span className="grid h-16 w-16 place-items-center rounded-full bg-neon/90 text-2xl text-[#fffdf8] shadow-glow">▶</span>
           </span>
         </Link>
       </div>

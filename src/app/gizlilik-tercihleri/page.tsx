@@ -42,14 +42,14 @@ export default function PrivacyManagerPage() {
   }) => (
     <div className="flex items-start justify-between gap-4 rounded-xl border border-line bg-card p-4">
       <div>
-        <div className="font-display font-semibold text-white">{title}</div>
+        <div className="font-display font-semibold text-ink">{title}</div>
         <p className="mt-1 text-sm text-slate-400">{desc}</p>
       </div>
       <button
         disabled={disabled}
         onClick={() => onChange?.(!checked)}
         className={`mt-1 h-7 w-12 shrink-0 rounded-full p-1 transition ${
-          checked ? "bg-neon" : "bg-white/10"
+          checked ? "bg-neon" : "bg-black/[0.06]"
         } ${disabled ? "opacity-60" : ""}`}
         aria-pressed={checked}
       >
@@ -65,7 +65,7 @@ export default function PrivacyManagerPage() {
       <nav className="mb-4 text-sm text-slate-500">
         <Link href="/" className="hover:text-neon">Ana Sayfa</Link> / Gizlilik Tercihleri
       </nav>
-      <h1 className="font-display text-3xl font-black text-white neon-text">Gizlilik Tercihleri</h1>
+      <h1 className="font-display text-3xl font-black text-ink neon-text">Gizlilik Tercihleri</h1>
       <p className="mt-4 text-slate-300">
         Çerez ve veri kullanımı tercihlerini buradan yönetebilirsin. Seçimlerin bu
         cihazda saklanır. Ayrıntılar için{" "}

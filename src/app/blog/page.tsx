@@ -28,7 +28,7 @@ export default function BlogPage() {
           })),
         }}
       />
-      <h1 className="font-display text-3xl font-black text-white neon-text">Blog</h1>
+      <h1 className="font-display text-3xl font-black text-ink neon-text">Blog</h1>
       <p className="mt-2 text-slate-400">Oyun rehberleri, ipuçları ve haberler.</p>
 
       <div className="mt-8 space-y-4">
@@ -41,7 +41,7 @@ export default function BlogPage() {
             <p className="text-xs text-slate-500">
               {new Date(p.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
             </p>
-            <h2 className="mt-1 font-display text-xl font-bold text-white">{p.title}</h2>
+            <h2 className="mt-1 font-display text-xl font-bold text-ink">{p.title}</h2>
             <p className="mt-2 text-slate-400">{p.excerpt}</p>
             <span className="mt-3 inline-block text-sm font-semibold text-neon">Devamını oku →</span>
           </Link>

@@ -1,13 +1,28 @@
+"use client";
+
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/catalog";
 import { SearchBar } from "./SearchBar";
 import { ProfileChip } from "./ProfileChip";
 import { Logo } from "./Logo";
+import { useToggleSidebar } from "@/lib/useSidebar";
 
 export function Header() {
+  const toggleSidebar = useToggleSidebar();
+
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-base/80 backdrop-blur-xl">
-      <div className="container-x flex h-16 items-center gap-4">
+    <header className="sticky top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-xl">
+      <div className="container-x flex h-16 items-center gap-3">
+        {/* Mobil: menü (hamburger) — masaüstünde sol sidebar zaten görünür */}
+        <button
+          onClick={toggleSidebar}
+          aria-label="Menüyü aç"
+          className="grid h-10 w-10 place-items-center rounded-xl text-slate-300 hover:bg-black/[0.05] hover:text-ink lg:hidden"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </button>
+
         <Link href="/" className="shrink-0 transition hover:opacity-90">
           <Logo />
         </Link>
@@ -18,50 +33,6 @@ export function Header() {
 
         <ProfileChip />
       </div>
-
-      <nav className="border-t border-line/60 bg-surface/60">
-        <div className="container-x flex items-center gap-1 overflow-x-auto py-2 text-sm">
-          <Link
-            href="/online"
-            className="flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-400/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-emerald-400 hover:bg-emerald-400/20"
-          >
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Online Oyunlar
-          </Link>
-          <Link
-            href="/premium"
-            className="whitespace-nowrap rounded-lg bg-neon-purple/10 px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-neon-purple hover:bg-neon-purple/20"
-          >
-            ✦ Premium Oyunlar
-          </Link>
-          <Link
-            href="/oyunlar"
-            className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/5 hover:text-neon"
-          >
-            Tüm Oyunlar
-          </Link>
-          <Link
-            href="/blog"
-            className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/5 hover:text-neon"
-          >
-            Blog
-          </Link>
-          <Link
-            href="/favorilerim"
-            className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/5 hover:text-neon-pink"
-          >
-            ♥ Favoriler
-          </Link>
-          {CATEGORIES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/kategori/${c.slug}`}
-              className="whitespace-nowrap rounded-lg px-3 py-1.5 font-display font-semibold uppercase tracking-wide text-slate-400 transition hover:bg-white/5 hover:text-neon"
-            >
-              {c.tr}
-            </Link>
-          ))}
-        </div>
-      </nav>
 
       <div className="container-x py-2 md:hidden">
         <SearchBar />

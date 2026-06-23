@@ -73,24 +73,24 @@ export default async function GamePage({ params }: { params: { id: string } }) {
         </nav>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="font-display text-2xl font-black text-white md:text-3xl">{game.title}</h1>
+          <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
           <LikeButton id={game.id} className="px-3 py-1.5 text-sm" />
         </div>
 
         <GamePlayer game={game} />
 
         <div className="card-base p-5">
-          <h2 className="mb-2 font-display text-lg font-bold text-white">🎯 Nasıl Oynanır?</h2>
+          <h2 className="mb-2 font-display text-lg font-bold text-ink">🎯 Nasıl Oynanır?</h2>
           <p className="whitespace-pre-line text-slate-400">{trInstructions(game.instructions)}</p>
         </div>
 
         <div className="card-base p-5">
-          <h2 className="mb-2 font-display text-lg font-bold text-white">Hakkında</h2>
+          <h2 className="mb-2 font-display text-lg font-bold text-ink">Hakkında</h2>
           <p className="text-slate-400">{trDescription(game)}</p>
         </div>
 
         <section>
-          <h2 className="mb-4 font-display text-xl font-bold text-white">Benzer Oyunlar</h2>
+          <h2 className="mb-4 font-display text-xl font-bold text-ink">Benzer Oyunlar</h2>
           <GameGrid games={related} />
         </section>
       </div>
@@ -103,7 +103,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {game.tags.split(",").filter(Boolean).slice(0, 12).map((t) => (
-              <span key={t} className="rounded-md bg-white/5 px-2 py-1 text-xs text-slate-400">
+              <span key={t} className="rounded-md bg-black/[0.04] px-2 py-1 text-xs text-slate-400">
                 #{t.trim()}
               </span>
             ))}

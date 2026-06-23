@@ -1,23 +1,27 @@
 import type { Metadata } from "next";
-import { Orbitron, Rajdhani } from "next/font/google";
+import { Fraunces, Nunito_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
+import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { AdFrame } from "@/components/AdFrame";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LoginModal } from "@/components/LoginModal";
 import { SITE } from "@/lib/site";
 
-const display = Orbitron({
+// Sıcak, karakterli serif başlık fontu (insan-tasarımı his)
+const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["500", "700", "900"],
+  weight: ["500", "600", "700", "900"],
+  style: ["normal", "italic"],
 });
-const body = Rajdhani({
+// Yumuşak, humanist, okunaklı gövde fontu
+const body = Nunito_Sans({
   subsets: ["latin"],
   variable: "--font-body",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700", "800"],
 });
 
 const SITE_NAME = "OYNAVA";
@@ -64,10 +68,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         )}
         <Header />
-        <main className="min-h-[70vh]">
-          <AdFrame>{children}</AdFrame>
-        </main>
-        <Footer />
+        <div className="flex">
+          <Sidebar />
+          <div className="min-w-0 flex-1">
+            <main className="min-h-[70vh]">
+              <AdFrame>{children}</AdFrame>
+            </main>
+            <Footer />
+          </div>
+        </div>
         <CookieConsent />
         <LoginModal />
       </body>
