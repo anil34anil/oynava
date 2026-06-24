@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { Game, slugifyTitle } from "@/lib/catalog";
 import { FavoriteButton } from "./FavoriteButton";
-import { LikeButton } from "./LikeButton";
+import { ReactionPill } from "./ReactionPill";
 
 export function GameCard({ game, priority = false }: { game: Game; priority?: boolean }) {
   // Masaüstünde fareyle üzerine gelince (kısa gecikmeyle) oyunu canlı önizle.
@@ -75,7 +75,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         </h3>
         <div className="mt-1 flex items-center justify-between gap-2">
           <p className="truncate text-xs text-slate-500">{game.category}</p>
-          <LikeButton id={game.id} />
+          <ReactionPill id={game.id} size="sm" />
         </div>
       </div>
     </Link>
