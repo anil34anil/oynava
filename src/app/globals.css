@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  /* Tüm site tek font: önce Anthropic Sans (tescilli; kuruluysa kullanılır),
-     yoksa Inter (next/font --font-sans), sonra sistem fontu. */
-  --font-display: "Anthropic Sans", var(--font-sans), system-ui, sans-serif;
-  --font-body: "Anthropic Sans", var(--font-sans), system-ui, sans-serif;
+  /* CYBERPULSE tipografi */
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 html {
@@ -15,27 +15,29 @@ html {
 
 body {
   @apply bg-base text-slate-200 font-body antialiased;
+  /* Köşelerde mor/cyan mesh gradyan parıltıları (deep space) */
   background-image:
-    radial-gradient(circle at 12% -8%, rgba(124, 108, 255, 0.16), transparent 45%),
-    radial-gradient(circle at 88% 0%, rgba(168, 85, 247, 0.12), transparent 45%);
+    radial-gradient(circle at 10% -8%, rgba(208, 188, 255, 0.14), transparent 45%),
+    radial-gradient(circle at 92% 4%, rgba(76, 215, 246, 0.10), transparent 45%),
+    radial-gradient(circle at 50% 110%, rgba(144, 219, 0, 0.06), transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
 }
 
 /* İnce, koyu kaydırma çubuğu */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #14161f;
+  background: #060e20;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a3f5a;
-  border-radius: 8px;
+  background: #2d3449;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4d537a;
+  background: #494454;
 }
 
 @layer components {
@@ -43,26 +45,36 @@ body {
     @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
   }
 
-  /* Menekşe vurgu metni (hafif parıltı) */
+  /* Glassmorphism panel — buzlu cam */
+  .glass {
+    background-color: rgba(11, 19, 38, 0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(73, 68, 84, 0.25);
+  }
+
+  /* Mor neon vurgu metni */
   .neon-text {
-    color: #a78bfa;
-    text-shadow: 0 0 22px rgba(124, 108, 255, 0.35);
+    color: #d0bcff;
+    text-shadow: 0 0 12px rgba(208, 188, 255, 0.5);
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5
-           font-display text-sm font-semibold tracking-normal
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5
+           font-mono text-xs font-semibold uppercase tracking-[0.05em]
            transition-all duration-200;
   }
+  /* Primary: elektrik moru, koyu metin, hover'da mor bloom */
   .btn-primary {
-    @apply btn bg-neon text-white shadow-glow hover:bg-[#6a5af0] hover:shadow-[0_10px_30px_-8px_rgba(124,108,255,.6)];
+    @apply btn bg-neon text-[#23005c] hover:bg-[#e9ddff] hover:shadow-glow;
   }
+  /* Ghost: cyber mavi çerçeve, hover'da %10 mavi dolgu */
   .btn-ghost {
-    @apply btn border border-line bg-white/5 text-slate-200 hover:border-neon hover:text-neon;
+    @apply btn border border-secondary/60 bg-secondary/5 text-secondary hover:bg-secondary/15 hover:shadow-glow-cyan;
   }
 
   .card-base {
-    @apply rounded-2xl border border-line bg-card shadow-glow;
+    @apply glass rounded-xl;
   }
 
   /* Yasal/bilgi sayfaları metin biçimi */

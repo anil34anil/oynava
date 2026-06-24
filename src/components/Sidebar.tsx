@@ -42,8 +42,8 @@ function IconTile({ icon, active, online }: { icon: string; active: boolean; onl
     >
       {online ? (
         <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-tertiary/60" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-tertiary shadow-glow-green" />
         </span>
       ) : (
         icon
@@ -70,10 +70,10 @@ export function Sidebar() {
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
 
   const itemCls = (active: boolean) =>
-    `group flex items-center gap-3 rounded-2xl px-2.5 py-2 text-sm font-semibold transition ${
+    `group flex items-center gap-3 rounded-lg border-l-2 px-2.5 py-2 font-mono text-[13px] uppercase tracking-[0.04em] transition ${
       active
-        ? "bg-neon/12 text-neon shadow-[inset_0_0_0_1px_rgba(47,107,67,.25)]"
-        : "text-slate-300 hover:bg-white/[0.06] hover:text-ink"
+        ? "border-secondary bg-secondary/10 font-bold text-secondary"
+        : "border-transparent text-slate-300 hover:bg-white/[0.06] hover:text-secondary"
     }`;
 
   const nav = (
@@ -88,7 +88,7 @@ export function Sidebar() {
         );
       })}
 
-      <div className="mt-4 mb-1 flex items-center gap-2 px-2 text-[11px] font-extrabold uppercase tracking-widest text-slate-500">
+      <div className="mt-4 mb-1 flex items-center gap-2 px-2 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
         <span className="h-px flex-1 bg-line" /> Kategoriler <span className="h-px flex-1 bg-line" />
       </div>
       {CATEGORIES.map((c) => {
@@ -108,7 +108,7 @@ export function Sidebar() {
   return (
     <>
       {/* Masaüstü: sabit sol sütun */}
-      <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-r border-line bg-surface/70 lg:block">
+      <aside className="glass sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-y-0 border-l-0 lg:block">
         {nav}
       </aside>
 

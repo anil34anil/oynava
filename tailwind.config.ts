@@ -1,9 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     screens: {
       sm: "640px",
@@ -15,55 +13,54 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // ── Modern karanlık (CrazyGames tarzı) ──────────────────────────
-        base: "#14161f",     // koyu antrasit-indigo — sayfa zemini
-        surface: "#1a1c28",  // header/sidebar/yükseltilmiş yüzeyler
-        card: "#1d2030",     // kart zemini
-        line: "#2c3047",     // kenarlık
-        ink: "#f5f6fc",      // açık başlık/önemli metin
+        // ── CYBERPULSE (Stitch) — derin uzay + cam + neon ────────────────
+        base: "#0b1326",     // arka plan (background/surface)
+        surface: "#131b2e",  // sidebar/header taban (cam için /70 + blur)
+        card: "#171f33",     // kart/konteyner
+        line: "#2d3449",     // kenarlık (outline)
+        ink: "#dae2fd",      // ana açık metin (on-surface, mavimsi beyaz)
 
-        // Vurgu — menekşe/mor (eski "neon" anahtarları korunur)
+        // Vurgular (eski "neon" anahtarları korunur)
         neon: {
-          DEFAULT: "#7c6cff", // menekşe (birincil vurgu)
-          purple: "#a855f7",  // mor (ikincil)
-          pink: "#f472b6",    // pembe (favori/dislike)
-          lime: "#fbbf24",    // kehribar (premium/jeton vurgusu)
+          DEFAULT: "#d0bcff", // elektrik moru (primary)
+          purple: "#a078ff",  // koyu mor (primary-container)
+          pink: "#ffb4ab",    // hata/kırmızı (dislike)
+          lime: "#90db00",    // asit yeşili (online/başarı = tertiary)
         },
+        secondary: "#4cd7f6", // cyber mavi (bilgi/ikincil)
+        tertiary: "#90db00",  // asit yeşili
 
-        // Koyu tema için açık metin ölçeği: düşük no = parlak/önemli, yüksek = soluk
+        // Mavimsi-soğuk açık metin ölçeği (koyu tema)
         slate: {
-          50: "#f8fafc",
-          100: "#eef0f8",
-          200: "#dfe2ee",
-          300: "#c4c8da",
-          400: "#9095ad",
-          500: "#757a92",
-          600: "#5d6175",
-          700: "#474b5c",
-          800: "#313443",
-          900: "#20222e",
+          50: "#f3f5ff",
+          100: "#e4e8fb",
+          200: "#cbd2ec",
+          300: "#aab3d4",
+          400: "#8b93b0",
+          500: "#6f7796",
+          600: "#586079",
+          700: "#414863",
+          800: "#2d3449",
+          900: "#1c2235",
         },
       },
       fontFamily: {
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
-        body: ["var(--font-body)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"], // Sora
+        body: ["var(--font-body)", "system-ui", "sans-serif"],       // Hanken Grotesk
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],     // JetBrains Mono
       },
       boxShadow: {
-        glow: "0 1px 2px rgba(0,0,0,.3), 0 10px 30px -12px rgba(124,108,255,.45)",
-        "glow-purple": "0 1px 2px rgba(0,0,0,.3), 0 12px 34px -12px rgba(168,85,247,.5)",
+        glow: "0 0 20px rgba(208,188,255,.35)",            // mor bloom
+        "glow-purple": "0 0 24px rgba(160,120,255,.45)",
+        "glow-cyan": "0 0 18px rgba(76,215,246,.4)",
+        "glow-green": "0 0 18px rgba(144,219,0,.4)",
       },
       backgroundImage: {
-        "grid-fade":
-          "radial-gradient(circle at 50% 0%, rgba(124,108,255,.14), transparent 60%)",
+        "grid-fade": "radial-gradient(circle at 50% 0%, rgba(208,188,255,.16), transparent 60%)",
       },
       keyframes: {
-        float: {
-          "0%,100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-6px)" },
-        },
-        shimmer: {
-          "100%": { transform: "translateX(100%)" },
-        },
+        float: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-6px)" } },
+        shimmer: { "100%": { transform: "translateX(100%)" } },
       },
       animation: {
         float: "float 4s ease-in-out infinite",

@@ -10,7 +10,7 @@ export function Header() {
   const toggleSidebar = useToggleSidebar();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-xl">
+    <header className="glass sticky top-0 z-50 border-x-0 border-t-0 shadow-[0_0_20px_rgba(208,188,255,0.1)]">
       <div className="container-x flex h-16 items-center gap-3">
         {/* Mobil: menü (hamburger) — masaüstünde sol sidebar zaten görünür */}
         <button
