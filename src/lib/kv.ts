@@ -1,88 +1,96 @@
 /**
- * Paylaşılan (tüm ziyaretçiler ortak) beğeni sayacı — Vercel KV / Upstash Redis.
+ * Paylaşılan (tüm ziyaretçiler ortak) beğeni/beğenmeme sayacı — Redis (node-redis).
  *
- * KURULUM: Vercel proje panelinde Storage → "Redis" (Marketplace, Upstash) ekle.
- * Env değişkenleri (KV_REST_API_URL, KV_REST_API_TOKEN) otomatik Production'a
- * enjekte edilir; lokal geliştirme için `vercel env pull .env.local` ile çekebilirsin.
+ * Vercel'de Storage → Redis entegrasyonu eklenince `REDIS_URL` env değişkeni gelir
+ * (entegrasyonun "Connect to Project" ile PROJEYE bağlanması gerekir, yoksa boş kalır).
+ * Lokal için: `vercel env pull .env.local`.
  *
- * Env yoksa (kurulum tamamlanmadan önce) hata fırlatmak yerine sessizce devre dışı
- * kalır — site KV bağlanana kadar beğeni sayıları hep 0/false döner, build/SSR
- * çökmez.
+ * REDIS_URL yoksa sessizce devre dışı kalır — sayılar 0/false döner, site çökmez.
  */
-import { createClient } from "@vercel/kv";
+import { createClient, type RedisClientType } from "redis";
 
-// Vercel KV (eski) `KV_REST_API_URL`/`KV_REST_API_TOKEN` adlarını kullanır; yeni
-// Upstash Marketplace entegrasyonu ise `UPSTASH_REDIS_REST_URL`/`..._TOKEN` ekler.
-// İkisini de destekle ki hangi entegrasyon eklenmiş olursa olsun çalışsın.
-const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const REDIS_URL = process.env.REDIS_URL;
+export const kvEnabled = Boolean(REDIS_URL);
 
-export const kvEnabled = Boolean(KV_URL && KV_TOKEN);
+// Serverless'te sıcak başlatmalar arasında bağlantıyı yeniden kullan.
+let clientPromise: Promise<RedisClientType> | null = null;
 
-const kv = kvEnabled ? createClient({ url: KV_URL!, token: KV_TOKEN! }) : (null as never);
-
-const LIKED_GAMES_SET = "oh:liked_games"; // beğenisi olan tüm oyun id'leri
-
-function likedBySetKey(gameId: string) {
-  return `oh:liked_by:${gameId}`;
+async function getClient(): Promise<RedisClientType | null> {
+  if (!REDIS_URL) return null;
+  if (!clientPromise) {
+    const c: RedisClientType = createClient({ url: REDIS_URL });
+    c.on("error", () => {
+      /* bağlantı hatası uygulamayı çökertmesin */
+    });
+    clientPromise = c.connect().then(() => c);
+  }
+  try {
+    return await clientPromise;
+  } catch {
+    clientPromise = null;
+    return null;
+  }
 }
-function dislikedBySetKey(gameId: string) {
-  return `oh:disliked_by:${gameId}`;
-}
+
+const LIKED_GAMES_SET = "oh:liked_games"; // en az bir beğenisi olan oyun id'leri
+
+const likedKey = (id: string) => `oh:liked_by:${id}`;
+const dislikedKey = (id: string) => `oh:disliked_by:${id}`;
 
 export type Reactions = { count: number; dislikes: number; liked: boolean; disliked: boolean };
-
 const EMPTY: Reactions = { count: 0, dislikes: 0, liked: false, disliked: false };
 
-/** Bir oyunun beğeni/beğenmeme durumu (count = like sayısı; eski alan adı korunur). */
+/** Bir oyunun beğeni/beğenmeme durumu (count = beğeni sayısı). */
 export async function getReactions(gameId: string, uid: string | undefined): Promise<Reactions> {
-  if (!kvEnabled) return EMPTY;
-  const [count, dislikes, liked, disliked] = await Promise.all([
-    kv.scard(likedBySetKey(gameId)),
-    kv.scard(dislikedBySetKey(gameId)),
-    uid ? kv.sismember(likedBySetKey(gameId), uid) : Promise.resolve(0),
-    uid ? kv.sismember(dislikedBySetKey(gameId), uid) : Promise.resolve(0),
-  ]);
-  return { count: count ?? 0, dislikes: dislikes ?? 0, liked: Boolean(liked), disliked: Boolean(disliked) };
-}
-
-/** Beğeni/beğenmemeyi açar-kapatır; ikisi karşılıklı dışlayıcıdır (biri açılınca diğeri kapanır). */
-export async function toggleReaction(gameId: string, uid: string, type: "like" | "dislike"): Promise<Reactions> {
-  if (!kvEnabled) return EMPTY;
-  const likeKey = likedBySetKey(gameId);
-  const dislikeKey = dislikedBySetKey(gameId);
-  const onKey = type === "like" ? likeKey : dislikeKey;
-  const offKey = type === "like" ? dislikeKey : likeKey;
-
-  const already = await kv.sismember(onKey, uid);
-  if (already) {
-    await kv.srem(onKey, uid);
-  } else {
-    await kv.sadd(onKey, uid);
-    await kv.srem(offKey, uid); // karşıt tepkiyi kaldır
-    await kv.sadd(LIKED_GAMES_SET, gameId);
+  const kv = await getClient();
+  if (!kv) return EMPTY;
+  try {
+    const [count, dislikes, liked, disliked] = await Promise.all([
+      kv.sCard(likedKey(gameId)),
+      kv.sCard(dislikedKey(gameId)),
+      uid ? kv.sIsMember(likedKey(gameId), uid) : Promise.resolve(false),
+      uid ? kv.sIsMember(dislikedKey(gameId), uid) : Promise.resolve(false),
+    ]);
+    return { count: count ?? 0, dislikes: dislikes ?? 0, liked: Boolean(liked), disliked: Boolean(disliked) };
+  } catch {
+    return EMPTY;
   }
-  return getReactions(gameId, uid);
 }
 
-// Geriye dönük uyumluluk (kart LikeButton'u bu adlarla çağırıyordu)
-export async function getLikeState(gameId: string, uid: string | undefined) {
-  const r = await getReactions(gameId, uid);
-  return { count: r.count, liked: r.liked };
-}
-export async function toggleLike(gameId: string, uid: string) {
-  const r = await toggleReaction(gameId, uid, "like");
-  return { count: r.count, liked: r.liked };
+/** Beğeni/beğenmemeyi aç-kapat; ikisi karşılıklı dışlayıcıdır. */
+export async function toggleReaction(gameId: string, uid: string, type: "like" | "dislike"): Promise<Reactions> {
+  const kv = await getClient();
+  if (!kv) return EMPTY;
+  try {
+    const onKey = type === "like" ? likedKey(gameId) : dislikedKey(gameId);
+    const offKey = type === "like" ? dislikedKey(gameId) : likedKey(gameId);
+    const already = await kv.sIsMember(onKey, uid);
+    if (already) {
+      await kv.sRem(onKey, uid);
+    } else {
+      await kv.sAdd(onKey, uid);
+      await kv.sRem(offKey, uid);
+      await kv.sAdd(LIKED_GAMES_SET, gameId);
+    }
+    return getReactions(gameId, uid);
+  } catch {
+    return EMPTY;
+  }
 }
 
 /** Admin paneli için: en az 1 beğenisi olan tüm oyunlar, beğeni sayısına göre azalan. */
 export async function getAllVotes(): Promise<{ gameId: string; count: number }[]> {
-  if (!kvEnabled) return [];
-  const gameIds = await kv.smembers(LIKED_GAMES_SET);
-  if (!gameIds.length) return [];
-  const counts = await Promise.all(gameIds.map((id) => kv.scard(likedBySetKey(id))));
-  return gameIds
-    .map((gameId, i) => ({ gameId, count: counts[i] ?? 0 }))
-    .filter((v) => v.count > 0)
-    .sort((a, b) => b.count - a.count);
+  const kv = await getClient();
+  if (!kv) return [];
+  try {
+    const gameIds = await kv.sMembers(LIKED_GAMES_SET);
+    if (!gameIds.length) return [];
+    const counts = await Promise.all(gameIds.map((id) => kv.sCard(likedKey(id))));
+    return gameIds
+      .map((gameId, i) => ({ gameId, count: counts[i] ?? 0 }))
+      .filter((v) => v.count > 0)
+      .sort((a, b) => b.count - a.count);
+  } catch {
+    return [];
+  }
 }
