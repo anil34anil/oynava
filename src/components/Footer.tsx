@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/catalog";
+import { COLLECTIONS } from "@/lib/collections";
 import { SITE } from "@/lib/site";
 import { Logo } from "./Logo";
 import { useT, useAutoTr } from "@/lib/useLocaleClient";
 
 export function Footer() {
   const { t, href } = useT();
-  const [slogan, tagline, info, faq, contact, partners, ageRating, dataProtection, privacyPrefs, accessibility, rights] =
+  const [slogan, tagline, info, faq, contact, partners, ageRating, dataProtection, privacyPrefs, accessibility, rights, popularSearches] =
     useAutoTr([
       "Bir tık, bin oyun",
       "Binlerce ücretsiz HTML5 oyun. İndirme yok, kurulum yok — tarayıcında akıcı oyna.",
@@ -21,6 +22,7 @@ export function Footer() {
       "Gizlilik Tercihleri",
       "Erişilebilirlik",
       "Tüm hakları saklıdır. Oyunlar GameMonetize, GameDistribution ve GamePix ağları üzerinden sunulmaktadır.",
+      "Popüler Aramalar",
     ]);
 
   return (
@@ -58,6 +60,26 @@ export function Footer() {
             <li><Link href={href("/kunye")} className="hover:text-neon">{contact}</Link></li>
             <li><Link href={href("/isbirlikleri")} className="hover:text-neon">{partners}</Link></li>
           </ul>
+        </div>
+      </div>
+
+      {/* Popüler koleksiyonlar — sitewide iç linkleme (yetim sayfa yok) */}
+      <div className="border-t border-line/60">
+        <div className="container-x py-5">
+          <h4 className="font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+            {popularSearches}
+          </h4>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {COLLECTIONS.map((c) => (
+              <Link
+                key={c.slug}
+                href={href(`/${c.slug}`)}
+                className="rounded-lg border border-line px-2.5 py-1 text-xs text-slate-400 hover:border-secondary hover:text-secondary"
+              >
+                {c.title}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 

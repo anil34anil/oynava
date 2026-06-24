@@ -34,3 +34,21 @@ export async function localizeText(textEn: string, locale: Locale): Promise<stri
   if (locale === "tr" || locale === "en") return textEn;
   return translateText(textEn, locale, "en");
 }
+
+/** Oyun için SSS (FAQ) üretir — rich snippet + içerik derinliği. Locale'e çevrilir. */
+export async function gameFaq(game: Game, locale: Locale): Promise<{ q: string; a: string }[]> {
+  const title = game.title;
+  const tr: { q: string; a: string }[] = [
+    { q: `${title} nasıl oynanır?`, a: trInstructions(game.instructions) },
+    { q: `${title} ücretsiz mi?`, a: `Evet, ${title} tamamen ücretsizdir. Üyelik veya ödeme gerekmez; sayfayı aç ve hemen oyna.` },
+    { q: `${title} için indirme gerekiyor mu?`, a: `Hayır. ${title} bir HTML5 oyunudur ve doğrudan tarayıcında çalışır — indirme veya kurulum yoktur.` },
+    { q: `${title} telefonda oynanır mı?`, a: `Evet, ${title} mobil tarayıcılarda (telefon ve tablet) da oynanabilir.` },
+  ];
+  if (locale === "tr") return tr;
+  return Promise.all(
+    tr.map(async (item) => ({
+      q: await translateText(item.q, locale, "tr"),
+      a: await translateText(item.a, locale, "tr"),
+    })),
+  );
+}
