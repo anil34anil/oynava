@@ -99,7 +99,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {game.tags.split(",").filter(Boolean).slice(0, 12).map((t) => (
-              <span key={t} className="rounded-md bg-black/[0.04] px-2 py-1 text-xs text-slate-400">
+              <span key={t} className="rounded-md bg-white/[0.06] px-2 py-1 text-xs text-slate-400">
                 #{t.trim()}
               </span>
             ))}

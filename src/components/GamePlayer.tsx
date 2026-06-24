@@ -56,13 +56,13 @@ export function GamePlayer({ game }: { game: Game }) {
 
       <div className="flex items-center justify-between gap-3 px-3 py-2 text-xs text-slate-500">
         <div className="flex items-center gap-2">
-          <span className="rounded-md bg-black/[0.04] px-2 py-1">HTML5</span>
-          <span className="rounded-md bg-black/[0.04] px-2 py-1">
+          <span className="rounded-md bg-white/[0.06] px-2 py-1">HTML5</span>
+          <span className="rounded-md bg-white/[0.06] px-2 py-1">
             {game.width}×{game.height}
           </span>
         </div>
         {started && (
-          <button onClick={() => setStarted(false)} className="rounded-md px-2 py-1 hover:bg-black/[0.05] hover:text-ink">
+          <button onClick={() => setStarted(false)} className="rounded-md px-2 py-1 hover:bg-white/[0.07] hover:text-ink">
             ↻ Yeniden başlat
           </button>
         )}

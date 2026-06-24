@@ -95,7 +95,7 @@ export function GameActionBar({ id, onFullscreen }: { id: string; onFullscreen?:
           onClick={() => react("like")}
           disabled={busy}
           aria-label="Beğen"
-          className={`${btn} ${r?.liked ? "bg-neon/15 text-neon" : "text-slate-400 hover:bg-black/[0.05] hover:text-ink"}`}
+          className={`${btn} ${r?.liked ? "bg-neon/15 text-neon" : "text-slate-400 hover:bg-white/[0.07] hover:text-ink"}`}
         >
           👍 <span>{r ? fmt(r.count) : "–"}</span>
         </button>
@@ -103,7 +103,7 @@ export function GameActionBar({ id, onFullscreen }: { id: string; onFullscreen?:
           onClick={() => react("dislike")}
           disabled={busy}
           aria-label="Beğenme"
-          className={`${btn} ${r?.disliked ? "bg-neon-pink/15 text-neon-pink" : "text-slate-400 hover:bg-black/[0.05] hover:text-ink"}`}
+          className={`${btn} ${r?.disliked ? "bg-neon-pink/15 text-neon-pink" : "text-slate-400 hover:bg-white/[0.07] hover:text-ink"}`}
         >
           👎 <span>{r ? fmt(r.dislikes) : "–"}</span>
         </button>
@@ -113,14 +113,14 @@ export function GameActionBar({ id, onFullscreen }: { id: string; onFullscreen?:
             toggleFav(id);
           }}
           aria-label={fav ? "Favorilerden çıkar" : "Favorilere ekle"}
-          className={`${btn} ${fav ? "bg-neon-pink/15 text-neon-pink" : "text-slate-400 hover:bg-black/[0.05] hover:text-neon-pink"}`}
+          className={`${btn} ${fav ? "bg-neon-pink/15 text-neon-pink" : "text-slate-400 hover:bg-white/[0.07] hover:text-neon-pink"}`}
         >
           {fav ? "♥" : "♡"} <span className="hidden sm:inline">Favori</span>
         </button>
         <button
           onClick={share}
           aria-label="Paylaş"
-          className={`${btn} text-slate-400 hover:bg-black/[0.05] hover:text-ink`}
+          className={`${btn} text-slate-400 hover:bg-white/[0.07] hover:text-ink`}
         >
           ↗ <span className="hidden sm:inline">{copied ? "Kopyalandı" : "Paylaş"}</span>
         </button>

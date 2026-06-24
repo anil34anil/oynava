@@ -49,7 +49,7 @@ export default function PrivacyManagerPage() {
         disabled={disabled}
         onClick={() => onChange?.(!checked)}
         className={`mt-1 h-7 w-12 shrink-0 rounded-full p-1 transition ${
-          checked ? "bg-neon" : "bg-black/[0.06]"
+          checked ? "bg-neon" : "bg-white/[0.08]"
         } ${disabled ? "opacity-60" : ""}`}
         aria-pressed={checked}
       >

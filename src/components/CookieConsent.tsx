@@ -130,7 +130,7 @@ function Toggle({
         disabled={disabled}
         onClick={() => onChange?.(!checked)}
         aria-pressed={checked}
-        className={`mt-0.5 h-6 w-11 shrink-0 rounded-full p-1 transition ${checked ? "bg-neon" : "bg-black/[0.06]"} ${disabled ? "opacity-60" : ""}`}
+        className={`mt-0.5 h-6 w-11 shrink-0 rounded-full p-1 transition ${checked ? "bg-neon" : "bg-white/[0.08]"} ${disabled ? "opacity-60" : ""}`}
       >
         <span className={`block h-4 w-4 rounded-full bg-base transition ${checked ? "translate-x-5" : ""}`} />
       </button>

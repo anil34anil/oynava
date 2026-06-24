@@ -11,55 +11,50 @@ const config: Config = {
       lg: "1024px",
       xl: "1280px",
       "2xl": "1536px",
-      "3xl": "1920px", // yan reklam rayları yalnızca bu genişlikten itibaren
+      "3xl": "1920px",
     },
     extend: {
       colors: {
-        // ── Sıcak topraksı (organik) açık tema ──────────────────────────
-        // İnsan-tasarımı, dergi gibi hisset; neon-cyberpunk değil.
-        base: "#f3ead9",     // sıcak krem — sayfa arka planı
-        surface: "#faf5ec",  // header/sidebar/yükseltilmiş yüzeyler
-        card: "#fffdf8",     // kart arka planı (neredeyse beyaz, sıcak)
-        line: "#e6dcc6",     // sıcak kenarlık
-        ink: "#2f2820",      // koyu başlık/önemli metin
+        // ── Modern karanlık (CrazyGames tarzı) ──────────────────────────
+        base: "#14161f",     // koyu antrasit-indigo — sayfa zemini
+        surface: "#1a1c28",  // header/sidebar/yükseltilmiş yüzeyler
+        card: "#1d2030",     // kart zemini
+        line: "#2c3047",     // kenarlık
+        ink: "#f5f6fc",      // açık başlık/önemli metin
 
-        // Vurgu renkleri — eski "neon" anahtarları korunur (kod kırılmasın),
-        // ama değerler doğal tonlara çevrildi.
+        // Vurgu — menekşe/mor (eski "neon" anahtarları korunur)
         neon: {
-          DEFAULT: "#2f6b43", // orman yeşili (birincil vurgu, eski cyan)
-          purple: "#b5683a",  // terrakota (eski mor)
-          pink: "#c2575b",    // sıcak gül (favoriler ♥, eski pembe)
-          lime: "#c2882b",    // kehribar/oker (eski lime)
+          DEFAULT: "#7c6cff", // menekşe (birincil vurgu)
+          purple: "#a855f7",  // mor (ikincil)
+          pink: "#f472b6",    // pembe (favori/dislike)
+          lime: "#fbbf24",    // kehribar (premium/jeton vurgusu)
         },
 
-        // Slate ölçeğini "ters çevir": kod düşük numaraları (100-300) önemli
-        // metin, yüksek numaraları (400-600) soluk metin için kullanıyor.
-        // Açık temada önemli = koyu, soluk = orta-sıcak gri olsun.
+        // Koyu tema için açık metin ölçeği: düşük no = parlak/önemli, yüksek = soluk
         slate: {
-          50: "#2b241c",
-          100: "#2f2820",
-          200: "#3a3327",
-          300: "#4f4636",
-          400: "#7c6e57",
-          500: "#8f8067",
-          600: "#a4957a",
-          700: "#c2b6a0",
-          800: "#ddd2bd",
-          900: "#ece3d2",
+          50: "#f8fafc",
+          100: "#eef0f8",
+          200: "#dfe2ee",
+          300: "#c4c8da",
+          400: "#9095ad",
+          500: "#757a92",
+          600: "#5d6175",
+          700: "#474b5c",
+          800: "#313443",
+          900: "#20222e",
         },
       },
       fontFamily: {
-        display: ["var(--font-display)", "Georgia", "serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        // Yumuşak, doğal gölge (neon glow yerine)
-        glow: "0 1px 2px rgba(60,46,26,.06), 0 8px 24px -10px rgba(60,46,26,.18)",
-        "glow-purple": "0 1px 2px rgba(60,46,26,.06), 0 10px 28px -10px rgba(181,104,58,.28)",
+        glow: "0 1px 2px rgba(0,0,0,.3), 0 10px 30px -12px rgba(124,108,255,.45)",
+        "glow-purple": "0 1px 2px rgba(0,0,0,.3), 0 12px 34px -12px rgba(168,85,247,.5)",
       },
       backgroundImage: {
         "grid-fade":
-          "radial-gradient(circle at 50% 0%, rgba(47,107,67,.08), transparent 60%)",
+          "radial-gradient(circle at 50% 0%, rgba(124,108,255,.14), transparent 60%)",
       },
       keyframes: {
         float: {

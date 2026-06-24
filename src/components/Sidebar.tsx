@@ -73,7 +73,7 @@ export function Sidebar() {
     `group flex items-center gap-3 rounded-2xl px-2.5 py-2 text-sm font-semibold transition ${
       active
         ? "bg-neon/12 text-neon shadow-[inset_0_0_0_1px_rgba(47,107,67,.25)]"
-        : "text-slate-300 hover:bg-black/[0.04] hover:text-ink"
+        : "text-slate-300 hover:bg-white/[0.06] hover:text-ink"
     }`;
 
   const nav = (
@@ -129,7 +129,7 @@ export function Sidebar() {
           <button
             onClick={() => setOpen(false)}
             aria-label="Menüyü kapat"
-            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-black/[0.05] hover:text-ink"
+            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-white/[0.07] hover:text-ink"
           >
             ✕
           </button>

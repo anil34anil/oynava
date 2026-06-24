@@ -16,7 +16,7 @@ export function Header() {
         <button
           onClick={toggleSidebar}
           aria-label="Menüyü aç"
-          className="grid h-10 w-10 place-items-center rounded-xl text-slate-300 hover:bg-black/[0.05] hover:text-ink lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-xl text-slate-300 hover:bg-white/[0.07] hover:text-ink lg:hidden"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <path d="M3 6h18M3 12h18M3 18h18" />

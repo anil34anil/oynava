@@ -57,7 +57,7 @@ export default function ProfilePage() {
       // eslint-disable-next-line @next/next/no-img-element
       <img src={displayAvatar} alt="" className={`${size} rounded-2xl object-cover`} referrerPolicy="no-referrer" />
     ) : (
-      <span className={`grid ${size} place-items-center rounded-2xl bg-black/[0.04]`}>{displayAvatar}</span>
+      <span className={`grid ${size} place-items-center rounded-2xl bg-white/[0.06]`}>{displayAvatar}</span>
     );
 
   return (
@@ -95,28 +95,28 @@ export default function ProfilePage() {
             <h2 className="font-display text-lg font-bold text-ink">İstatistikler</h2>
             <ul className="mt-3 space-y-3 text-sm">
               <li className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/[0.04]">📅</span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06]">📅</span>
                 <span>
                   <span className="block text-slate-500">Üye gün sayısı</span>
                   <b className="text-ink">{memberDays === null ? "—" : `${memberDays} gün`}</b>
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/[0.04]">👍</span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06]">👍</span>
                 <span>
                   <span className="block text-slate-500">Beğenilen oyunlar</span>
                   <b className="text-ink">{favs.length}</b>
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/[0.04]">🕒</span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06]">🕒</span>
                 <span>
                   <span className="block text-slate-500">Son oynananlar</span>
                   <b className="text-ink">{recent.length}</b>
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/[0.04]">🪙</span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06]">🪙</span>
                 <span>
                   <span className="block text-slate-500">Jeton</span>
                   <b className="text-neon">{coins}</b>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => saveAvatar("🎮")}
-                    className="grid h-14 w-14 place-items-center rounded-xl border border-line bg-black/[0.04] text-2xl hover:border-neon"
+                    className="grid h-14 w-14 place-items-center rounded-xl border border-line bg-white/[0.06] text-2xl hover:border-neon"
                   >
                     🎮
                   </button>
@@ -197,7 +197,7 @@ export default function ProfilePage() {
                     <button
                       key={a.id}
                       onClick={() => saveAvatar(a.value)}
-                      className={`grid h-14 w-14 place-items-center rounded-xl border bg-black/[0.04] text-2xl hover:border-neon ${
+                      className={`grid h-14 w-14 place-items-center rounded-xl border bg-white/[0.06] text-2xl hover:border-neon ${
                         profile.avatar === a.value ? "border-neon shadow-glow" : "border-line"
                       }`}
                     >
@@ -218,7 +218,7 @@ export default function ProfilePage() {
                 <div className="flex flex-wrap gap-3 text-2xl">
                   {ownedBadges.length > 0
                     ? ownedBadges.map((b) => (
-                        <span key={b.id} className="grid h-12 w-12 place-items-center rounded-xl bg-black/[0.04]">
+                        <span key={b.id} className="grid h-12 w-12 place-items-center rounded-xl bg-white/[0.06]">
                           {b.value}
                         </span>
                       ))

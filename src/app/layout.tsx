@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { AdFrame } from "@/components/AdFrame";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LoginModal } from "@/components/LoginModal";
+import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { SITE } from "@/lib/site";
 
 // Tüm site tek, temiz sans (Anthropic Sans tescilli olduğundan en yakın ücretsiz eş: Inter).
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
           />
         )}
+        <BackgroundDecor />
         <Header />
         <div className="flex">
           <Sidebar />

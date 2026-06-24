@@ -16,26 +16,26 @@ html {
 body {
   @apply bg-base text-slate-200 font-body antialiased;
   background-image:
-    radial-gradient(circle at 12% -10%, rgba(47, 107, 67, 0.07), transparent 42%),
-    radial-gradient(circle at 88% 0%, rgba(181, 104, 58, 0.07), transparent 42%);
+    radial-gradient(circle at 12% -8%, rgba(124, 108, 255, 0.16), transparent 45%),
+    radial-gradient(circle at 88% 0%, rgba(168, 85, 247, 0.12), transparent 45%);
   background-attachment: fixed;
   min-height: 100vh;
 }
 
-/* İnce, sıcak kaydırma çubuğu */
+/* İnce, koyu kaydırma çubuğu */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #efe6d4;
+  background: #14161f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cdbfa3;
+  background: #3a3f5a;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b8a888;
+  background: #4d537a;
 }
 
 @layer components {
@@ -43,9 +43,10 @@ body {
     @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
   }
 
-  /* Eskiden neon glow'du; artık sadece sıcak yeşil vurgu rengi (gölge yok) */
+  /* Menekşe vurgu metni (hafif parıltı) */
   .neon-text {
-    color: #2f6b43;
+    color: #a78bfa;
+    text-shadow: 0 0 22px rgba(124, 108, 255, 0.35);
   }
 
   .btn {
@@ -54,10 +55,10 @@ body {
            transition-all duration-200;
   }
   .btn-primary {
-    @apply btn bg-neon text-[#fffdf8] shadow-glow hover:bg-[#27593a] hover:shadow-[0_8px_24px_-8px_rgba(47,107,67,.45)];
+    @apply btn bg-neon text-white shadow-glow hover:bg-[#6a5af0] hover:shadow-[0_10px_30px_-8px_rgba(124,108,255,.6)];
   }
   .btn-ghost {
-    @apply btn border border-line bg-black/[0.03] text-slate-200 hover:border-neon hover:text-neon;
+    @apply btn border border-line bg-white/5 text-slate-200 hover:border-neon hover:text-neon;
   }
 
   .card-base {

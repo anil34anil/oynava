@@ -135,7 +135,7 @@ export function LoginModal() {
           <button
             onClick={close}
             aria-label="Kapat"
-            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-black/[0.05] hover:text-ink"
+            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-white/[0.07] hover:text-ink"
           >
             ✕
           </button>
@@ -251,7 +251,7 @@ export function LoginModal() {
                   }}
                   aria-label="Rastgele kullanıcı adı"
                   title="Rastgele üret"
-                  className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-500 hover:bg-black/[0.05] hover:text-neon"
+                  className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-500 hover:bg-white/[0.07] hover:text-neon"
                 >
                   🔀
                 </button>
@@ -262,7 +262,7 @@ export function LoginModal() {
                 const Row = ({ ok, label }: { ok: boolean; label: string }) => (
                   <div
                     className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm ${
-                      ok ? "bg-neon/10 text-neon" : "bg-black/[0.04] text-slate-500"
+                      ok ? "bg-neon/10 text-neon" : "bg-white/[0.06] text-slate-500"
                     }`}
                   >
                     <span>{ok ? "✓" : "○"}</span> {label}
