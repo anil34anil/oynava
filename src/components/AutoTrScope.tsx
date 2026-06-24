@@ -1,28 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { useT, useAutoTr } from "@/lib/useLocaleClient";
+import { useLocale } from "@/lib/useLocaleClient";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 /**
- * Tüm yasal/bilgi sayfaları için ortak çerçeve: başlık + okunaklı içerik bloğu.
- * Türkçe dışındaki dillerde içerik (DOM metinleri) otomatik çevrilir (/api/i18n).
+ * İçindeki Türkçe metin düğümlerini (DOM) geçerli dile otomatik çevirir (/api/i18n).
+ * Tek tek string sarmadan bütün bir sayfa/bölümü çevirmek için kullanılır.
+ * Inputların value'larına dokunmaz; yalnızca görünür metinleri çevirir.
  */
-export function LegalLayout({
-  title,
-  updated,
-  children,
-}: {
-  title: string;
-  updated?: string;
-  children: React.ReactNode;
-}) {
-  const { locale, t, href } = useT();
-  const [trTitle, trUpdated] = useAutoTr([title, "Son güncelleme"]);
+export function AutoTrScope({ children, className }: { children: React.ReactNode; className?: string }) {
+  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
 
-  // Türkçe değilse: prose içindeki Türkçe metin düğümlerini topla, çevir, yerine koy.
   useEffect(() => {
     if (locale === DEFAULT_LOCALE || !ref.current) return;
     const walker = document.createTreeWalker(ref.current, NodeFilter.SHOW_TEXT);
@@ -30,6 +20,8 @@ export function LegalLayout({
     const texts: string[] = [];
     while (walker.nextNode()) {
       const n = walker.currentNode as Text;
+      const parent = n.parentElement?.tagName;
+      if (parent === "SCRIPT" || parent === "STYLE") continue;
       const s = (n.nodeValue || "").trim();
       if (s.length > 1 && /[a-zçğıöşü]/i.test(s)) {
         nodes.push(n);
@@ -57,13 +49,8 @@ export function LegalLayout({
   }, [locale]);
 
   return (
-    <div className="container-x max-w-3xl py-8">
-      <nav className="mb-4 text-sm text-slate-500">
-        <Link href={href("/")} className="hover:text-neon">{t("nav.home")}</Link> / {trTitle}
-      </nav>
-      <h1 className="font-display text-3xl font-black text-ink neon-text">{trTitle}</h1>
-      {updated && <p className="mt-2 text-xs text-slate-500">{trUpdated}: {updated}</p>}
-      <div ref={ref} className="legal-prose mt-6 space-y-4 text-slate-300">{children}</div>
+    <div ref={ref} className={className}>
+      {children}
     </div>
   );
 }

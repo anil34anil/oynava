@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { AutoTrScope } from "@/components/AutoTrScope";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function LoginPage() {
 
   if (user) {
     return (
-      <div className="container-x grid max-w-md gap-4 py-16 text-center">
+      <AutoTrScope className="container-x grid max-w-md gap-4 py-16 text-center">
         <div className="text-5xl">{user.avatar}</div>
         <h1 className="font-display text-2xl font-black text-ink">Giriş yapıldı</h1>
         <p className="text-slate-400">{user.email}</p>
@@ -34,12 +35,12 @@ export default function LoginPage() {
           <button onClick={() => router.push("/profil")} className="btn-primary">Profilim</button>
           <button onClick={logout} className="btn-ghost">Çıkış Yap</button>
         </div>
-      </div>
+      </AutoTrScope>
     );
   }
 
   return (
-    <div className="container-x grid max-w-md gap-6 py-12">
+    <AutoTrScope className="container-x grid max-w-md gap-6 py-12">
       <div className="flex rounded-xl border border-line bg-card p-1 font-display text-sm">
         <button
           onClick={() => setMode("login")}
@@ -101,6 +102,6 @@ export default function LoginPage() {
         Hesabın şu an bu cihazda güvenli (hash'li) saklanır. Cihazlar arası senkron ve
         sunucu güvenliği için ileride NextAuth + veritabanı eklenecek.
       </p>
-    </div>
+    </AutoTrScope>
   );
 }

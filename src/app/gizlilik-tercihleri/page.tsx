@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AutoTrScope } from "@/components/AutoTrScope";
 
 type Consent = { essential: true; analytics: boolean; ads: boolean };
 const KEY = "oh:consent";
@@ -61,7 +62,7 @@ export default function PrivacyManagerPage() {
   );
 
   return (
-    <div className="container-x max-w-3xl py-8">
+    <AutoTrScope className="container-x max-w-3xl py-8">
       <nav className="mb-4 text-sm text-slate-500">
         <Link href="/" className="hover:text-neon">Ana Sayfa</Link> / Gizlilik Tercihleri
       </nav>
@@ -108,6 +109,6 @@ export default function PrivacyManagerPage() {
         Not: Kişiselleştirilmiş reklamların tam yasal yönetimi için yayına geçişte bir
         onay yönetim platformu (CMP) entegre edilmesi önerilir (örn. Google'ın CMP'si).
       </p>
-    </div>
+    </AutoTrScope>
   );
 }
