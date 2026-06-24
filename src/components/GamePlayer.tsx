@@ -3,11 +3,13 @@
 import { useRef, useState } from "react";
 import { Game } from "@/lib/catalog";
 import { pushRecent } from "@/lib/useLocalProfile";
+import { useAutoTr } from "@/lib/useLocaleClient";
 import { GameActionBar } from "./GameActionBar";
 
 export function GamePlayer({ game }: { game: Game }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
+  const [clickToStart, restart] = useAutoTr(["Başlatmak için tıkla", "Yeniden başlat"]);
 
   function goFullscreen() {
     const el = wrapRef.current;
@@ -45,7 +47,7 @@ export function GamePlayer({ game }: { game: Game }) {
               ▶
             </span>
             <span className="absolute bottom-6 font-display text-sm uppercase tracking-widest text-white">
-              Başlatmak için tıkla
+              {clickToStart}
             </span>
           </button>
         )}
@@ -63,7 +65,7 @@ export function GamePlayer({ game }: { game: Game }) {
         </div>
         {started && (
           <button onClick={() => setStarted(false)} className="rounded-md px-2 py-1 hover:bg-white/[0.07] hover:text-ink">
-            ↻ Yeniden başlat
+            ↻ {restart}
           </button>
         )}
       </div>

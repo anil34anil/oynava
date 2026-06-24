@@ -6,6 +6,7 @@ import { SITE } from "@/lib/site";
 import { useAuth, accountExists, usernameChecks, generateUsername } from "@/lib/auth";
 import { GoogleLoginButton } from "./GoogleLoginButton";
 import { LOGIN_MODAL_EVENT } from "@/lib/useLoginModal";
+import { useAutoTr } from "@/lib/useLocaleClient";
 
 type Step = "choose" | "password" | "username";
 
@@ -25,6 +26,34 @@ export function LoginModal() {
   const [isExisting, setIsExisting] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const T = useAutoTr([
+    /* 0 */ "Giriş yap veya kaydol",
+    /* 1 */ "Hesabını oluştur",
+    /* 2 */ "Tekrar hoş geldin",
+    /* 3 */ "Kullanıcı adınızı ayarlayın",
+    /* 4 */ "Oyunlarını, favorilerini ve jetonlarını kaydet.",
+    /* 5 */ "Toplulukta seni bu isimle görecekler.",
+    /* 6 */ "Facebook ile devam et",
+    /* 7 */ "Apple ile devam et",
+    /* 8 */ "veya",
+    /* 9 */ "E-postanı gir",
+    /* 10 */ "Devam et",
+    /* 11 */ "Şifren",
+    /* 12 */ "Bir şifre belirle (en az 6 karakter)",
+    /* 13 */ "Giriş yap",
+    /* 14 */ "Kayıt ol ve başla",
+    /* 15 */ "← E-postayı değiştir",
+    /* 16 */ "6 ila 20 karakter",
+    /* 17 */ "Sadece harfler, sayılar, '.' ve '_'",
+    /* 18 */ "Herhangi bir bildirimde bulunmadan toksik ve uygunsuz kullanıcı adlarına sahip hesapları kalıcı olarak yasaklarız. Topluluğu herkes için güvenli tutalım!",
+    /* 19 */ "Devam ederek kullanım koşullarını kabul etmiş olursun. Hesabın şu an bu cihazda güvenli (hash'li) saklanır.",
+    /* 20 */ "yakında",
+    /* 21 */ "Geçerli bir e-posta gir.",
+    /* 22 */ "Kullanıcı adı kurallara uymuyor.",
+    /* 23 */ "Bir hata oluştu.",
+    /* 24 */ "kullanım koşullarını",
+  ]);
 
   useEffect(() => {
     const onOpen = () => {
@@ -70,7 +99,7 @@ export function LoginModal() {
     setErr(null);
     const mail = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
-      setErr("Geçerli bir e-posta gir.");
+      setErr(T[21]);
       return;
     }
     setIsExisting(accountExists(mail));
@@ -84,7 +113,7 @@ export function LoginModal() {
     const res = isExisting ? await login(email, pw) : await register(email, pw);
     setBusy(false);
     if (!res.ok) {
-      setErr(res.error ?? "Bir hata oluştu.");
+      setErr(res.error ?? T[23]);
       return;
     }
     // Yeni kayıt → CrazyGames gibi kullanıcı adı belirleme adımı; giriş → bitti
@@ -100,7 +129,7 @@ export function LoginModal() {
     e.preventDefault();
     const name = username.trim();
     if (!usernameChecks(name).valid) {
-      setErr("Kullanıcı adı kurallara uymuyor.");
+      setErr(T[22]);
       return;
     }
     updateAccount({ username: name });
@@ -143,20 +172,10 @@ export function LoginModal() {
 
         <div className="mx-auto mt-8 w-full max-w-sm">
           <h2 className="text-center font-display text-2xl font-black text-ink">
-            {step === "username"
-              ? "Kullanıcı adınızı ayarlayın"
-              : step === "password"
-                ? isExisting
-                  ? "Tekrar hoş geldin"
-                  : "Hesabını oluştur"
-                : "Giriş yap veya kaydol"}
+            {step === "username" ? T[3] : step === "password" ? (isExisting ? T[2] : T[1]) : T[0]}
           </h2>
           <p className="mt-2 text-center text-sm text-slate-400">
-            {step === "username"
-              ? "Toplulukta seni bu isimle görecekler."
-              : step === "password"
-                ? email
-                : "Oyunlarını, favorilerini ve jetonlarını kaydet."}
+            {step === "username" ? T[5] : step === "password" ? email : T[4]}
           </p>
 
           {step === "choose" ? (
@@ -169,21 +188,23 @@ export function LoginModal() {
 
               <SocialButton
                 icon="f"
-                label="Facebook ile devam et"
+                label={T[6]}
+                soonLabel={T[20]}
                 className="bg-[#1877f2] text-[#fff] hover:bg-[#1668d8]"
                 ready={fbReady}
-                onClick={() => setErr("Facebook ile giriş yakında — kurulum için Facebook uygulaması (App ID) gerekiyor.")}
+                onClick={() => setErr(`Facebook — ${T[20]}`)}
               />
               <SocialButton
                 icon=""
-                label="Apple ile devam et"
+                label={T[7]}
+                soonLabel={T[20]}
                 className="bg-white text-black hover:bg-slate-200"
                 ready={appleReady}
-                onClick={() => setErr("Apple ile giriş yakında — Apple Developer hesabı (Service ID) gerekiyor.")}
+                onClick={() => setErr(`Apple — ${T[20]}`)}
               />
 
               <div className="flex items-center gap-3 py-2 text-xs uppercase tracking-wider text-slate-600">
-                <span className="h-px flex-1 bg-line" /> veya <span className="h-px flex-1 bg-line" />
+                <span className="h-px flex-1 bg-line" /> {T[8]} <span className="h-px flex-1 bg-line" />
               </div>
 
               <form onSubmit={continueEmail} className="space-y-3">
@@ -191,14 +212,14 @@ export function LoginModal() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="E-postanı gir"
+                  placeholder={T[9]}
                   autoComplete="email"
                   autoFocus
                   className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-ink outline-none focus:border-neon"
                 />
                 {err && <p className="text-sm text-neon-pink">⚠ {err}</p>}
                 <button type="submit" className="btn-primary w-full justify-center py-3">
-                  Devam et
+                  {T[10]}
                 </button>
               </form>
             </div>
@@ -208,14 +229,14 @@ export function LoginModal() {
                 type="password"
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
-                placeholder={isExisting ? "Şifren" : "Bir şifre belirle (en az 6 karakter)"}
+                placeholder={isExisting ? T[11] : T[12]}
                 autoComplete={isExisting ? "current-password" : "new-password"}
                 autoFocus
                 className="w-full rounded-xl border border-line bg-base/60 px-4 py-3 text-ink outline-none focus:border-neon"
               />
               {err && <p className="text-sm text-neon-pink">⚠ {err}</p>}
               <button type="submit" disabled={busy} className="btn-primary w-full justify-center py-3 disabled:opacity-60">
-                {busy ? "..." : isExisting ? "Giriş yap" : "Kayıt ol ve başla"}
+                {busy ? "..." : isExisting ? T[13] : T[14]}
               </button>
               <button
                 type="button"
@@ -226,7 +247,7 @@ export function LoginModal() {
                 }}
                 className="w-full text-center text-sm text-slate-500 hover:text-slate-300"
               >
-                ← E-postayı değiştir
+                {T[15]}
               </button>
             </form>
           ) : (
@@ -270,8 +291,8 @@ export function LoginModal() {
                 );
                 return (
                   <div className="space-y-1.5">
-                    <Row ok={c.lengthOk} label="6 ila 20 karakter" />
-                    <Row ok={c.charsOk} label="Sadece harfler, sayılar, '.' ve '_'" />
+                    <Row ok={c.lengthOk} label={T[16]} />
+                    <Row ok={c.charsOk} label={T[17]} />
                   </div>
                 );
               })()}
@@ -283,24 +304,15 @@ export function LoginModal() {
                 disabled={!usernameChecks(username.trim()).valid}
                 className="btn-primary w-full justify-center py-3 disabled:opacity-50"
               >
-                Devam et
+                {T[10]}
               </button>
 
-              <p className="text-center text-xs leading-relaxed text-slate-500">
-                Herhangi bir bildirimde bulunmadan toksik ve uygunsuz kullanıcı adlarına sahip hesapları{" "}
-                <strong className="text-ink">kalıcı olarak yasaklarız</strong>. Topluluğu herkes için güvenli tutalım!
-              </p>
+              <p className="text-center text-xs leading-relaxed text-slate-500">{T[18]}</p>
             </form>
           )}
 
           {step !== "username" && (
-            <p className="mt-8 text-center text-xs leading-relaxed text-slate-600">
-              Devam ederek{" "}
-              <a href="/yas-degerlendirmesi" className="underline hover:text-slate-400">
-                kullanım koşullarını
-              </a>{" "}
-              kabul etmiş olursun. Hesabın şu an bu cihazda güvenli (hash&apos;li) saklanır.
-            </p>
+            <p className="mt-8 text-center text-xs leading-relaxed text-slate-600">{T[19]}</p>
           )}
         </div>
       </aside>
@@ -311,12 +323,14 @@ export function LoginModal() {
 function SocialButton({
   icon,
   label,
+  soonLabel,
   className,
   ready,
   onClick,
 }: {
   icon: string;
   label: string;
+  soonLabel: string;
   className: string;
   ready: boolean;
   onClick: () => void;
@@ -333,7 +347,7 @@ function SocialButton({
       {label}
       {!ready && (
         <span className="absolute right-3 rounded-full bg-black/20 px-1.5 py-0.5 text-[10px] font-medium">
-          yakında
+          {soonLabel}
         </span>
       )}
     </button>

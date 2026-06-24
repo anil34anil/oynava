@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { getReactions, toggleReaction } from "@/lib/kv";
+import { getReactions, toggleReaction, logVote } from "@/lib/kv";
 
 const UID_COOKIE = "oh_uid";
 
@@ -31,6 +31,16 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const type = body.type === "dislike" ? "dislike" : "like";
 
   const state = await toggleReaction(params.id, uid, type);
+
+  // IP + ülke (Vercel başlıkları) ile oy olayını günlüğe yaz
+  const ip =
+    (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    req.headers.get("x-real-ip") ||
+    "";
+  const country = req.headers.get("x-vercel-ip-country") || "";
+  const active = type === "like" ? state.liked : state.disliked;
+  await logVote({ gameId: params.id, type, active, ip, country });
+
   const res = NextResponse.json(state);
   if (isNewUid) {
     res.cookies.set(UID_COOKIE, uid, {

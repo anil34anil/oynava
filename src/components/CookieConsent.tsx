@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAutoTr, useT } from "@/lib/useLocaleClient";
 
 type Consent = { essential: true; analytics: boolean; ads: boolean };
 const KEY = "oh:consent";
@@ -12,10 +13,29 @@ const KEY = "oh:consent";
  * Seçim "oh:consent" anahtarında saklanır → /gizlilik-tercihleri ile aynı depo.
  */
 export function CookieConsent() {
+  const { href } = useT();
   const [show, setShow] = useState(false);
   const [custom, setCustom] = useState(false);
   const [analytics, setAnalytics] = useState(true);
   const [ads, setAds] = useState(true);
+  const [
+    title, descA, descLink, essLabel, essDesc, anLabel, anDesc, adLabel, adDesc,
+    acceptAll, rejectAll, saveChoice, customize,
+  ] = useAutoTr([
+    "Çerez Tercihleri",
+    "Sitenin çalışması için zorunlu çerezleri kullanıyoruz. Ayrıca izin verirsen ölçümleme ve kişiselleştirilmiş reklam çerezlerini de kullanırız. Ayrıntılar için",
+    "Veri Koruma Kuralları",
+    "Zorunlu çerezler",
+    "Temel işlevler, güvenlik. Kapatılamaz.",
+    "Ölçümleme / Analitik",
+    "Kullanımı anonim ölçüp deneyimi iyileştirir.",
+    "Kişiselleştirilmiş reklamlar",
+    "Reklam ağlarının ilgi alanına göre reklam göstermesine izin verir.",
+    "Tümünü Kabul Et",
+    "Sadece Zorunlu (Reddet)",
+    "Seçimi Kaydet",
+    "Özelleştir",
+  ]);
 
   useEffect(() => {
     // Seçim daha önce yapıldıysa gösterme (SSR/client uyuşmazlığını önlemek için
@@ -46,29 +66,17 @@ export function CookieConsent() {
           <div className="flex items-start gap-3">
             <span className="text-2xl">🍪</span>
             <div className="flex-1">
-              <h2 className="font-display text-lg font-bold text-ink">Çerez Tercihleri</h2>
+              <h2 className="font-display text-lg font-bold text-ink">{title}</h2>
               <p className="mt-1 text-sm text-slate-400">
-                Sitenin çalışması için <strong className="text-slate-200">zorunlu çerezleri</strong>{" "}
-                kullanıyoruz. Ayrıca izin verirsen ölçümleme ve kişiselleştirilmiş reklam
-                çerezlerini de kullanırız. Ayrıntılar için{" "}
-                <Link href="/veri-koruma" className="text-neon hover:underline">Veri Koruma Kuralları</Link>.
+                {descA}{" "}
+                <Link href={href("/veri-koruma")} className="text-neon hover:underline">{descLink}</Link>.
               </p>
 
               {custom && (
                 <div className="mt-4 space-y-2">
-                  <Toggle label="Zorunlu çerezler" desc="Temel işlevler, güvenlik. Kapatılamaz." checked disabled />
-                  <Toggle
-                    label="Ölçümleme / Analitik"
-                    desc="Kullanımı anonim ölçüp deneyimi iyileştirir."
-                    checked={analytics}
-                    onChange={setAnalytics}
-                  />
-                  <Toggle
-                    label="Kişiselleştirilmiş reklamlar"
-                    desc="Reklam ağlarının ilgi alanına göre reklam göstermesine izin verir."
-                    checked={ads}
-                    onChange={setAds}
-                  />
+                  <Toggle label={essLabel} desc={essDesc} checked disabled />
+                  <Toggle label={anLabel} desc={anDesc} checked={analytics} onChange={setAnalytics} />
+                  <Toggle label={adLabel} desc={adDesc} checked={ads} onChange={setAds} />
                 </div>
               )}
 
@@ -77,24 +85,24 @@ export function CookieConsent() {
                   onClick={() => save({ essential: true, analytics: true, ads: true })}
                   className="btn-primary py-2 text-xs"
                 >
-                  Tümünü Kabul Et
+                  {acceptAll}
                 </button>
                 <button
                   onClick={() => save({ essential: true, analytics: false, ads: false })}
                   className="btn-ghost py-2 text-xs"
                 >
-                  Sadece Zorunlu (Reddet)
+                  {rejectAll}
                 </button>
                 {custom ? (
                   <button
                     onClick={() => save({ essential: true, analytics, ads })}
                     className="btn-ghost border-neon py-2 text-xs text-neon"
                   >
-                    Seçimi Kaydet
+                    {saveChoice}
                   </button>
                 ) : (
                   <button onClick={() => setCustom(true)} className="btn-ghost py-2 text-xs">
-                    Özelleştir
+                    {customize}
                   </button>
                 )}
               </div>

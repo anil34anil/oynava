@@ -98,6 +98,41 @@ export async function toggleReaction(gameId: string, uid: string, type: "like" |
   }
 }
 
+// ── Oy günlüğü (admin: IP + ülke) ─────────────────────────────────────────
+const VOTES_LOG = "oh:votes_log";
+export type VoteEvent = {
+  gameId: string;
+  type: "like" | "dislike";
+  active: boolean; // true=eklendi, false=geri alındı
+  ip: string;
+  country: string;
+  ts: number;
+};
+
+/** Bir oy olayını (IP + ülke ile) günlüğe yazar; son 2000 kayıt tutulur. */
+export async function logVote(e: Omit<VoteEvent, "ts">): Promise<void> {
+  const kv = await getClient();
+  if (!kv) return;
+  try {
+    await kv.lPush(VOTES_LOG, JSON.stringify({ ...e, ts: Date.now() }));
+    await kv.lTrim(VOTES_LOG, 0, 1999);
+  } catch {
+    /* yoksay */
+  }
+}
+
+/** Admin: en son oy olayları (IP + ülke dahil). */
+export async function getVotesLog(limit = 300): Promise<VoteEvent[]> {
+  const kv = await getClient();
+  if (!kv) return [];
+  try {
+    const rows = await kv.lRange(VOTES_LOG, 0, limit - 1);
+    return rows.map((r) => JSON.parse(r) as VoteEvent).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 /** Admin paneli için: beğeni VEYA beğenmeme almış tüm oyunlar, beğeniye göre azalan. */
 export async function getAllVotes(): Promise<{ gameId: string; likes: number; dislikes: number }[]> {
   const kv = await getClient();

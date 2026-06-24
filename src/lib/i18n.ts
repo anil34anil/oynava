@@ -9,15 +9,16 @@
 export const DEFAULT_LOCALE = "tr" as const;
 
 // Sitenin gösterildiği ülkelere göre diller (Search Console listesinden).
+// cc = bayrak için ülke kodu (flagcdn görselleri; Windows emoji bayraklarını çizmiyor).
 export const LOCALES = [
-  { code: "tr", name: "Türkçe", flag: "🇹🇷", dir: "ltr" },
-  { code: "en", name: "English", flag: "🇬🇧", dir: "ltr" },
-  { code: "nl", name: "Nederlands", flag: "🇳🇱", dir: "ltr" },
-  { code: "es", name: "Español", flag: "🇪🇸", dir: "ltr" },
-  { code: "ko", name: "한국어", flag: "🇰🇷", dir: "ltr" },
-  { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩", dir: "ltr" },
-  { code: "az", name: "Azərbaycan", flag: "🇦🇿", dir: "ltr" },
-  { code: "ar", name: "العربية", flag: "🇪🇬", dir: "rtl" },
+  { code: "tr", name: "Türkçe", flag: "🇹🇷", cc: "tr", dir: "ltr" },
+  { code: "en", name: "English", flag: "🇬🇧", cc: "gb", dir: "ltr" },
+  { code: "nl", name: "Nederlands", flag: "🇳🇱", cc: "nl", dir: "ltr" },
+  { code: "es", name: "Español", flag: "🇪🇸", cc: "es", dir: "ltr" },
+  { code: "ko", name: "한국어", flag: "🇰🇷", cc: "kr", dir: "ltr" },
+  { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩", cc: "id", dir: "ltr" },
+  { code: "az", name: "Azərbaycan", flag: "🇦🇿", cc: "az", dir: "ltr" },
+  { code: "ar", name: "العربية", flag: "🇪🇬", cc: "eg", dir: "rtl" },
 ] as const;
 
 export type Locale = (typeof LOCALES)[number]["code"];
