@@ -32,6 +32,26 @@ async function getClient(): Promise<RedisClientType | null> {
   }
 }
 
+// Genel amaçlı cache (çeviri önbelleği vb.)
+export async function kvGet(key: string): Promise<string | null> {
+  const kv = await getClient();
+  if (!kv) return null;
+  try {
+    return (await kv.get(key)) as string | null;
+  } catch {
+    return null;
+  }
+}
+export async function kvSet(key: string, value: string): Promise<void> {
+  const kv = await getClient();
+  if (!kv) return;
+  try {
+    await kv.set(key, value);
+  } catch {
+    /* yoksay */
+  }
+}
+
 const LIKED_GAMES_SET = "oh:liked_games"; // en az bir beğenisi olan oyun id'leri
 
 const likedKey = (id: string) => `oh:liked_by:${id}`;
