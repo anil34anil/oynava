@@ -25,12 +25,12 @@ export default async function AdminVotesPage() {
   return (
     <div className="container-x space-y-6 py-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-black text-ink">👍 Oylanan Oyunlar</h1>
+        <h1 className="font-display text-2xl font-black text-ink">👍👎 Oylanan Oyunlar</h1>
         <AdminLogoutButton />
       </div>
 
       {votes.length === 0 ? (
-        <p className="text-slate-400">Henüz beğeni yok.</p>
+        <p className="text-slate-400">Henüz oy yok.</p>
       ) : (
         <div className="card-base overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -39,7 +39,9 @@ export default async function AdminVotesPage() {
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Oyun</th>
                 <th className="px-4 py-3">Kategori</th>
-                <th className="px-4 py-3 text-right">Beğeni</th>
+                <th className="px-4 py-3 text-right">👍 Beğeni</th>
+                <th className="px-4 py-3 text-right">👎 Beğenmeme</th>
+                <th className="px-4 py-3 text-right">Net</th>
               </tr>
             </thead>
             <tbody>
@@ -58,7 +60,9 @@ export default async function AdminVotesPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-slate-400">{game?.category ?? "—"}</td>
-                    <td className="px-4 py-3 text-right font-display text-neon">{v.count}</td>
+                    <td className="px-4 py-3 text-right font-display text-neon">{v.likes}</td>
+                    <td className="px-4 py-3 text-right font-display text-neon-pink">{v.dislikes}</td>
+                    <td className="px-4 py-3 text-right font-display text-slate-300">{v.likes - v.dislikes}</td>
                   </tr>
                 );
               })}

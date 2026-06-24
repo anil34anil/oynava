@@ -78,18 +78,21 @@ export async function toggleReaction(gameId: string, uid: string, type: "like" |
   }
 }
 
-/** Admin paneli için: en az 1 beğenisi olan tüm oyunlar, beğeni sayısına göre azalan. */
-export async function getAllVotes(): Promise<{ gameId: string; count: number }[]> {
+/** Admin paneli için: beğeni VEYA beğenmeme almış tüm oyunlar, beğeniye göre azalan. */
+export async function getAllVotes(): Promise<{ gameId: string; likes: number; dislikes: number }[]> {
   const kv = await getClient();
   if (!kv) return [];
   try {
     const gameIds = await kv.sMembers(LIKED_GAMES_SET);
     if (!gameIds.length) return [];
-    const counts = await Promise.all(gameIds.map((id) => kv.sCard(likedKey(id))));
+    const [likes, dislikes] = await Promise.all([
+      Promise.all(gameIds.map((id) => kv.sCard(likedKey(id)))),
+      Promise.all(gameIds.map((id) => kv.sCard(dislikedKey(id)))),
+    ]);
     return gameIds
-      .map((gameId, i) => ({ gameId, count: counts[i] ?? 0 }))
-      .filter((v) => v.count > 0)
-      .sort((a, b) => b.count - a.count);
+      .map((gameId, i) => ({ gameId, likes: likes[i] ?? 0, dislikes: dislikes[i] ?? 0 }))
+      .filter((v) => v.likes > 0 || v.dislikes > 0)
+      .sort((a, b) => b.likes - a.likes || b.dislikes - a.dislikes);
   } catch {
     return [];
   }
