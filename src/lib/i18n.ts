@@ -28,6 +28,13 @@ export function isLocale(x: string | undefined | null): x is Locale {
   return !!x && (LOCALE_CODES as string[]).includes(x);
 }
 
+/** Bir yolu dile göre önekler (tr → öneksiz). Sunucu+istemci ortak kullanılır. */
+export function localePath(path: string, locale: string): string {
+  if (locale === DEFAULT_LOCALE) return path;
+  if (path === "/") return `/${locale}`;
+  return `/${locale}${path.startsWith("/") ? "" : "/"}${path}`;
+}
+
 export function localeMeta(code: string) {
   return LOCALES.find((l) => l.code === code) ?? LOCALES[0];
 }
@@ -141,6 +148,19 @@ export const UI: Record<string, Record<string, string>> = {
     "cat.kiz": "ألعاب البنات", "cat.cocuk": "أطفال", "cat.arcade": "أركيد", "cat.3d": "ألعاب ثلاثية الأبعاد",
   },
 };
+
+// Ek arayüz anahtarları (oyun sayfası başlıkları, breadcrumb vb.)
+const EXTRA: Record<string, Record<string, string>> = {
+  tr: { "game.howToPlay": "Nasıl Oynanır?", "game.about": "Hakkında", "game.similar": "Benzer Oyunlar", "game.tags": "Etiketler", "nav.home": "Ana Sayfa", "common.gamesCount": "oyun" },
+  en: { "game.howToPlay": "How to Play?", "game.about": "About", "game.similar": "Similar Games", "game.tags": "Tags", "nav.home": "Home", "common.gamesCount": "games" },
+  nl: { "game.howToPlay": "Hoe te spelen?", "game.about": "Over", "game.similar": "Soortgelijke spellen", "game.tags": "Labels", "nav.home": "Home", "common.gamesCount": "spellen" },
+  es: { "game.howToPlay": "¿Cómo jugar?", "game.about": "Acerca de", "game.similar": "Juegos similares", "game.tags": "Etiquetas", "nav.home": "Inicio", "common.gamesCount": "juegos" },
+  ko: { "game.howToPlay": "플레이 방법", "game.about": "게임 소개", "game.similar": "비슷한 게임", "game.tags": "태그", "nav.home": "홈", "common.gamesCount": "게임" },
+  id: { "game.howToPlay": "Cara Bermain", "game.about": "Tentang", "game.similar": "Game Serupa", "game.tags": "Tag", "nav.home": "Beranda", "common.gamesCount": "game" },
+  az: { "game.howToPlay": "Necə Oynamalı", "game.about": "Haqqında", "game.similar": "Oxşar Oyunlar", "game.tags": "Teqlər", "nav.home": "Ana səhifə", "common.gamesCount": "oyun" },
+  ar: { "game.howToPlay": "كيف تلعب؟", "game.about": "حول اللعبة", "game.similar": "ألعاب مماثلة", "game.tags": "الوسوم", "nav.home": "الرئيسية", "common.gamesCount": "لعبة" },
+};
+for (const l of Object.keys(EXTRA)) Object.assign(UI[l], EXTRA[l]);
 
 /** Statik arayüz metni getir. */
 export function t(locale: string, key: string): string {

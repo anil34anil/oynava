@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { DEFAULT_LOCALE, isLocale, type Locale, t as tBase } from "./i18n";
+import { DEFAULT_LOCALE, isLocale, localePath, type Locale, t as tBase } from "./i18n";
 
 /** İstemci tarafında geçerli dili URL yolundan okur (/en/... → en). */
 export function useLocale(): Locale {
@@ -11,11 +11,7 @@ export function useLocale(): Locale {
 }
 
 /** Bir yolu geçerli dile göre önekler (tr → öneksiz). */
-export function localizedHref(path: string, locale: string): string {
-  if (locale === DEFAULT_LOCALE) return path;
-  if (path === "/") return `/${locale}`;
-  return `/${locale}${path.startsWith("/") ? "" : "/"}${path}`;
-}
+export const localizedHref = localePath;
 
 /** İstemci bileşenleri için çeviri kısayolu. */
 export function useT() {

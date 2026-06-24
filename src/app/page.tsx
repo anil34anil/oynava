@@ -5,8 +5,8 @@ import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
-
-export const revalidate = 3600;
+import { t, localePath } from "@/lib/i18n";
+import { getLocale, localizeText } from "@/lib/localize";
 
 const CAT_ICON: Record<string, string> = {
   aksiyon: "💥", macera: "🗺️", yaris: "🏎️", spor: "⚽", dovus: "🥊",
@@ -14,7 +14,17 @@ const CAT_ICON: Record<string, string> = {
 };
 
 export default async function HomePage() {
+  const locale = getLocale();
+  const L = (p: string) => localePath(p, locale);
   const games = await getGames();
+  const isTr = locale === "tr";
+  const [premiumTitle, premiumDesc, onlineDesc, exploreLabel, liveLabel] = await Promise.all([
+    localizeText("High-Graphics 3D & WebGL Games", locale),
+    localizeText("The best racing, FPS, .io battle and 3D games — free, no download.", locale),
+    localizeText("Multiplayer .io arenas and online FPS — live competition with players from around the world.", locale),
+    localizeText("Explore", locale),
+    localizeText("Live", locale),
+  ]);
 
   const popular = games.slice(0, 24);
   const online = games.filter(isOnline).slice(0, 12);
@@ -52,7 +62,7 @@ export default async function HomePage() {
       />
       {/* Oyunlar hemen görünsün — siteye girer girmez oynamaya başla */}
       <section>
-        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 Popüler Oyunlar</h1>
+        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
         <GameGrid games={popular} priorityCount={6} />
       </section>
 
@@ -62,12 +72,12 @@ export default async function HomePage() {
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
-              href={`/kategori/${c.slug}`}
+              href={L(`/kategori/${c.slug}`)}
               className="group flex flex-col items-center gap-1.5 rounded-2xl border border-line bg-card/60 py-3 transition hover:-translate-y-0.5 hover:border-neon hover:bg-card"
             >
               <span className="text-2xl transition group-hover:scale-110">{CAT_ICON[c.slug] ?? "🎮"}</span>
               <span className="px-1 text-center text-[11px] font-semibold leading-tight text-slate-400 group-hover:text-neon">
-                {c.tr}
+                {t(locale, `cat.${c.slug}`)}
               </span>
             </Link>
           ))}
@@ -76,20 +86,22 @@ export default async function HomePage() {
 
       {/* Premium tanıtım banner */}
       <Link
-        href="/premium"
+        href={L("/premium")}
         className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-neon-purple/30 bg-gradient-to-r from-neon-purple/15 via-card to-neon/10 p-6 transition hover:border-neon-purple"
       >
         <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-neon-purple/20 blur-3xl" />
         <div className="relative">
           <span className="text-xs font-semibold uppercase tracking-widest text-neon-purple">
-            ✦ Premium Oyunlar
+            ✦ {t(locale, "nav.premium")}
           </span>
-          <h2 className="mt-1 font-display text-2xl font-black text-ink">Yüksek Grafikli 3D & WebGL Oyunlar</h2>
+          <h2 className="mt-1 font-display text-2xl font-black text-ink">
+            {isTr ? "Yüksek Grafikli 3D & WebGL Oyunlar" : premiumTitle}
+          </h2>
           <p className="mt-1 max-w-md text-sm text-slate-400">
-            En kaliteli yarış, FPS, .io savaş ve 3D oyunlar — ücretsiz, indirme yok.
+            {isTr ? "En kaliteli yarış, FPS, .io savaş ve 3D oyunlar — ücretsiz, indirme yok." : premiumDesc}
           </p>
         </div>
-        <span className="btn-primary relative shrink-0 group-hover:scale-105">Keşfet →</span>
+        <span className="btn-primary relative shrink-0 group-hover:scale-105">{exploreLabel} →</span>
       </Link>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
@@ -100,16 +112,18 @@ export default async function HomePage() {
           <div className="mb-4 flex items-end justify-between">
             <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-ink">
               <span className="flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Canlı
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> {liveLabel}
               </span>
-              🌐 Online Oyunlar
+              🌐 {t(locale, "nav.online")}
             </h2>
-            <Link href="/online" className="text-sm font-semibold text-emerald-400 hover:underline">
-              Tümünü gör →
+            <Link href={L("/online")} className="text-sm font-semibold text-emerald-400 hover:underline">
+              {t(locale, "common.seeAll")} →
             </Link>
           </div>
           <p className="mb-4 max-w-2xl text-sm text-slate-400">
-            Çok oyunculu .io arenaları ve online FPS — dünyanın dört bir yanından oyuncularla canlı rekabet.
+            {isTr
+              ? "Çok oyunculu .io arenaları ve online FPS — dünyanın dört bir yanından oyuncularla canlı rekabet."
+              : onlineDesc}
           </p>
           <GameGrid games={online} />
         </section>
@@ -119,10 +133,10 @@ export default async function HomePage() {
         <section key={cat.slug}>
           <div className="mb-4 flex items-end justify-between">
             <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
-              <span>{CAT_ICON[cat.slug] ?? "🎮"}</span> {cat.tr}
+              <span>{CAT_ICON[cat.slug] ?? "🎮"}</span> {t(locale, `cat.${cat.slug}`)}
             </h2>
-            <Link href={`/kategori/${cat.slug}`} className="text-sm font-semibold text-neon hover:underline">
-              Tümünü gör →
+            <Link href={L(`/kategori/${cat.slug}`)} className="text-sm font-semibold text-neon hover:underline">
+              {t(locale, "common.seeAll")} →
             </Link>
           </div>
           <GameGrid games={items} />

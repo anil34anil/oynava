@@ -3,8 +3,8 @@ import { getFps } from "@/lib/games";
 import { InfiniteGrid } from "@/components/InfiniteGrid";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
-
-export const revalidate = 3600;
+import { t } from "@/lib/i18n";
+import { getLocale, localizeText } from "@/lib/localize";
 
 export const metadata: Metadata = {
   title: "FPS & Nişancı Oyunları — Online Atış Oyunları",
@@ -18,7 +18,15 @@ export const metadata: Metadata = {
 };
 
 export default async function FpsPage() {
+  const locale = getLocale();
   const games = await getFps();
+  const intro =
+    locale === "tr"
+      ? "Blast Buddies tarzı blocky 3D online atış oyunları, battle royale, sniper ve çok oyunculu nişancılar tek yerde. Silahını kuşan, rakiplerini alt et — ücretsiz, üyeliksiz, indirmeden tarayıcında oyna."
+      : await localizeText(
+          "Blast Buddies-style blocky 3D online shooters, battle royale, sniper and multiplayer FPS games in one place. Gear up and beat your rivals — free, no signup, play in your browser.",
+          locale,
+        );
   return (
     <div className="container-x space-y-6 py-6">
       <JsonLd
@@ -36,14 +44,10 @@ export default async function FpsPage() {
         <span className="inline-flex items-center gap-2 rounded-full border border-neon-purple/40 bg-neon-purple/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-neon-purple">
           🎯 FPS
         </span>
-        <h1 className="font-display text-3xl font-black text-ink neon-text">FPS & Nişancı Oyunları</h1>
-        <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">{games.length} oyun</span>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">{t(locale, "nav.fps")}</h1>
+        <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">{games.length} {t(locale, "common.gamesCount")}</span>
       </div>
-      <p className="max-w-3xl text-slate-400">
-        <strong className="text-ink">Blast Buddies</strong> tarzı blocky 3D online atış oyunları, <strong className="text-ink">battle
-        royale</strong>, sniper ve çok oyunculu nişancılar tek yerde. Silahını kuşan, rakiplerini alt et — ücretsiz, üyeliksiz,
-        indirmeden tarayıcında oyna.
-      </p>
+      <p className="max-w-3xl text-slate-400">{intro}</p>
 
       <InfiniteGrid games={games} />
     </div>

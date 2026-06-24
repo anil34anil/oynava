@@ -1,16 +1,15 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getByCategory, categoryBySlug, CATEGORIES } from "@/lib/games";
+import { getByCategory, categoryBySlug } from "@/lib/games";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
+import { t } from "@/lib/i18n";
+import { getLocale } from "@/lib/localize";
+import { translateText } from "@/lib/translate";
 
-export const revalidate = 3600;
-
-export function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ slug: c.slug }));
-}
+// (generateStaticParams kaldırıldı; sayfa dile göre dinamik render edilir)
 
 // Her kategori için özgün Türkçe tanıtım metni (SEO içeriği)
 const CAT_INTRO: Record<string, string> = {
@@ -48,7 +47,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   const cat = categoryBySlug(params.slug);
   if (!cat) notFound();
 
+  const locale = getLocale();
   const games = await getByCategory(params.slug);
+  const catName = t(locale, `cat.${cat.slug}`);
+  const introTr = CAT_INTRO[cat.slug] ?? `En iyi ${cat.tr.toLowerCase()} oyunları, ücretsiz ve indirmeden.`;
+  const intro = locale === "tr" ? introTr : await translateText(introTr, locale, "tr");
 
   return (
     <div className="container-x space-y-6 py-6">
@@ -74,14 +77,14 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         }}
       />
       <div className="flex items-center gap-3">
-        <h1 className="font-display text-3xl font-black text-ink neon-text">{cat.tr} Oyunları</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">{catName}</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">
-          {games.length} oyun
+          {games.length} {t(locale, "common.gamesCount")}
         </span>
       </div>
 
       {/* SEO + kullanıcı için kategori tanıtımı */}
-      <p className="max-w-3xl text-slate-400">{CAT_INTRO[cat.slug] ?? `En iyi ${cat.tr.toLowerCase()} oyunları, ücretsiz ve indirmeden.`}</p>
+      <p className="max-w-3xl text-slate-400">{intro}</p>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 

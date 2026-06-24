@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getGames } from "@/lib/games";
 import { InfiniteGrid } from "@/components/InfiniteGrid";
-
-export const revalidate = 3600;
+import { t } from "@/lib/i18n";
+import { getLocale } from "@/lib/localize";
 
 export const metadata: Metadata = {
   title: "Tüm Oyunlar — Ücretsiz Oyna",
@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AllGamesPage() {
+  const locale = getLocale();
   const games = await getGames();
   return (
     <div className="container-x space-y-6 py-6">
       <div className="flex items-center gap-3">
-        <h1 className="font-display text-3xl font-black text-ink neon-text">Tüm Oyunlar</h1>
+        <h1 className="font-display text-3xl font-black text-ink neon-text">{t(locale, "nav.all")}</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">
-          {games.length} oyun
+          {games.length} {t(locale, "common.gamesCount")}
         </span>
       </div>
       <InfiniteGrid games={games} />

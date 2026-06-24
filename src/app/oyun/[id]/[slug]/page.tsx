@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getGameById, getByCategory, categorySlug } from "@/lib/games";
-import { trInstructions, trDescription } from "@/lib/tr";
+import { trDescription } from "@/lib/tr";
 import { slugifyTitle } from "@/lib/catalog";
 import { GamePlayer } from "@/components/GamePlayer";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
-
-export const revalidate = 3600;
+import { t } from "@/lib/i18n";
+import { getLocale, gameDescription, gameInstructions } from "@/lib/localize";
 
 export async function generateMetadata({
   params,
@@ -31,10 +31,12 @@ export default async function GamePage({ params }: { params: { id: string } }) {
   const game = await getGameById(params.id);
   if (!game) notFound();
 
+  const locale = getLocale();
   const related = (await getByCategory(categorySlug(game)))
     .filter((g) => g.id !== game.id)
     .slice(0, 12);
 
+  const [desc, instr] = await Promise.all([gameDescription(game, locale), gameInstructions(game, locale)]);
   const url = `${SITE.url}/oyun/${game.id}/${slugifyTitle(game.title)}`;
 
   return (
@@ -76,17 +78,17 @@ export default async function GamePage({ params }: { params: { id: string } }) {
         <GamePlayer game={game} />
 
         <div className="card-base p-5">
-          <h2 className="mb-2 font-display text-lg font-bold text-ink">🎯 Nasıl Oynanır?</h2>
-          <p className="whitespace-pre-line text-slate-400">{trInstructions(game.instructions)}</p>
+          <h2 className="mb-2 font-display text-lg font-bold text-ink">🎯 {t(locale, "game.howToPlay")}</h2>
+          <p className="whitespace-pre-line text-slate-400">{instr}</p>
         </div>
 
         <div className="card-base p-5">
-          <h2 className="mb-2 font-display text-lg font-bold text-ink">Hakkında</h2>
-          <p className="text-slate-400">{trDescription(game)}</p>
+          <h2 className="mb-2 font-display text-lg font-bold text-ink">{t(locale, "game.about")}</h2>
+          <p className="text-slate-400">{desc}</p>
         </div>
 
         <section>
-          <h2 className="mb-4 font-display text-xl font-bold text-ink">Benzer Oyunlar</h2>
+          <h2 className="mb-4 font-display text-xl font-bold text-ink">{t(locale, "game.similar")}</h2>
           <GameGrid games={related} />
         </section>
       </div>
@@ -95,7 +97,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
         <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_SIDEBAR} className="min-h-[250px]" />
         <div className="card-base p-4">
           <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-slate-300">
-            Etiketler
+            {t(locale, "game.tags")}
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {game.tags.split(",").filter(Boolean).slice(0, 12).map((t) => (
