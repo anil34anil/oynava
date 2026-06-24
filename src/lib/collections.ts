@@ -133,6 +133,110 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["dövüş oyunları", "fighting games", "boks oyunları"],
     filter: (g) => categorySlug(g) === "dovus" || has(g, re("fighting|fight|boxing|karate|dövüş|kavga")),
   },
+  {
+    slug: "en-iyi-minecraft-oyunlari",
+    title: "En İyi Minecraft Oyunları",
+    intro:
+      "Minecraft tarzı ücretsiz blok (blocky) inşa, hayatta kalma ve macera oyunları. Dünyanı kur, maden kaz, yarat — indirmeden tarayıcında oyna.",
+    keywords: ["minecraft oyunları", "minecraft", "blok oyunları", "blocky games"],
+    filter: (g) => has(g, re("minecraft|blocky|block ?craft|voxel|pixel ?craft|mine ?craft")),
+  },
+  {
+    slug: "kiz-giydirme-oyunlari",
+    title: "Kız Giydirme Oyunları",
+    intro:
+      "En yeni ücretsiz kız giydirme oyunları: moda, stil ve kombin. Karakterini giydir, kendi tarzını yarat — tarayıcında indirmeden oyna.",
+    keywords: ["giydirme oyunları", "kız giydirme oyunları", "dress up games", "moda oyunları"],
+    filter: (g) => has(g, re("dress ?up|dressup|giydirme|fashion|moda|stylist")),
+  },
+  {
+    slug: "makyaj-oyunlari",
+    title: "Makyaj Oyunları",
+    intro:
+      "Ücretsiz makyaj ve güzellik oyunları: göz makyajı, ruj, manikür ve bakım. Yaratıcılığını konuştur — indirmeden tarayıcında oyna.",
+    keywords: ["makyaj oyunları", "makeup games", "güzellik oyunları"],
+    filter: (g) => has(g, re("makeup|make ?up|makyaj|salon|manicure|beauty|güzellik")),
+  },
+  {
+    slug: "yemek-yapma-oyunlari",
+    title: "Yemek Yapma Oyunları",
+    intro:
+      "Ücretsiz yemek yapma ve aşçılık oyunları: restoran, pasta, dondurma ve fast food. Mutfağın şefi ol — tarayıcında indirmeden.",
+    keywords: ["yemek oyunları", "aşçılık oyunları", "cooking games", "restoran oyunları"],
+    filter: (g) => has(g, re("cooking|cook|chef|restaurant|kitchen|yemek|aşçı|pasta|cake|pizza|burger")),
+  },
+  {
+    slug: "motor-oyunlari",
+    title: "Motor Oyunları",
+    intro:
+      "Ücretsiz motosiklet ve motor oyunları: arazi, akrobasi ve hız. Gaz kelebeğini sonuna kadar aç — indirmeden tarayıcında oyna.",
+    keywords: ["motor oyunları", "motosiklet oyunları", "moto games", "bike games"],
+    filter: (g) => has(g, re("\\bmoto\\b|motorcycle|motorbike|\\bbike\\b|bmx|motosiklet|motor")),
+  },
+  {
+    slug: "park-etme-oyunlari",
+    title: "Park Etme Oyunları",
+    intro:
+      "Ücretsiz araba park etme oyunları: dar alanlar, zorlu manevralar ve gerçekçi sürüş. Direksiyona geç, kusursuz park et — tarayıcında.",
+    keywords: ["park etme oyunları", "araba park oyunları", "parking games"],
+    filter: (g) => has(g, re("parking|park ?et|car ?park")),
+  },
+  {
+    slug: "stickman-oyunlari",
+    title: "Stickman Oyunları",
+    intro:
+      "Ücretsiz stickman (çöp adam) oyunları: dövüş, nişancı, parkur ve macera. Hızlı ve eğlenceli stickman aksiyonu — indirmeden tarayıcında.",
+    keywords: ["stickman oyunları", "çöp adam oyunları", "stickman games"],
+    filter: (g) => has(g, re("stickman|stick ?man|çöp adam")),
+  },
+  {
+    slug: "kule-savunma-oyunlari",
+    title: "Kule Savunma Oyunları",
+    intro:
+      "Ücretsiz kule savunma (tower defense) ve strateji oyunları. Kulelerini diz, düşman dalgalarını durdur, üssünü koru — tarayıcında indirmeden.",
+    keywords: ["kule savunma oyunları", "tower defense", "strateji oyunları"],
+    filter: (g) => has(g, re("tower ?defense|tower ?defence|kule savunma|td\\b")),
+  },
+  {
+    slug: "mahjong-oyunlari",
+    title: "Mahjong Oyunları",
+    intro:
+      "Ücretsiz mahjong ve eşleştirme oyunları. Taşları eşleştir, tahtayı temizle, zekânı sına — rahatlatıcı mahjong keyfi tarayıcında.",
+    keywords: ["mahjong oyunları", "mahjong games", "eşleştirme oyunları"],
+    filter: (g) => has(g, re("mahjong|mah ?jong")),
+  },
+  {
+    slug: "bilardo-oyunlari",
+    title: "Bilardo Oyunları",
+    intro:
+      "Ücretsiz bilardo ve 8 top oyunları. İstaka ile nişan al, topları cebe gönder, rakibini yen — gerçekçi bilardo tarayıcında.",
+    keywords: ["bilardo oyunları", "8 ball pool", "pool games", "bilardo"],
+    filter: (g) => has(g, re("billiard|8 ?ball|\\bpool\\b|snooker|bilardo|istaka")),
+  },
+  {
+    slug: "kosma-kacma-oyunlari",
+    title: "Koşma & Kaçma (Parkur) Oyunları",
+    intro:
+      "Ücretsiz koşu, parkur ve sonsuz kaçış oyunları. Engellerden atla, hızını koru, rekor kır — bağımlılık yapan koşu oyunları tarayıcında.",
+    keywords: ["koşu oyunları", "parkur oyunları", "runner games", "kaçış oyunları"],
+    filter: (g) => has(g, re("\\brun\\b|runner|running|parkour|parkur|endless|escape|koş")),
+  },
+  {
+    slug: "boyama-oyunlari",
+    title: "Boyama Oyunları",
+    intro:
+      "Çocuklar için ücretsiz boyama ve çizim oyunları. Renkleri seç, resimleri boya, yaratıcılığını geliştir — güvenli ve eğlenceli, tarayıcında.",
+    keywords: ["boyama oyunları", "çizim oyunları", "coloring games"],
+    filter: (g) => has(g, re("coloring|colour|paint|drawing|boyama|çizim")),
+  },
+  {
+    slug: "doktor-oyunlari",
+    title: "Doktor Oyunları",
+    intro:
+      "Çocuklar için ücretsiz doktor ve hastane oyunları. Hastaları iyileştir, ameliyat yap, dişçilik öğren — eğitici ve eğlenceli, tarayıcında.",
+    keywords: ["doktor oyunları", "hastane oyunları", "doctor games", "diş doktoru"],
+    filter: (g) => has(g, re("doctor|dentist|hospital|surgery|doktor|hastane|dişçi")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {
