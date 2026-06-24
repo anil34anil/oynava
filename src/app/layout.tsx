@@ -62,6 +62,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
           />
         )}
+        {SITE.gaMeasurementId && (
+          <>
+            <Script
+              id="ga-lib"
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${SITE.gaMeasurementId}`}
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${SITE.gaMeasurementId}');
+              `}
+            </Script>
+          </>
+        )}
         <BackgroundDecor />
         <Header />
         <div className="flex">
