@@ -6,7 +6,7 @@ const ICONS = ["👾", "🎮", "👻", "🕹️", "🎯", "🏎️", "🐉", "�
 
 export function BackgroundDecor() {
   // Sabit bir desen üret (SSR/CSR tutarlı olsun diye rastgelelik yok).
-  const cells = Array.from({ length: 120 }, (_, i) => ICONS[i % ICONS.length]);
+  const cells = Array.from({ length: 60 }, (_, i) => ICONS[i % ICONS.length]);
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <div className="flex h-full w-full flex-wrap content-start gap-x-12 gap-y-10 p-8 opacity-[0.04]">

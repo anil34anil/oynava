@@ -45,6 +45,12 @@ body {
     @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
   }
 
+  /* CWV: ekran dışı bölümlerin render maliyetini atla (INP/render süresi düşer) */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 640px;
+  }
+
   /* Glassmorphism panel — buzlu cam */
   .glass {
     background-color: rgba(11, 19, 38, 0.7);

@@ -34,11 +34,16 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
           src={game.thumb}
-          alt={game.title}
+          alt={`${game.title} - ücretsiz oyna`}
           fill
           sizes="(max-width:640px) 50vw, (max-width:1024px) 25vw, 16vw"
           className="object-cover transition-transform duration-300 group-hover:scale-110"
           priority={priority}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          /* Oyun CDN'leri (gamemonetize/gamepix/playgama) görseli zaten optimize WebP
+             olarak edge'den sunar; Vercel optimizer'ından geçirmek 6700 görselde
+             kota/maliyet yaratır → doğrudan CDN servisi (unoptimized) bilinçli tercih. */
           unoptimized
         />
 

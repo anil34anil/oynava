@@ -108,7 +108,7 @@ export default async function HomePage() {
 
       {/* Online Oyunlar widget'ı */}
       {online.length > 0 && (
-        <section className="rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.04] p-5">
+        <section className="cv-auto rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.04] p-5">
           <div className="mb-4 flex items-end justify-between">
             <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-ink">
               <span className="flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
@@ -130,7 +130,7 @@ export default async function HomePage() {
       )}
 
       {rows.map(({ cat, items }) => (
-        <section key={cat.slug}>
+        <section key={cat.slug} className="cv-auto">
           <div className="mb-4 flex items-end justify-between">
             <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
               <span>{CAT_ICON[cat.slug] ?? "🎮"}</span> {t(locale, `cat.${cat.slug}`)}
