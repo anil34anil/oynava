@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Nunito Sans", system-ui, sans-serif;
+  /* Tüm site tek font: önce Anthropic Sans (tescilli; kuruluysa kullanılır),
+     yoksa Inter (next/font --font-sans), sonra sistem fontu. */
+  --font-display: "Anthropic Sans", var(--font-sans), system-ui, sans-serif;
+  --font-body: "Anthropic Sans", var(--font-sans), system-ui, sans-serif;
 }
 
 html {

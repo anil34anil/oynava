@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Nunito_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -10,18 +10,12 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { LoginModal } from "@/components/LoginModal";
 import { SITE } from "@/lib/site";
 
-// Sıcak, karakterli serif başlık fontu (insan-tasarımı his)
-const display = Fraunces({
+// Tüm site tek, temiz sans (Anthropic Sans tescilli olduğundan en yakın ücretsiz eş: Inter).
+// CSS'te önce "Anthropic Sans" denenir, yoksa Inter'e düşer (globals.css :root).
+const sans = Inter({
   subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["500", "600", "700", "900"],
-  style: ["normal", "italic"],
-});
-// Yumuşak, humanist, okunaklı gövde fontu
-const body = Nunito_Sans({
-  subsets: ["latin"],
-  variable: "--font-body",
-  weight: ["400", "600", "700", "800"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const SITE_NAME = "OYNAVA";
@@ -56,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const adsenseClient = SITE.adsenseClient || process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
   return (
-    <html lang="tr" className={`${display.variable} ${body.variable}`}>
+    <html lang="tr" className={sans.variable}>
       <body>
         {adsenseClient && (
           <Script

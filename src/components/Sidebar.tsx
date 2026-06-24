@@ -33,22 +33,20 @@ const PRIMARY: NavItem[] = [
   { href: "/favorilerim", label: "Favorilerim", icon: "♥", grad: "from-pink-400 to-rose-600" },
 ];
 
-/** 3D his veren ikon kutucuğu: gradyan + iç parıltı + alt gölge; hover'da eğilir/büyür. */
-function IconTile({ icon, grad, active, online }: { icon: string; grad: string; active: boolean; online?: boolean }) {
+/** Sade ikon — arka plan yok, sadece sembol; hover'da hafif büyür, aktifken yüzer. */
+function IconTile({ icon, active, online }: { icon: string; active: boolean; online?: boolean }) {
   return (
     <span
-      className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${grad} text-[15px]
-        shadow-[inset_0_1px_0_rgba(255,255,255,.45),0_3px_5px_-1px_rgba(60,46,26,.35)]
-        ring-1 ring-black/5 transition-transform duration-200
-        group-hover:-rotate-6 group-hover:scale-110 ${active ? "animate-float" : ""}`}
+      className={`grid h-7 w-7 shrink-0 place-items-center text-xl transition-transform duration-200
+        group-hover:scale-125 ${active ? "animate-float" : ""}`}
     >
       {online ? (
         <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
         </span>
       ) : (
-        <span className="drop-shadow-[0_1px_1px_rgba(0,0,0,.35)]">{icon}</span>
+        icon
       )}
     </span>
   );
@@ -84,7 +82,7 @@ export function Sidebar() {
         const active = isActive(item.href);
         return (
           <Link key={item.href} href={item.href} className={itemCls(active)}>
-            <IconTile icon={item.icon} grad={item.grad} active={active} online={item.online} />
+            <IconTile icon={item.icon} active={active} online={item.online} />
             {item.label}
           </Link>
         );
@@ -99,7 +97,7 @@ export function Sidebar() {
         const meta = CAT[c.slug] ?? { icon: "🎮", grad: "from-slate-400 to-slate-600" };
         return (
           <Link key={c.slug} href={href} className={itemCls(active)}>
-            <IconTile icon={meta.icon} grad={meta.grad} active={active} />
+            <IconTile icon={meta.icon} active={active} />
             {c.tr}
           </Link>
         );

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getGames } from "@/lib/games";
 import { categorySlug, CATEGORIES, isOnline } from "@/lib/catalog";
-import { Hero } from "@/components/Hero";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
@@ -14,18 +13,10 @@ const CAT_ICON: Record<string, string> = {
   bulmaca: "🧩", zeka: "♟️", io: "🌐", kiz: "💖", cocuk: "🧸", arcade: "🕹️", "3d": "🧊",
 };
 
-const PREMIUM_CATS = ["3d", "aksiyon", "yaris", "io"];
-
 export default async function HomePage() {
   const games = await getGames();
 
-  // Öne çıkan havuzu: önce Playgama (premium hissi) + GamePix (kaliteli), sonra premium türler.
-  const premiumPool = games
-    .filter((g) => g.id.startsWith("pgm-") || g.id.startsWith("gp-") || /premium|3d/i.test(g.tags) || PREMIUM_CATS.includes(categorySlug(g)))
-    .sort((a, b) => ((a.id.startsWith("pgm-") ? 0 : a.id.startsWith("gp-") ? 1 : 2)) - (b.id.startsWith("pgm-") ? 0 : b.id.startsWith("gp-") ? 1 : 2));
-  const featuredPool = (premiumPool.length >= 5 ? premiumPool : games).slice(0, 8);
-
-  const popular = games.slice(0, 18);
+  const popular = games.slice(0, 24);
   const online = games.filter(isOnline).slice(0, 12);
 
   const rows = CATEGORIES.map((c) => ({
@@ -59,7 +50,11 @@ export default async function HomePage() {
           },
         ]}
       />
-      <Hero games={featuredPool} />
+      {/* Oyunlar hemen görünsün — siteye girer girmez oynamaya başla */}
+      <section>
+        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 Popüler Oyunlar</h1>
+        <GameGrid games={popular} priorityCount={6} />
+      </section>
 
       {/* Kategori hızlı erişim ikonları */}
       <section>
@@ -98,11 +93,6 @@ export default async function HomePage() {
       </Link>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
-
-      <section>
-        <h2 className="mb-4 font-display text-2xl font-bold text-ink">🔥 Popüler Oyunlar</h2>
-        <GameGrid games={popular} priorityCount={6} />
-      </section>
 
       {/* Online Oyunlar widget'ı */}
       {online.length > 0 && (
