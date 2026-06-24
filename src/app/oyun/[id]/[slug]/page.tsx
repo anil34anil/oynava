@@ -5,7 +5,6 @@ import { trInstructions, trDescription } from "@/lib/tr";
 import { slugifyTitle } from "@/lib/catalog";
 import { GamePlayer } from "@/components/GamePlayer";
 import { GameGrid } from "@/components/GameGrid";
-import { LikeButton } from "@/components/LikeButton";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
@@ -72,10 +71,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
           <span className="text-neon">{game.category}</span> / {game.title}
         </nav>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
-          <LikeButton id={game.id} className="px-3 py-1.5 text-sm" />
-        </div>
+        <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
 
         <GamePlayer game={game} />
 

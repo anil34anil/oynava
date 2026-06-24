@@ -26,29 +26,53 @@ const LIKED_GAMES_SET = "oh:liked_games"; // beğenisi olan tüm oyun id'leri
 function likedBySetKey(gameId: string) {
   return `oh:liked_by:${gameId}`;
 }
-
-export async function getLikeState(gameId: string, uid: string | undefined) {
-  if (!kvEnabled) return { count: 0, liked: false };
-  const [count, liked] = await Promise.all([
-    kv.scard(likedBySetKey(gameId)),
-    uid ? kv.sismember(likedBySetKey(gameId), uid) : Promise.resolve(0),
-  ]);
-  return { count: count ?? 0, liked: Boolean(liked) };
+function dislikedBySetKey(gameId: string) {
+  return `oh:disliked_by:${gameId}`;
 }
 
-/** Beğeniyi açar/kapatır (toggle), güncel { count, liked } döner. */
-export async function toggleLike(gameId: string, uid: string) {
-  if (!kvEnabled) return { count: 0, liked: false };
-  const key = likedBySetKey(gameId);
-  const already = await kv.sismember(key, uid);
+export type Reactions = { count: number; dislikes: number; liked: boolean; disliked: boolean };
+
+const EMPTY: Reactions = { count: 0, dislikes: 0, liked: false, disliked: false };
+
+/** Bir oyunun beğeni/beğenmeme durumu (count = like sayısı; eski alan adı korunur). */
+export async function getReactions(gameId: string, uid: string | undefined): Promise<Reactions> {
+  if (!kvEnabled) return EMPTY;
+  const [count, dislikes, liked, disliked] = await Promise.all([
+    kv.scard(likedBySetKey(gameId)),
+    kv.scard(dislikedBySetKey(gameId)),
+    uid ? kv.sismember(likedBySetKey(gameId), uid) : Promise.resolve(0),
+    uid ? kv.sismember(dislikedBySetKey(gameId), uid) : Promise.resolve(0),
+  ]);
+  return { count: count ?? 0, dislikes: dislikes ?? 0, liked: Boolean(liked), disliked: Boolean(disliked) };
+}
+
+/** Beğeni/beğenmemeyi açar-kapatır; ikisi karşılıklı dışlayıcıdır (biri açılınca diğeri kapanır). */
+export async function toggleReaction(gameId: string, uid: string, type: "like" | "dislike"): Promise<Reactions> {
+  if (!kvEnabled) return EMPTY;
+  const likeKey = likedBySetKey(gameId);
+  const dislikeKey = dislikedBySetKey(gameId);
+  const onKey = type === "like" ? likeKey : dislikeKey;
+  const offKey = type === "like" ? dislikeKey : likeKey;
+
+  const already = await kv.sismember(onKey, uid);
   if (already) {
-    await kv.srem(key, uid);
+    await kv.srem(onKey, uid);
   } else {
-    await kv.sadd(key, uid);
+    await kv.sadd(onKey, uid);
+    await kv.srem(offKey, uid); // karşıt tepkiyi kaldır
     await kv.sadd(LIKED_GAMES_SET, gameId);
   }
-  const count = await kv.scard(key);
-  return { count: count ?? 0, liked: !already };
+  return getReactions(gameId, uid);
+}
+
+// Geriye dönük uyumluluk (kart LikeButton'u bu adlarla çağırıyordu)
+export async function getLikeState(gameId: string, uid: string | undefined) {
+  const r = await getReactions(gameId, uid);
+  return { count: r.count, liked: r.liked };
+}
+export async function toggleLike(gameId: string, uid: string) {
+  const r = await toggleReaction(gameId, uid, "like");
+  return { count: r.count, liked: r.liked };
 }
 
 /** Admin paneli için: en az 1 beğenisi olan tüm oyunlar, beğeni sayısına göre azalan. */
