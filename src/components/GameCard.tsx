@@ -6,11 +6,13 @@ import { useRef, useState } from "react";
 import { Game, slugifyTitle } from "@/lib/catalog";
 import { FavoriteButton } from "./FavoriteButton";
 import { ReactionPill } from "./ReactionPill";
+import { useLocale, localizedHref } from "@/lib/useLocaleClient";
 
 export function GameCard({ game, priority = false }: { game: Game; priority?: boolean }) {
   // Masaüstünde fareyle üzerine gelince (kısa gecikmeyle) oyunu canlı önizle.
   const [preview, setPreview] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const locale = useLocale();
 
   const startHover = () => {
     if (window.matchMedia("(hover: none)").matches) return; // dokunmatik: önizleme yok
@@ -23,7 +25,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
 
   return (
     <Link
-      href={`/oyun/${game.id}/${slugifyTitle(game.title)}`}
+      href={localizedHref(`/oyun/${game.id}/${slugifyTitle(game.title)}`, locale)}
       onMouseEnter={startHover}
       onMouseLeave={endHover}
       className="group relative block overflow-hidden rounded-2xl border border-line bg-card transition-all duration-200 hover:-translate-y-1 hover:border-neon hover:shadow-glow"

@@ -4,16 +4,18 @@ import Link from "next/link";
 import { useProfile } from "@/lib/useLocalProfile";
 import { useAuth } from "@/lib/auth";
 import { useOpenLogin } from "@/lib/useLoginModal";
+import { useT } from "@/lib/useLocaleClient";
 
 export function ProfileChip() {
   const { profile, coins } = useProfile();
   const { user, ready } = useAuth();
   const openLogin = useOpenLogin();
+  const { t } = useT();
 
   if (ready && !user) {
     return (
       <button onClick={openLogin} className="btn-primary py-2 text-xs">
-        Giriş yap
+        {t("common.login")}
       </button>
     );
   }

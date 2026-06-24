@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CATEGORIES } from "@/lib/catalog";
 import { SIDEBAR_TOGGLE_EVENT } from "@/lib/useSidebar";
+import { useT } from "@/lib/useLocaleClient";
 
 // Her öğe için emoji + 3D his veren gradyan (ikon kutucuğu rengi)
 const CAT: Record<string, { icon: string; grad: string }> = {
@@ -22,15 +23,15 @@ const CAT: Record<string, { icon: string; grad: string }> = {
   "3d": { icon: "🧊", grad: "from-slate-400 to-cyan-600" },
 };
 
-type NavItem = { href: string; label: string; icon: string; grad: string; online?: boolean };
+type NavItem = { href: string; tkey: string; icon: string; online?: boolean };
 
 const PRIMARY: NavItem[] = [
-  { href: "/online", label: "Online Oyunlar", icon: "🟢", grad: "from-emerald-400 to-green-600", online: true },
-  { href: "/fps", label: "FPS / Nişancı", icon: "🎯", grad: "from-orange-400 to-red-600" },
-  { href: "/premium", label: "Premium Oyunlar", icon: "✦", grad: "from-amber-400 to-orange-500" },
-  { href: "/oyunlar", label: "Tüm Oyunlar", icon: "🎮", grad: "from-violet-400 to-indigo-600" },
-  { href: "/blog", label: "Blog", icon: "✍️", grad: "from-sky-400 to-blue-600" },
-  { href: "/favorilerim", label: "Favorilerim", icon: "♥", grad: "from-pink-400 to-rose-600" },
+  { href: "/online", tkey: "nav.online", icon: "🟢", online: true },
+  { href: "/fps", tkey: "nav.fps", icon: "🎯" },
+  { href: "/premium", tkey: "nav.premium", icon: "✦" },
+  { href: "/oyunlar", tkey: "nav.all", icon: "🎮" },
+  { href: "/blog", tkey: "nav.blog", icon: "✍️" },
+  { href: "/favorilerim", tkey: "nav.favorites", icon: "♥" },
 ];
 
 /** Sade ikon — arka plan yok, sadece sembol; hover'da hafif büyür, aktifken yüzer. */
@@ -54,6 +55,7 @@ function IconTile({ icon, active, online }: { icon: string; active: boolean; onl
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { t, href, locale } = useT();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -66,8 +68,12 @@ export function Sidebar() {
     setOpen(false);
   }, [pathname]);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+  // pathname dil önekli olabilir (/en/online); localize edilmiş hedefle karşılaştır
+  const isActive = (bareHref: string) => {
+    const full = href(bareHref);
+    if (bareHref === "/") return pathname === "/" || pathname === `/${locale}`;
+    return pathname === full || pathname.startsWith(full + "/");
+  };
 
   const itemCls = (active: boolean) =>
     `group flex items-center gap-3 rounded-lg border-l-2 px-2.5 py-2 font-mono text-[13px] uppercase tracking-[0.04em] transition ${
@@ -81,24 +87,24 @@ export function Sidebar() {
       {PRIMARY.map((item) => {
         const active = isActive(item.href);
         return (
-          <Link key={item.href} href={item.href} className={itemCls(active)}>
+          <Link key={item.href} href={href(item.href)} className={itemCls(active)}>
             <IconTile icon={item.icon} active={active} online={item.online} />
-            {item.label}
+            {t(item.tkey)}
           </Link>
         );
       })}
 
       <div className="mt-4 mb-1 flex items-center gap-2 px-2 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-        <span className="h-px flex-1 bg-line" /> Kategoriler <span className="h-px flex-1 bg-line" />
+        <span className="h-px flex-1 bg-line" /> {t("nav.categories")} <span className="h-px flex-1 bg-line" />
       </div>
       {CATEGORIES.map((c) => {
-        const href = `/kategori/${c.slug}`;
-        const active = isActive(href);
+        const bare = `/kategori/${c.slug}`;
+        const active = isActive(bare);
         const meta = CAT[c.slug] ?? { icon: "🎮", grad: "from-slate-400 to-slate-600" };
         return (
-          <Link key={c.slug} href={href} className={itemCls(active)}>
+          <Link key={c.slug} href={href(bare)} className={itemCls(active)}>
             <IconTile icon={meta.icon} active={active} />
-            {c.tr}
+            {t(`cat.${c.slug}`)}
           </Link>
         );
       })}
@@ -125,7 +131,7 @@ export function Sidebar() {
         }`}
       >
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
-          <span className="font-display text-lg font-black text-ink">Menü</span>
+          <span className="font-display text-lg font-black text-ink">{t("common.menu")}</span>
           <button
             onClick={() => setOpen(false)}
             aria-label="Menüyü kapat"
