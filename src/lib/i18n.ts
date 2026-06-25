@@ -152,14 +152,14 @@ export const UI: Record<string, Record<string, string>> = {
 
 // Ek arayüz anahtarları (oyun sayfası başlıkları, breadcrumb vb.)
 const EXTRA: Record<string, Record<string, string>> = {
-  tr: { "game.howToPlay": "Nasıl Oynanır?", "game.about": "Hakkında", "game.similar": "Benzer Oyunlar", "game.tags": "Etiketler", "nav.home": "Ana Sayfa", "common.gamesCount": "oyun" },
-  en: { "game.howToPlay": "How to Play?", "game.about": "About", "game.similar": "Similar Games", "game.tags": "Tags", "nav.home": "Home", "common.gamesCount": "games" },
-  nl: { "game.howToPlay": "Hoe te spelen?", "game.about": "Over", "game.similar": "Soortgelijke spellen", "game.tags": "Labels", "nav.home": "Home", "common.gamesCount": "spellen" },
-  es: { "game.howToPlay": "¿Cómo jugar?", "game.about": "Acerca de", "game.similar": "Juegos similares", "game.tags": "Etiquetas", "nav.home": "Inicio", "common.gamesCount": "juegos" },
-  ko: { "game.howToPlay": "플레이 방법", "game.about": "게임 소개", "game.similar": "비슷한 게임", "game.tags": "태그", "nav.home": "홈", "common.gamesCount": "게임" },
-  id: { "game.howToPlay": "Cara Bermain", "game.about": "Tentang", "game.similar": "Game Serupa", "game.tags": "Tag", "nav.home": "Beranda", "common.gamesCount": "game" },
-  az: { "game.howToPlay": "Necə Oynamalı", "game.about": "Haqqında", "game.similar": "Oxşar Oyunlar", "game.tags": "Teqlər", "nav.home": "Ana səhifə", "common.gamesCount": "oyun" },
-  ar: { "game.howToPlay": "كيف تلعب؟", "game.about": "حول اللعبة", "game.similar": "ألعاب مماثلة", "game.tags": "الوسوم", "nav.home": "الرئيسية", "common.gamesCount": "لعبة" },
+  tr: { "game.howToPlay": "Nasıl Oynanır?", "game.about": "Hakkında", "game.similar": "Benzer Oyunlar", "game.tags": "Etiketler", "nav.home": "Ana Sayfa", "common.gamesCount": "oyun", "nav.random": "Rastgele Oyun", "nav.mostPlayed": "En Çok Oynanan", "game.plays": "kez oynandı" },
+  en: { "game.howToPlay": "How to Play?", "game.about": "About", "game.similar": "Similar Games", "game.tags": "Tags", "nav.home": "Home", "common.gamesCount": "games", "nav.random": "Random Game", "nav.mostPlayed": "Most Played", "game.plays": "plays" },
+  nl: { "game.howToPlay": "Hoe te spelen?", "game.about": "Over", "game.similar": "Soortgelijke spellen", "game.tags": "Labels", "nav.home": "Home", "common.gamesCount": "spellen", "nav.random": "Willekeurig spel", "nav.mostPlayed": "Meest gespeeld", "game.plays": "keer gespeeld" },
+  es: { "game.howToPlay": "¿Cómo jugar?", "game.about": "Acerca de", "game.similar": "Juegos similares", "game.tags": "Etiquetas", "nav.home": "Inicio", "common.gamesCount": "juegos", "nav.random": "Juego aleatorio", "nav.mostPlayed": "Más jugados", "game.plays": "partidas" },
+  ko: { "game.howToPlay": "플레이 방법", "game.about": "게임 소개", "game.similar": "비슷한 게임", "game.tags": "태그", "nav.home": "홈", "common.gamesCount": "게임", "nav.random": "랜덤 게임", "nav.mostPlayed": "최다 플레이", "game.plays": "회 플레이" },
+  id: { "game.howToPlay": "Cara Bermain", "game.about": "Tentang", "game.similar": "Game Serupa", "game.tags": "Tag", "nav.home": "Beranda", "common.gamesCount": "game", "nav.random": "Game Acak", "nav.mostPlayed": "Paling Banyak Dimainkan", "game.plays": "kali dimainkan" },
+  az: { "game.howToPlay": "Necə Oynamalı", "game.about": "Haqqında", "game.similar": "Oxşar Oyunlar", "game.tags": "Teqlər", "nav.home": "Ana səhifə", "common.gamesCount": "oyun", "nav.random": "Təsadüfi Oyun", "nav.mostPlayed": "Ən Çox Oynanan", "game.plays": "dəfə oynanıb" },
+  ar: { "game.howToPlay": "كيف تلعب؟", "game.about": "حول اللعبة", "game.similar": "ألعاب مماثلة", "game.tags": "الوسوم", "nav.home": "الرئيسية", "common.gamesCount": "لعبة", "nav.random": "لعبة عشوائية", "nav.mostPlayed": "الأكثر لعباً", "game.plays": "مرة لعب" },
 };
 for (const l of Object.keys(EXTRA)) Object.assign(UI[l], EXTRA[l]);
 

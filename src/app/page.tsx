@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getGames } from "@/lib/games";
-import { categorySlug, CATEGORIES, isOnline } from "@/lib/catalog";
+import { categorySlug, CATEGORIES, isOnline, slugifyTitle } from "@/lib/catalog";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
@@ -18,13 +18,19 @@ export default async function HomePage() {
   const L = (p: string) => localePath(p, locale);
   const games = await getGames();
   const isTr = locale === "tr";
-  const [premiumTitle, premiumDesc, onlineDesc, exploreLabel, liveLabel] = await Promise.all([
+  const [premiumTitle, premiumDesc, onlineDesc, exploreLabel, liveLabel, gotdLabel] = await Promise.all([
     localizeText("High-Graphics 3D & WebGL Games", locale),
     localizeText("The best racing, FPS, .io battle and 3D games — free, no download.", locale),
     localizeText("Multiplayer .io arenas and online FPS — live competition with players from around the world.", locale),
     localizeText("Explore", locale),
     localizeText("Live", locale),
+    localizeText("Game of the Day", locale),
   ]);
+  // Günün Oyunu — günlük deterministik seçim (ArcadeCMS "game of the day" paritesi)
+  const dayKey = new Date().toISOString().slice(0, 10);
+  let dh = 0;
+  for (let i = 0; i < dayKey.length; i++) dh = (dh * 31 + dayKey.charCodeAt(i)) >>> 0;
+  const gotd = games.length ? games[dh % games.length] : null;
 
   const popular = games.slice(0, 24);
   const online = games.filter(isOnline).slice(0, 12);
@@ -65,6 +71,23 @@ export default async function HomePage() {
         <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
         <GameGrid games={popular} priorityCount={6} />
       </section>
+
+      {/* Günün Oyunu */}
+      {gotd && (
+        <Link
+          href={L(`/oyun/${gotd.id}/${slugifyTitle(gotd.title)}`)}
+          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-neon/30 bg-gradient-to-r from-neon/15 via-card to-secondary/10 p-3 transition hover:border-neon sm:p-4"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={gotd.thumb} alt={gotd.title} width={112} height={84} loading="lazy" className="h-20 w-28 shrink-0 rounded-xl object-cover" />
+          <div className="min-w-0">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-neon">🌟 {gotdLabel}</span>
+            <h2 className="truncate font-display text-lg font-black text-ink sm:text-xl">{gotd.title}</h2>
+            <span className="text-sm text-slate-400">{gotd.category}</span>
+          </div>
+          <span className="btn-primary ml-auto shrink-0 group-hover:scale-105">▶</span>
+        </Link>
+      )}
 
       {/* Kategori hızlı erişim ikonları */}
       <section>

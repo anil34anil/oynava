@@ -32,6 +32,44 @@ async function getClient(): Promise<RedisClientType | null> {
   }
 }
 
+// ── Oynanma sayacı (ArcadeCMS "Most Played" paritesi) ─────────────────────
+const PLAYS_Z = "oh:plays";
+
+/** Bir oyun başlatıldığında oynanma sayısını artırır. */
+export async function incrPlay(gameId: string): Promise<void> {
+  const kv = await getClient();
+  if (!kv) return;
+  try {
+    await kv.zIncrBy(PLAYS_Z, 1, gameId);
+  } catch {
+    /* yoksay */
+  }
+}
+
+/** Bir oyunun toplam oynanma sayısı. */
+export async function getPlayCount(gameId: string): Promise<number> {
+  const kv = await getClient();
+  if (!kv) return 0;
+  try {
+    const s = await kv.zScore(PLAYS_Z, gameId);
+    return s ? Math.round(Number(s)) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** En çok oynanan oyun id'leri (azalan). */
+export async function getTopPlayedIds(limit = 60): Promise<string[]> {
+  const kv = await getClient();
+  if (!kv) return [];
+  try {
+    const ids = await kv.zRange(PLAYS_Z, 0, limit - 1, { REV: true });
+    return ids as string[];
+  } catch {
+    return [];
+  }
+}
+
 // Genel amaçlı cache (çeviri önbelleği vb.)
 export async function kvGet(key: string): Promise<string | null> {
   const kv = await getClient();

@@ -12,6 +12,7 @@ import { seoAlternates } from "@/lib/seo";
 import { t, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
+import { getTopPlayedIds } from "@/lib/kv";
 
 export async function generateMetadata({ params }: { params: { collection: string } }): Promise<Metadata> {
   const c = collectionBySlug(params.collection);
@@ -32,7 +33,15 @@ export default async function CollectionPage({ params }: { params: { collection:
 
   const locale = getLocale();
   const all = await getGames();
-  const games = selectCollectionGames(c, all);
+  let games: typeof all;
+  if (c.special === "mostPlayed") {
+    const ids = await getTopPlayedIds(120);
+    const byId = new Map(all.map((g) => [g.id, g]));
+    games = ids.map((id) => byId.get(id)).filter(Boolean) as typeof all;
+    if (games.length < 12) games = all.slice(0, 60); // henüz oynanma verisi yoksa
+  } else {
+    games = selectCollectionGames(c, all);
+  }
   if (games.length === 0) notFound();
 
   const [title, intro] =

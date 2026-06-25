@@ -13,6 +13,7 @@ import { SITE } from "@/lib/site";
 import { t, localePath } from "@/lib/i18n";
 import { seoAlternates } from "@/lib/seo";
 import { getLocale, gameDescription, gameInstructions, gameFaq } from "@/lib/localize";
+import { getPlayCount } from "@/lib/kv";
 
 export async function generateMetadata({
   params,
@@ -43,10 +44,11 @@ export default async function GamePage({ params }: { params: { id: string } }) {
   const related = (await getByCategory(catSlug)).filter((g) => g.id !== game.id).slice(0, 12);
   const inCollections = COLLECTIONS.filter((c) => (c.filter ? c.filter(game) : false)).slice(0, 6);
 
-  const [desc, instr, faq] = await Promise.all([
+  const [desc, instr, faq, plays] = await Promise.all([
     gameDescription(game, locale),
     gameInstructions(game, locale),
     gameFaq(game, locale),
+    getPlayCount(game.id),
   ]);
   const url = `${SITE.url}/oyun/${game.id}/${slugifyTitle(game.title)}`;
 
@@ -97,7 +99,12 @@ export default async function GamePage({ params }: { params: { id: string } }) {
           <span className="text-slate-300 normal-case">{game.title}</span>
         </nav>
 
-        <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
+          {plays > 0 && (
+            <span className="font-mono text-xs text-slate-500">🔥 {plays.toLocaleString("tr-TR")} {t(locale, "game.plays")}</span>
+          )}
+        </div>
 
         <GamePlayer game={game} />
 

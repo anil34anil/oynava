@@ -15,6 +15,7 @@ export type Collection = {
   /** Oyun havuzundan seçim. `order` verilirse filtre yerine sıralı ilk N alınır. */
   filter?: (g: Game) => boolean;
   takeNewest?: number; // getGames sırası "en yeni üstte" → ilk N
+  special?: "mostPlayed"; // Redis oynanma sayacından sıralanır
 };
 
 const re = (p: string) => new RegExp(p, "i");
@@ -84,6 +85,14 @@ export const COLLECTIONS: Collection[] = [
       "En çok oynanan popüler HTML5 oyunları tek listede. İndirme yok, kurulum yok — en sevilen tarayıcı oyunlarını hemen oyna.",
     keywords: ["popüler oyunlar", "html5 oyunlar", "en çok oynanan oyunlar"],
     takeNewest: 60,
+  },
+  {
+    slug: "en-cok-oynanan-oyunlar",
+    title: "En Çok Oynanan Oyunlar",
+    intro:
+      "OYNAVA'da en çok oynanan oyunlar! Topluluğun favorisi, en popüler ücretsiz HTML5 oyunları gerçek oynanma sayısına göre sıralandı — indirmeden hemen oyna.",
+    keywords: ["en çok oynanan oyunlar", "popüler oyunlar", "most played games"],
+    special: "mostPlayed",
   },
   {
     slug: "yeni-eklenen-oyunlar",

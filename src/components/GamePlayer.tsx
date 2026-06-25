@@ -35,6 +35,8 @@ export function GamePlayer({ game }: { game: Game }) {
             onClick={() => {
               setStarted(true);
               pushRecent(game.id);
+              // Oynanma sayacını artır (ArcadeCMS "most played" paritesi)
+              fetch(`/api/play/${game.id}`, { method: "POST" }).catch(() => {});
             }}
             className="group absolute inset-0 grid place-items-center"
             style={{

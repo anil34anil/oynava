@@ -23,13 +23,15 @@ const CAT: Record<string, { icon: string; grad: string }> = {
   "3d": { icon: "🧊", grad: "from-slate-400 to-cyan-600" },
 };
 
-type NavItem = { href: string; tkey: string; icon: string; online?: boolean };
+type NavItem = { href: string; tkey: string; icon: string; online?: boolean; raw?: boolean };
 
 const PRIMARY: NavItem[] = [
   { href: "/online", tkey: "nav.online", icon: "🟢", online: true },
+  { href: "/en-cok-oynanan-oyunlar", tkey: "nav.mostPlayed", icon: "🔥" },
   { href: "/fps", tkey: "nav.fps", icon: "🎯" },
   { href: "/premium", tkey: "nav.premium", icon: "✦" },
   { href: "/oyunlar", tkey: "nav.all", icon: "🎮" },
+  { href: "/rastgele", tkey: "nav.random", icon: "🎲", raw: true },
   { href: "/blog", tkey: "nav.blog", icon: "✍️" },
   { href: "/favorilerim", tkey: "nav.favorites", icon: "♥" },
 ];
@@ -86,10 +88,20 @@ export function Sidebar() {
     <nav className="flex flex-col gap-1 p-3">
       {PRIMARY.map((item) => {
         const active = isActive(item.href);
-        return (
-          <Link key={item.href} href={href(item.href)} className={itemCls(active)}>
+        const inner = (
+          <>
             <IconTile icon={item.icon} active={active} online={item.online} />
             {t(item.tkey)}
+          </>
+        );
+        // raw (örn. /rastgele route handler) tam sayfa gezinme ister → <a>
+        return item.raw ? (
+          <a key={item.href} href={href(item.href)} className={itemCls(active)}>
+            {inner}
+          </a>
+        ) : (
+          <Link key={item.href} href={href(item.href)} className={itemCls(active)}>
+            {inner}
           </Link>
         );
       })}
