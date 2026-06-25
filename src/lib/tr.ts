@@ -151,12 +151,40 @@ export function trInstructions(raw: string): string {
     .join("\n");
 }
 
-/** Başlık + kategoriden temiz bir Türkçe açıklama üretir. */
+// Oyuna özgü, BENZERSİZ ve daha derin açıklama üretir (ince/yinelenen içerik riskini
+// azaltır). Kategori + etiketler + başlık karmasıyla cümleler varyasyonlanır.
+const DESC_ADJ = ["eğlenceli", "bağımlılık yapan", "sürükleyici", "akıcı", "heyecan dolu", "rahatlatıcı", "tempolu"];
+const DESC_OPEN = [
+  (t: string, c: string, a: string) => `${t}, tarayıcında ücretsiz oynayabileceğin ${a} bir ${c} oyunudur.`,
+  (t: string, c: string, a: string) => `${t}, ${c} türünü sevenler için ${a} bir HTML5 oyunudur.`,
+  (t: string, c: string, a: string) => `${t} ile ${c} dünyasına dal; ${a} mekaniğiyle ilk dakikadan oyunun içindesin.`,
+];
+
+function descHash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** Başlık + kategori + etiketlerden özgün, derin bir Türkçe açıklama üretir. */
 export function trDescription(game: Game): string {
   const cat = trCategory(game).toLowerCase();
-  return (
-    `${game.title}, tarayıcında ücretsiz oynayabileceğin eğlenceli bir ${cat} oyunudur. ` +
-    `İndirme, kurulum veya üyelik gerekmez — sayfa açılır açılmaz başlar. ` +
-    `Hemen oyna, yüksek skorun peşine düş ve favorilerine ekle!`
-  );
+  const h = descHash(game.title);
+  const open = DESC_OPEN[h % DESC_OPEN.length](game.title, cat, DESC_ADJ[h % DESC_ADJ.length]);
+
+  const tags = (game.tags || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => t.length > 1 && t.length < 22)
+    .slice(0, 3);
+  const themeLine = tags.length
+    ? `Oyun ${tags.join(", ")} gibi temalar etrafında şekillenir ve ${game.title} severler için tam isabettir. `
+    : "";
+
+  const why =
+    `${game.title} oynamak için indirme, kurulum veya üyelik gerekmez — sayfa açılır açılmaz başlar ` +
+    `ve hem bilgisayarda hem mobil tarayıcıda akıcı çalışır. `;
+  const cta = `Hemen oyna, yüksek skorun peşine düş, favorilerine ekle ve benzer ${cat} oyunlarını keşfet!`;
+
+  return `${open} ${themeLine}${why}${cta}`;
 }

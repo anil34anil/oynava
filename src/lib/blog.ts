@@ -330,6 +330,47 @@ export const POSTS: Post[] = [
       "Çocuğunuzla birlikte oyun seçmek ve ara sıra birlikte oynamak, hem güven verir hem de keyifli bir paylaşım olur. Uygunsuz bir içerikle karşılaşırsanız bize bildirebilirsiniz.",
     ],
   },
+  {
+    slug: "en-iyi-araba-ve-yaris-oyunlari-rehberi",
+    title: "En İyi Araba ve Yarış Oyunları Rehberi",
+    date: "2026-06-25",
+    excerpt:
+      "Drift, park etme, ralli ve şehir sürüşü… Ücretsiz araba ve yarış oyunlarının türleri, ipuçları ve nereden oynanacağı.",
+    body: [
+      "Araba ve yarış oyunları, tarayıcı oyunlarının en kalabalık ve en sevilen türlerinden biridir. Gerçekçi sürüş simülasyonlarından arcade tarzı hızlı yarışlara kadar geniş bir yelpaze sunar.",
+      "## Popüler alt türler",
+      "- Drift oyunları: Virajlarda kontrollü kayma becerisi ister.",
+      "- Park etme oyunları: Dar alanlarda sabır ve hassasiyet gerektirir.",
+      "- Ralli ve arazi: Zorlu pistlerde dayanıklılık testidir.",
+      "- Trafikte sürüş: Sonsuz sürüşte engellerden kaçma odaklıdır.",
+      "## Daha iyi yarışmak için ipuçları",
+      "- Frene zamanında bas; viraj öncesi hız kesmek tur süreni kısaltır.",
+      "- Drift oyunlarında gaz-fren dengesini öğren.",
+      "- Park oyunlarında aynaları ve kamera açısını kullan.",
+      "## Nereden oynanır?",
+      "Tüm bu türlerin en iyilerini [En İyi Araba Oyunları](/en-iyi-araba-oyunlari) ve [En İyi Yarış Oyunları](/en-iyi-yaris-oyunlari) koleksiyonlarında bulabilirsin. Motor sevenler [Motor Oyunları](/motor-oyunlari) sayfasına, park ustaları [Park Etme Oyunları](/park-etme-oyunlari) sayfasına göz atabilir — hepsi ücretsiz ve indirmesiz.",
+    ],
+  },
+  {
+    slug: "2-kisilik-oyunlar-arkadasinla-oyna",
+    title: "2 Kişilik Oyunlar: Arkadaşınla Aynı Ekranda Oyna",
+    date: "2026-06-25",
+    excerpt:
+      "Tek klavyede iki oyuncu! Arkadaşınla oynayabileceğin en iyi 2 kişilik oyunların türleri ve önerileri.",
+    body: [
+      "2 kişilik oyunlar, aynı bilgisayar başında arkadaşınla veya kardeşinle rekabet etmenin en pratik yoludur. Çevrim içi bağlantı gerekmez; tek klavyede iki oyuncu ayrı tuşlarla oynar.",
+      "## Hangi türler 2 kişilik oynanır?",
+      "- Dövüş oyunları: Klasik karşılıklı mücadele.",
+      "- Futbol ve spor: Birebir maçlar.",
+      "- Yarış: Bölünmüş ekranda kapışma.",
+      "- Bulmaca ve iş birliği (co-op): Birlikte çözme keyfi.",
+      "## İpuçları",
+      "- Tuş düzenini oyuna başlamadan birlikte belirleyin.",
+      "- Co-op oyunlarda iletişim, rekabette ise hız önemlidir.",
+      "## Nereden oynanır?",
+      "En iyi seçenekleri [2 Kişilik Oyunlar](/2-kisilik-oyunlar) koleksiyonunda topladık. Dövüş sevenler [En İyi Dövüş Oyunları](/en-iyi-dovus-oyunlari), futbol sevenler [En İyi Futbol Oyunları](/en-iyi-futbol-oyunlari) sayfasına bakabilir.",
+    ],
+  },
 ];
 
 export function getPost(slug: string): Post | undefined {
