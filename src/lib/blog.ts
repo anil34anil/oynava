@@ -11,7 +11,9 @@ export type Post = {
   body: string[]; // "## " ile başlayan satır alt başlık, "- " madde, diğerleri paragraf
 };
 
-export const POSTS: Post[] = [
+import { SEO_POSTS } from "./blogSeo";
+
+const BASE_POSTS: Post[] = [
   {
     slug: "arcade-oyunlari-en-iyi-turler",
     title: "Arcade Oyunları: En İyi Türler ve Yüksek Skor İpuçları",
@@ -372,6 +374,9 @@ export const POSTS: Post[] = [
     ],
   },
 ];
+
+// Temel yazılar + programmatic SEO yazıları, tarihe göre (yeni üstte) birleşik liste.
+export const POSTS: Post[] = [...BASE_POSTS, ...SEO_POSTS].sort((a, b) => (a.date < b.date ? 1 : -1));
 
 export function getPost(slug: string): Post | undefined {
   return POSTS.find((p) => p.slug === slug);
