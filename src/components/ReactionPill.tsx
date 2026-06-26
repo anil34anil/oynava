@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Reactions = { count: number; dislikes: number; liked: boolean; disliked: boolean };
+import { loadReactions, setReactionCache, type Reactions } from "@/lib/reactions";
 
 /** Sayıyı kısaltır: 1500 → 1,5B · 1.200.000 → 1,2M (YouTube/CrazyGames tarzı). */
 function fmt(n: number): string {
@@ -42,10 +41,8 @@ export function ReactionPill({ id, size = "md" }: { id: string; size?: "sm" | "m
 
   useEffect(() => {
     let alive = true;
-    fetch(`/api/likes/${id}`)
-      .then((res) => res.json())
-      .then((d) => alive && setR(d))
-      .catch(() => {});
+    // Batch'lenmiş yükleme: aynı sayfadaki yüzlerce kart TEK istekte toplanır.
+    loadReactions(id).then((d) => alive && setR(d));
     return () => {
       alive = false;
     };
@@ -83,7 +80,9 @@ export function ReactionPill({ id, size = "md" }: { id: string; size?: "sm" | "m
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type }),
       });
-      setR(await res.json());
+      const fresh = (await res.json()) as Reactions;
+      setR(fresh);
+      setReactionCache(id, fresh);
     } catch {
       /* optimistik kalır */
     } finally {

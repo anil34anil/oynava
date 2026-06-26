@@ -32,13 +32,19 @@ export default async function HomePage() {
   for (let i = 0; i < dayKey.length; i++) dh = (dh * 31 + dayKey.charCodeAt(i)) >>> 0;
   const gotd = games.length ? games[dh % games.length] : null;
 
-  const popular = games.slice(0, 24);
-  const online = games.filter(isOnline).slice(0, 12);
+  const popular = games.slice(0, 18);
+  const online = games.filter(isOnline).slice(0, 8);
 
-  const rows = CATEGORIES.map((c) => ({
-    cat: c,
-    items: games.filter((g) => categorySlug(g) === c.slug).slice(0, 12),
-  })).filter((r) => r.items.length > 0);
+  // Tek geçişte kategorilere ayır (her kategori için tüm diziyi filtrelemek yerine)
+  const byCat = new Map<string, typeof games>();
+  for (const g of games) {
+    const s = categorySlug(g);
+    const arr = byCat.get(s);
+    if (arr) {
+      if (arr.length < 8) arr.push(g);
+    } else byCat.set(s, [g]);
+  }
+  const rows = CATEGORIES.map((c) => ({ cat: c, items: byCat.get(c.slug) ?? [] })).filter((r) => r.items.length > 0);
 
   return (
     <div className="container-x space-y-10 py-6">
