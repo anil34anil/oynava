@@ -1,0 +1,14 @@
+# Netlify yapılandırması — Next.js 14 (App Router)
+# Netlify, Next.js'i otomatik algılar ve resmi "Next.js Runtime"ı kurar:
+#   SSR + ISR + SSG + API Routes + middleware desteklenir.
+# Oyun görselleri dış CDN'lerden (gamemonetize/gamepix/playgama) yüklenir → düşük bandwidth.
+
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Next.js çalışma zamanı eklentisi (Netlify çoğu zaman otomatik kurar; açıkça belirtmek güvenli).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
