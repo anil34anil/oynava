@@ -14,6 +14,12 @@ import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
 import { getTopPlayedIds } from "@/lib/kv";
 
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return COLLECTIONS.map((c) => ({ collection: c.slug }));
+}
+
 export async function generateMetadata({ params }: { params: { collection: string } }): Promise<Metadata> {
   const c = collectionBySlug(params.collection);
   if (!c) return { title: "Sayfa bulunamadı" };

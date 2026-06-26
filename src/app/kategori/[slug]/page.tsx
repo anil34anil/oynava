@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getByCategory, categoryBySlug } from "@/lib/games";
+import { getByCategory, categoryBySlug, CATEGORIES } from "@/lib/games";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
@@ -9,7 +9,9 @@ import { t } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
 
-// (generateStaticParams kaldırıldı; sayfa dile göre dinamik render edilir)
+export function generateStaticParams() {
+  return CATEGORIES.map((c) => ({ slug: c.slug }));
+}
 
 // Her kategori için özgün Türkçe tanıtım metni (SEO içeriği)
 const CAT_INTRO: Record<string, string> = {
@@ -26,6 +28,8 @@ const CAT_INTRO: Record<string, string> = {
   arcade: "Hızlı, eğlenceli ve bağımlılık yapan arcade oyunları. Kısa molalarda yüksek skorun peşine düş. Klasik arcade keyfini hiçbir şey indirmeden tarayıcında yaşa.",
   "3d": "Yüksek grafikli 3D ve WebGL oyunlar. Tarayıcında konsol hissi veren akıcı oyun deneyimi. En kaliteli 3D oyunlar için Premium Oyunlar bölümüne de bakabilirsin.",
 };
+
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,

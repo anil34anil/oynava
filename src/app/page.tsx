@@ -13,6 +13,8 @@ const CAT_ICON: Record<string, string> = {
   bulmaca: "🧩", zeka: "♟️", io: "🌐", kiz: "💖", cocuk: "🧸", arcade: "🕹️", "3d": "🧊",
 };
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
   const locale = getLocale();
   const L = (p: string) => localePath(p, locale);

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getGameById, getByCategory, categorySlug } from "@/lib/games";
+import { getGameById, getByCategory, categorySlug, getGames } from "@/lib/games";
 import { trDescription } from "@/lib/tr";
 import { slugifyTitle, categoryBySlug } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/collections";
@@ -14,6 +14,14 @@ import { t, localePath } from "@/lib/i18n";
 import { seoAlternates } from "@/lib/seo";
 import { getLocale, gameDescription, gameInstructions, gameFaq } from "@/lib/localize";
 import { getPlayCount } from "@/lib/kv";
+
+export const revalidate = 3600;
+
+// En popüler ilk 150 oyun build'de pre-render (SSG); kalanlar ilk istekte ISR ile cache'lenir.
+export async function generateStaticParams() {
+  const games = await getGames();
+  return games.slice(0, 150).map((g) => ({ id: g.id, slug: slugifyTitle(g.title) }));
+}
 
 export async function generateMetadata({
   params,

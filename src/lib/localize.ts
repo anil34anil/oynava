@@ -1,14 +1,21 @@
 import "server-only";
-import { headers } from "next/headers";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "./i18n";
+import { DEFAULT_LOCALE, type Locale } from "./i18n";
 import { translateText } from "./translate";
 import type { Game } from "./catalog";
 import { trDescription, trInstructions } from "./tr";
 
-/** Geçerli dili istek başlığından (middleware'in eklediği x-locale) okur. */
+/**
+ * Sunucu render'ı için dil = TR (varsayılan).
+ *
+ * ⚠️ MALİYET KARARI (2026-06-26): Önceden `headers()` ile x-locale okuyorduk; bu,
+ * içerik sayfalarını DİNAMİK yapıp her istekte origin→edge transferine yol açtı ve
+ * Vercel "Fast Origin Transfer" limitini doldurdu. Artık sayfalar TR statik/ISR
+ * render edilir (edge cache → origin transfer ~0). Diğer diller için ARAYÜZ çevirisi
+ * istemcide (Sidebar/Header/AutoTrScope) yapılır; hreflang korunur. Sayfa GÖVDE
+ * içeriği (oyun açıklaması vb.) tüm dillerde TR sunulur (SEO'da TR ana pazar önceliği).
+ */
 export function getLocale(): Locale {
-  const h = headers().get("x-locale");
-  return isLocale(h) ? h : DEFAULT_LOCALE;
+  return DEFAULT_LOCALE;
 }
 
 /** Oyun açıklaması — tr: Türkçe şablon; en: İngilizce kaynak; diğer: İngilizce'den çeviri. */

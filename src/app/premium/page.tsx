@@ -7,6 +7,8 @@ import { SITE } from "@/lib/site";
 import { t } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Premium Oyunlar — En İyi 3D ve WebGL Oyunlar",
   description: "En kaliteli 3D, WebGL, FPS, yarış ve .io savaş oyunları. Tarayıcında ücretsiz, yüksek grafikli oyun deneyimi.",

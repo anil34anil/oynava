@@ -4,6 +4,8 @@ import { InfiniteGrid } from "@/components/InfiniteGrid";
 import { t } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Tüm Oyunlar — Ücretsiz Oyna",
   description: "Binlerce ücretsiz HTML5 oyunun tamamı tek sayfada — sonsuz kaydır, indirmeden anında oyna.",

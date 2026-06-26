@@ -6,6 +6,8 @@ import { SITE } from "@/lib/site";
 import { t } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "FPS & Nişancı Oyunları — Online Atış Oyunları",
   description:
