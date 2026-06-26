@@ -1,39 +1,49 @@
 /**
- * Paylaşılan beğeni/beğenmeme/oynanma sayacı + admin günlüğü — Upstash Redis REST API.
+ * Paylaşılan beğeni/beğenmeme/oynanma sayacı + admin günlüğü — Redis (node-redis).
  *
- * ⚠️ node-redis (TCP) yerine @upstash/redis (HTTP/REST) kullanılır: serverless'te
- * (Vercel/Netlify) kalıcı TCP bağlantısı kopuyordu; REST stateless olduğu için
- * her platformda güvenilir çalışır.
- *
- * GEREKLİ ENV (Upstash konsolu → "REST API" bölümü):
- *   UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
- * (Eski Vercel KV adları KV_REST_API_URL/TOKEN de desteklenir.)
- * Yoksa sessizce devre dışı kalır — sayılar 0/false döner, site çökmez.
+ * `REDIS_URL` (Vercel/Netlify env) ile bağlanır. Yoksa sessizce devre dışı kalır.
+ * ⚠️ Çeviri önbelleği TTL'lidir (30 gün) → 30MB free Redis'i doldurmasın diye.
  */
-import { Redis } from "@upstash/redis";
+import { createClient, type RedisClientType } from "redis";
 
-const REST_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-const REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+const REDIS_URL = process.env.REDIS_URL;
+export const kvEnabled = Boolean(REDIS_URL);
 
-export const kvEnabled = Boolean(REST_URL && REST_TOKEN);
-const redis = kvEnabled ? new Redis({ url: REST_URL!, token: REST_TOKEN! }) : null;
+let clientPromise: Promise<RedisClientType> | null = null;
 
-// ── Oynanma sayacı (ArcadeCMS "Most Played" paritesi) ─────────────────────
+async function getClient(): Promise<RedisClientType | null> {
+  if (!REDIS_URL) return null;
+  if (!clientPromise) {
+    const c: RedisClientType = createClient({ url: REDIS_URL });
+    c.on("error", () => {});
+    clientPromise = c.connect().then(() => c);
+  }
+  try {
+    return await clientPromise;
+  } catch {
+    clientPromise = null;
+    return null;
+  }
+}
+
+// ── Oynanma sayacı ─────────────────────────────────────────────────────────
 const PLAYS_Z = "oh:plays";
 
 export async function incrPlay(gameId: string): Promise<void> {
-  if (!redis) return;
+  const kv = await getClient();
+  if (!kv) return;
   try {
-    await redis.zincrby(PLAYS_Z, 1, gameId);
+    await kv.zIncrBy(PLAYS_Z, 1, gameId);
   } catch {
     /* yoksay */
   }
 }
 
 export async function getPlayCount(gameId: string): Promise<number> {
-  if (!redis) return 0;
+  const kv = await getClient();
+  if (!kv) return 0;
   try {
-    const s = await redis.zscore(PLAYS_Z, gameId);
+    const s = await kv.zScore(PLAYS_Z, gameId);
     return s ? Math.round(Number(s)) : 0;
   } catch {
     return 0;
@@ -41,29 +51,32 @@ export async function getPlayCount(gameId: string): Promise<number> {
 }
 
 export async function getTopPlayedIds(limit = 60): Promise<string[]> {
-  if (!redis) return [];
+  const kv = await getClient();
+  if (!kv) return [];
   try {
-    const ids = await redis.zrange<string[]>(PLAYS_Z, 0, limit - 1, { rev: true });
-    return Array.isArray(ids) ? (ids as string[]) : [];
+    return (await kv.zRange(PLAYS_Z, 0, limit - 1, { REV: true })) as string[];
   } catch {
     return [];
   }
 }
 
-// ── Genel cache (çeviri önbelleği) ────────────────────────────────────────
+// ── Genel cache (çeviri önbelleği) — TTL'li ────────────────────────────────
+const CACHE_TTL = 60 * 60 * 24 * 30; // 30 gün → free Redis dolmasın
+
 export async function kvGet(key: string): Promise<string | null> {
-  if (!redis) return null;
+  const kv = await getClient();
+  if (!kv) return null;
   try {
-    const v = await redis.get<string>(key);
-    return v == null ? null : String(v);
+    return (await kv.get(key)) as string | null;
   } catch {
     return null;
   }
 }
 export async function kvSet(key: string, value: string): Promise<void> {
-  if (!redis) return;
+  const kv = await getClient();
+  if (!kv) return;
   try {
-    await redis.set(key, value);
+    await kv.set(key, value, { EX: CACHE_TTL });
   } catch {
     /* yoksay */
   }
@@ -78,13 +91,14 @@ export type Reactions = { count: number; dislikes: number; liked: boolean; disli
 const EMPTY: Reactions = { count: 0, dislikes: 0, liked: false, disliked: false };
 
 export async function getReactions(gameId: string, uid: string | undefined): Promise<Reactions> {
-  if (!redis) return EMPTY;
+  const kv = await getClient();
+  if (!kv) return EMPTY;
   try {
     const [count, dislikes, liked, disliked] = await Promise.all([
-      redis.scard(likedKey(gameId)),
-      redis.scard(dislikedKey(gameId)),
-      uid ? redis.sismember(likedKey(gameId), uid) : Promise.resolve(0),
-      uid ? redis.sismember(dislikedKey(gameId), uid) : Promise.resolve(0),
+      kv.sCard(likedKey(gameId)),
+      kv.sCard(dislikedKey(gameId)),
+      uid ? kv.sIsMember(likedKey(gameId), uid) : Promise.resolve(false),
+      uid ? kv.sIsMember(dislikedKey(gameId), uid) : Promise.resolve(false),
     ]);
     return { count: count ?? 0, dislikes: dislikes ?? 0, liked: Boolean(liked), disliked: Boolean(disliked) };
   } catch {
@@ -93,17 +107,18 @@ export async function getReactions(gameId: string, uid: string | undefined): Pro
 }
 
 export async function toggleReaction(gameId: string, uid: string, type: "like" | "dislike"): Promise<Reactions> {
-  if (!redis) return EMPTY;
+  const kv = await getClient();
+  if (!kv) return EMPTY;
   try {
     const onKey = type === "like" ? likedKey(gameId) : dislikedKey(gameId);
     const offKey = type === "like" ? dislikedKey(gameId) : likedKey(gameId);
-    const already = await redis.sismember(onKey, uid);
+    const already = await kv.sIsMember(onKey, uid);
     if (already) {
-      await redis.srem(onKey, uid);
+      await kv.sRem(onKey, uid);
     } else {
-      await redis.sadd(onKey, uid);
-      await redis.srem(offKey, uid);
-      await redis.sadd(LIKED_GAMES_SET, gameId);
+      await kv.sAdd(onKey, uid);
+      await kv.sRem(offKey, uid);
+      await kv.sAdd(LIKED_GAMES_SET, gameId);
     }
     return getReactions(gameId, uid);
   } catch {
@@ -113,54 +128,48 @@ export async function toggleReaction(gameId: string, uid: string, type: "like" |
 
 // ── Oy günlüğü (admin: IP + ülke) ─────────────────────────────────────────
 const VOTES_LOG = "oh:votes_log";
-export type VoteEvent = {
-  gameId: string;
-  type: "like" | "dislike";
-  active: boolean;
-  ip: string;
-  country: string;
-  ts: number;
-};
+export type VoteEvent = { gameId: string; type: "like" | "dislike"; active: boolean; ip: string; country: string; ts: number };
 
 export async function logVote(e: Omit<VoteEvent, "ts">): Promise<void> {
-  if (!redis) return;
+  const kv = await getClient();
+  if (!kv) return;
   try {
-    await redis.lpush(VOTES_LOG, JSON.stringify({ ...e, ts: Date.now() }));
-    await redis.ltrim(VOTES_LOG, 0, 1999);
+    await kv.lPush(VOTES_LOG, JSON.stringify({ ...e, ts: Date.now() }));
+    await kv.lTrim(VOTES_LOG, 0, 1999);
   } catch {
     /* yoksay */
   }
 }
 
 export async function getVotesLog(limit = 300): Promise<VoteEvent[]> {
-  if (!redis) return [];
+  const kv = await getClient();
+  if (!kv) return [];
   try {
-    const rows = await redis.lrange<string>(VOTES_LOG, 0, limit - 1);
+    const rows = await kv.lRange(VOTES_LOG, 0, limit - 1);
     return rows
-      .map((r) => (typeof r === "string" ? safeParse(r) : (r as unknown as VoteEvent)))
+      .map((r) => {
+        try {
+          return JSON.parse(r) as VoteEvent;
+        } catch {
+          return null;
+        }
+      })
       .filter((x): x is VoteEvent => !!x);
   } catch {
     return [];
   }
 }
 
-function safeParse(s: string): VoteEvent | null {
-  try {
-    return JSON.parse(s) as VoteEvent;
-  } catch {
-    return null;
-  }
-}
-
 // ── Admin: en çok oy alan oyunlar ──────────────────────────────────────────
 export async function getAllVotes(): Promise<{ gameId: string; likes: number; dislikes: number }[]> {
-  if (!redis) return [];
+  const kv = await getClient();
+  if (!kv) return [];
   try {
-    const gameIds = await redis.smembers(LIKED_GAMES_SET);
+    const gameIds = await kv.sMembers(LIKED_GAMES_SET);
     if (!gameIds.length) return [];
     const [likes, dislikes] = await Promise.all([
-      Promise.all(gameIds.map((id) => redis.scard(likedKey(id)))),
-      Promise.all(gameIds.map((id) => redis.scard(dislikedKey(id)))),
+      Promise.all(gameIds.map((id) => kv.sCard(likedKey(id)))),
+      Promise.all(gameIds.map((id) => kv.sCard(dislikedKey(id)))),
     ]);
     return gameIds
       .map((gameId, i) => ({ gameId, likes: likes[i] ?? 0, dislikes: dislikes[i] ?? 0 }))
