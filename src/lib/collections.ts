@@ -246,6 +246,70 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["doktor oyunları", "hastane oyunları", "doctor games", "diş doktoru"],
     filter: (g) => has(g, re("doctor|dentist|hospital|surgery|doktor|hastane|dişçi")),
   },
+  {
+    slug: "tank-oyunlari",
+    title: "Tank Oyunları",
+    intro:
+      "Ücretsiz tank oyunları: cephe savaşları, tank düelloları ve strateji. Zırhını kuşan, hedefi vur — indirmeden tarayıcında oyna.",
+    keywords: ["tank oyunları", "tank games", "tank savaşı"],
+    filter: (g) => has(g, re("\\btank\\b|tanks")),
+  },
+  {
+    slug: "ucak-helikopter-oyunlari",
+    title: "Uçak ve Helikopter Oyunları",
+    intro:
+      "Gökyüzünün hâkimi ol! Ücretsiz uçak, jet ve helikopter oyunları: uçuş simülasyonu, hava savaşı ve iniş görevleri. Tarayıcında, indirmeden.",
+    keywords: ["uçak oyunları", "helikopter oyunları", "uçuş oyunları", "airplane games"],
+    filter: (g) => has(g, re("\\bplane\\b|aircraft|airplane|helicopter|\\bflight\\b|flying|\\bjet\\b|uçak|helikopter|pilot")),
+  },
+  {
+    slug: "uzay-oyunlari",
+    title: "Uzay Oyunları",
+    intro:
+      "Galaksiyi keşfet! Ücretsiz uzay oyunları: uzay gemisi savaşları, gezegen keşfi ve uzaylı istilası. İndirmeden, tarayıcında oyna.",
+    keywords: ["uzay oyunları", "space games", "uzay gemisi", "galaksi oyunları"],
+    filter: (g) => has(g, re("\\bspace\\b|galaxy|spaceship|spacecraft|astronaut|\\balien\\b|uzay|galaksi|uzaylı")),
+  },
+  {
+    slug: "ninja-oyunlari",
+    title: "Ninja Oyunları",
+    intro:
+      "Gölgelerin savaşçısı ol! Ücretsiz ninja ve samuray oyunları: kılıç dövüşü, parkur ve gizlilik görevleri. Tarayıcında, indirmeden oyna.",
+    keywords: ["ninja oyunları", "ninja games", "samuray oyunları"],
+    filter: (g) => has(g, re("ninja|samurai|katana|shinobi")),
+  },
+  {
+    slug: "korku-oyunlari",
+    title: "Korku Oyunları",
+    intro:
+      "Cesaretini test et! Ücretsiz korku ve gerilim oyunları: kaçış, hayatta kalma ve ürpertici macera. Geceleri oynamaya hazır mısın? İndirmeden tarayıcında.",
+    keywords: ["korku oyunları", "horror games", "gerilim oyunları", "scary games"],
+    filter: (g) => has(g, re("horror|scary|\\bcreepy\\b|granny|\\bghost\\b|nightmare|korku|hayalet|zombie|zombi")),
+  },
+  {
+    slug: "kamyon-tir-oyunlari",
+    title: "Kamyon ve Tır Oyunları",
+    intro:
+      "Direksiyonun başına geç! Ücretsiz kamyon ve tır oyunları: yük taşıma, park etme ve uzun yol sürüşü. İndirmeden, tarayıcında oyna.",
+    keywords: ["kamyon oyunları", "tır oyunları", "truck games", "yük taşıma oyunları"],
+    filter: (g) => has(g, re("\\btruck\\b|lorry|\\bcargo\\b|kamyon|\\btır\\b|trailer")),
+  },
+  {
+    slug: "basketbol-oyunlari",
+    title: "Basketbol Oyunları",
+    intro:
+      "Potaya sok! Ücretsiz basketbol oyunları: smaç, üçlük atışı ve sokak basketbolu. Sahaya çık, skoru yap — indirmeden tarayıcında.",
+    keywords: ["basketbol oyunları", "basketball games", "smaç oyunları"],
+    filter: (g) => has(g, re("basketball|basketbol|\\bdunk\\b|\\bhoop\\b")),
+  },
+  {
+    slug: "golf-oyunlari",
+    title: "Golf Oyunları",
+    intro:
+      "Sakin ama rekabetçi! Ücretsiz golf ve mini golf oyunları: hassas vuruşlar, parkurlar ve skor avı. İndirmeden, tarayıcında oyna.",
+    keywords: ["golf oyunları", "golf games", "mini golf"],
+    filter: (g) => has(g, re("\\bgolf\\b|mini ?golf")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {

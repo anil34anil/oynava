@@ -36,8 +36,9 @@ export const metadata: Metadata = {
     locale: "tr_TR",
     siteName: SITE_NAME,
     url: SITE.url,
+    images: ["/og.png"],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
   // AdSense site doğrulaması için <meta name="google-adsense-account" ...>
   other: { "google-adsense-account": SITE.adsenseClient },
   // Google Search Console (token girilince <meta name="google-site-verification" ...>)

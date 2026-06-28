@@ -14,7 +14,7 @@ import { SITE } from "@/lib/site";
 import { t, localePath } from "@/lib/i18n";
 import { seoAlternates } from "@/lib/seo";
 import { getLocale, gameDescription, gameInstructions, gameFaq } from "@/lib/localize";
-import { getPlayCount } from "@/lib/kv";
+import { getPlayCount, getReactions } from "@/lib/kv";
 
 export const revalidate = 3600;
 
@@ -53,13 +53,27 @@ export default async function GamePage({ params }: { params: { id: string } }) {
   const related = (await getByCategory(catSlug)).filter((g) => g.id !== game.id).slice(0, 12);
   const inCollections = COLLECTIONS.filter((c) => (c.filter ? c.filter(game) : false)).slice(0, 6);
 
-  const [desc, instr, faq, plays] = await Promise.all([
+  const [desc, instr, faq, plays, reactions] = await Promise.all([
     gameDescription(game, locale),
     gameInstructions(game, locale),
     gameFaq(game, locale),
     getPlayCount(game.id),
+    getReactions(game.id, undefined),
   ]);
   const url = `${SITE.url}/oyun/${game.id}/${slugifyTitle(game.title)}`;
+
+  // Yıldız puanı (rich snippet) — YALNIZCA gerçek ve yeterli oy varsa (≥10). Sahte/boş puan YOK.
+  const votes = reactions.count + reactions.dislikes;
+  const aggregateRating =
+    votes >= 10
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: Math.round(((reactions.count * 5 + reactions.dislikes) / votes) * 10) / 10,
+          ratingCount: votes,
+          bestRating: 5,
+          worstRating: 1,
+        }
+      : null;
 
   return (
     <div className="container-x grid gap-6 py-6 lg:grid-cols-[1fr_320px]">
@@ -78,6 +92,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
             genre: game.category,
             offers: { "@type": "Offer", price: "0", priceCurrency: "TRY" },
             publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+            ...(aggregateRating ? { aggregateRating } : {}),
           },
           {
             "@context": "https://schema.org",
