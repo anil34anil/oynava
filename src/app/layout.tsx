@@ -11,6 +11,7 @@ import { LoginModal } from "@/components/LoginModal";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { LocaleHtml } from "@/components/LocaleHtml";
 import { JsonLd } from "@/components/JsonLd";
+import { AdsenseScript } from "@/components/AdsenseScript";
 import { SITE } from "@/lib/site";
 
 // CYBERPULSE tipografi: Sora (başlık), Hanken Grotesk (gövde), JetBrains Mono (etiket/veri)
@@ -46,9 +47,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // AdSense yayıncı kimliği (site.ts'te tanımlı; env override edebilir).
-  const adsenseClient = SITE.adsenseClient || process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
-
   return (
     <html lang="tr" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
@@ -59,15 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://flagcdn.com" />
       </head>
       <body>
-        {adsenseClient && (
-          <Script
-            id="adsbygoogle-init"
-            async
-            strategy="afterInteractive"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        <AdsenseScript />
         {SITE.gaMeasurementId && (
           <>
             <Script
