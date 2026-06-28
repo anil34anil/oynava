@@ -3,8 +3,7 @@ import { getGames } from "@/lib/games";
 import { categorySlug, CATEGORIES, isOnline, slugifyTitle } from "@/lib/catalog";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
-import { JsonLd } from "@/components/JsonLd";
-import { SITE } from "@/lib/site";
+import { RecentlyPlayedRail } from "@/components/RecentlyPlayedRail";
 import { t, localePath } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
 
@@ -50,35 +49,14 @@ export default async function HomePage() {
 
   return (
     <div className="container-x space-y-10 py-6">
-      <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: SITE.name,
-            url: SITE.url,
-            inLanguage: "tr-TR",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: { "@type": "EntryPoint", urlTemplate: `${SITE.url}/ara?q={search_term_string}` },
-              "query-input": "required name=search_term_string",
-            },
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: SITE.name,
-            url: SITE.url,
-            slogan: SITE.slogan,
-            logo: `${SITE.url}/icon.svg`,
-          },
-        ]}
-      />
       {/* Oyunlar hemen görünsün — siteye girer girmez oynamaya başla */}
       <section>
         <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
         <GameGrid games={popular} priorityCount={6} />
       </section>
+
+      {/* Son oynadıkların — kişiselleştirilmiş ray (localStorage, sunucu maliyeti yok) */}
+      <RecentlyPlayedRail />
 
       {/* Günün Oyunu */}
       {gotd && (

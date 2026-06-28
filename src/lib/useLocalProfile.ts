@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 const KEYS = {
   fav: "oh:favorites",
   recent: "oh:recent",
+  recentCards: "oh:recent_cards",
   profile: "oh:profile",
   coins: "oh:coins",
   owned: "oh:owned",
@@ -80,6 +81,26 @@ export function useRecent() {
     return () => window.removeEventListener("oh:storage", sync);
   }, []);
   return ids;
+}
+
+// Son oynananları kart olarak göstermek için hafif meta önbelleği (sunucuya gitmeden render).
+export type RecentCard = { id: string; title: string; thumb: string };
+
+export function pushRecentCard(card: RecentCard) {
+  if (typeof window === "undefined") return;
+  const cur = read<RecentCard[]>(KEYS.recentCards, []).filter((x) => x.id !== card.id);
+  write(KEYS.recentCards, [card, ...cur].slice(0, 18));
+}
+
+export function useRecentCards() {
+  const [cards, setCards] = useState<RecentCard[]>([]);
+  useEffect(() => {
+    const sync = () => setCards(read<RecentCard[]>(KEYS.recentCards, []));
+    sync();
+    window.addEventListener("oh:storage", sync);
+    return () => window.removeEventListener("oh:storage", sync);
+  }, []);
+  return cards;
 }
 
 export function useProfile() {

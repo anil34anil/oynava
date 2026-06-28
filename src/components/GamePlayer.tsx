@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Game } from "@/lib/catalog";
-import { pushRecent } from "@/lib/useLocalProfile";
+import { pushRecent, pushRecentCard } from "@/lib/useLocalProfile";
 import { useAutoTr } from "@/lib/useLocaleClient";
 import { GameActionBar } from "./GameActionBar";
 
@@ -35,6 +35,7 @@ export function GamePlayer({ game }: { game: Game }) {
             onClick={() => {
               setStarted(true);
               pushRecent(game.id);
+              pushRecentCard({ id: game.id, title: game.title, thumb: game.thumb });
               // Oynanma sayacını artır (ArcadeCMS "most played" paritesi)
               fetch(`/api/play/${game.id}`, { method: "POST" }).catch(() => {});
             }}
