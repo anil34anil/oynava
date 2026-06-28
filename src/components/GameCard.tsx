@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { Game, slugifyTitle } from "@/lib/catalog";
 import { FavoriteButton } from "./FavoriteButton";
-import { ReactionPill } from "./ReactionPill";
 import { useLocale, localizedHref } from "@/lib/useLocaleClient";
 
 export function GameCard({ game, priority = false }: { game: Game; priority?: boolean }) {
@@ -80,10 +79,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         <h3 className="truncate font-display text-sm font-semibold text-slate-100 group-hover:text-neon">
           {game.title}
         </h3>
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <p className="truncate text-xs text-slate-500">{game.category}</p>
-          <ReactionPill id={game.id} size="sm" />
-        </div>
+        <p className="mt-1 truncate text-xs text-slate-500">{game.category}</p>
       </div>
     </Link>
   );

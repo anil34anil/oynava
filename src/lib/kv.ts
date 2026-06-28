@@ -82,6 +82,28 @@ export async function kvSet(key: string, value: string): Promise<void> {
   }
 }
 
+/** Çeviri önbelleği anahtarlarını (oh:tr:*) siler — dolu Redis'te yer açmak için.
+ *  DEL belleği boşaltır (noeviction'da bile çalışır). Beğeni/oynanma verisine dokunmaz. */
+export async function flushTranslationCache(): Promise<number> {
+  const kv = await getClient();
+  if (!kv) return 0;
+  let cursor = "0";
+  let total = 0;
+  try {
+    do {
+      const res = await kv.scan(cursor, { MATCH: "oh:tr:*", COUNT: 500 });
+      cursor = String(res.cursor);
+      if (res.keys.length) {
+        await kv.del(res.keys);
+        total += res.keys.length;
+      }
+    } while (cursor !== "0");
+  } catch {
+    /* yoksay */
+  }
+  return total;
+}
+
 // ── Beğeni / beğenmeme ─────────────────────────────────────────────────────
 const LIKED_GAMES_SET = "oh:liked_games";
 const likedKey = (id: string) => `oh:liked_by:${id}`;

@@ -26,9 +26,18 @@ export default async function AdminVotesPage() {
 
   return (
     <div className="container-x space-y-6 py-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="font-display text-2xl font-black text-ink">👍👎 Oylanan Oyunlar</h1>
-        <AdminLogoutButton />
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/cleanup"
+            className="btn-ghost py-2 text-xs"
+            title="Çeviri önbelleğini siler, dolu Redis'te yer açar"
+          >
+            🧹 Redis temizle
+          </a>
+          <AdminLogoutButton />
+        </div>
       </div>
 
       {votes.length === 0 ? (
