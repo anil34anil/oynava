@@ -6,6 +6,7 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: "/",
     name: "OYNAVA — Binlerce Ücretsiz Oyun",
     short_name: "OYNAVA",
     description: "Aksiyon, yarış, 3D, .io ve bulmaca oyunları. İndirme yok — tarayıcında ücretsiz oyna.",

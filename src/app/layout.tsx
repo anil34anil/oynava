@@ -12,6 +12,7 @@ import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { LocaleHtml } from "@/components/LocaleHtml";
 import { JsonLd } from "@/components/JsonLd";
 import { AdsenseScript } from "@/components/AdsenseScript";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { SITE } from "@/lib/site";
 
 // CYBERPULSE tipografi: Sora (başlık), Hanken Grotesk (gövde), JetBrains Mono (etiket/veri)
@@ -120,6 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <CookieConsent />
         <LoginModal />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
