@@ -69,6 +69,44 @@ export default function VeriKorumaPage() {
         <a href="/gizlilik-tercihleri">Gizlilik Tercihleri</a> sayfasından yönetebilirsin.
       </p>
 
+      <h2>4.1. Google AdSense ve Reklam Çerezleri</h2>
+      <ul>
+        <li>
+          Üçüncü taraf sağlayıcılar (Google dâhil) bu siteye ve diğer sitelere yaptığın
+          önceki ziyaretlere dayalı reklam sunmak için <strong>çerez</strong> kullanır.
+        </li>
+        <li>
+          Google&apos;ın reklam çerezi (<strong>DoubleClick / DART çerezi</strong>) kullanması,
+          Google&apos;ın ve iş ortaklarının senin bu siteye ve internetteki diğer sitelere
+          yaptığın ziyaretlere göre reklam göstermesini sağlar.
+        </li>
+        <li>
+          Kişiselleştirilmiş reklamları{" "}
+          <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">
+            Google Reklam Ayarları (adssettings.google.com)
+          </a>{" "}
+          üzerinden kapatabilirsin.
+        </li>
+        <li>
+          Üçüncü taraf satıcıların çerezlerini{" "}
+          <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer">aboutads.info</a>{" "}
+          ve{" "}
+          <a href="https://www.youronlinechoices.eu" target="_blank" rel="noopener noreferrer">youronlinechoices.eu</a>{" "}
+          üzerinden de yönetebilirsin.
+        </li>
+        <li>
+          Google&apos;ın veri kullanımı hakkında ayrıntı:{" "}
+          <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">
+            policies.google.com/technologies/partner-sites
+          </a>.
+        </li>
+        <li>
+          Avrupa Ekonomik Alanı (AEA), Birleşik Krallık ve İsviçre&apos;deki kullanıcılara,
+          kişiselleştirilmiş reklam ve çerezler için yasal <strong>rıza (consent)</strong>{" "}
+          bildirimi gösterilir.
+        </li>
+      </ul>
+
       <h2>5. Veriler Nerede İşlenir ve Ne Kadar Saklanır?</h2>
       <p>
         Cihazında saklanan veriler sen silene kadar tarayıcında kalır (tarayıcı verilerini

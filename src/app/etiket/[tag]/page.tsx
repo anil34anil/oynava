@@ -13,6 +13,44 @@ import { getLocale } from "@/lib/localize";
 
 export const revalidate = 3600;
 
+// Etiket sayfaları arasında duplicate içerik olmasın diye giriş metni slug'a göre varyasyonlanır.
+function tagIntro(label: string, count: number, topTitles: string[]): string {
+  const low = label.toLocaleLowerCase("tr");
+  let h = 0;
+  for (let i = 0; i < label.length; i++) h = (h * 31 + label.charCodeAt(i)) >>> 0;
+  const openers = [
+    `${label} sevenler için elimizdeki en iyi ücretsiz oyunları bu sayfada topladık.`,
+    `En sevilen ${low} oyunlarını mı arıyorsun? Doğru yerdesin.`,
+    `${label} temalı ${count} oyun, tek listede ve tamamen ücretsiz.`,
+    `İşte tarayıcında oynayabileceğin en iyi ${low} oyunları.`,
+  ];
+  const closers = [
+    `Hepsi indirme ve üyelik gerektirmeden, doğrudan tarayıcında açılır.`,
+    `Telefon, tablet ve bilgisayarda akıcı çalışır; kurulum yok.`,
+    `Liste yeni oyunlarla sürekli güncellenir — favorilerini kaydetmeyi unutma.`,
+  ];
+  const top = topTitles.length ? ` Öne çıkanlar: ${topTitles.slice(0, 3).join(", ")}.` : "";
+  return `${openers[h % openers.length]}${top} ${closers[h % closers.length]}`;
+}
+
+function tagFaq(label: string, count: number) {
+  const low = label.toLocaleLowerCase("tr");
+  return [
+    {
+      q: `${label} oyunları ücretsiz mi?`,
+      a: `Evet, bu sayfadaki ${count} ${low} oyununun tamamı ücretsizdir. İndirme, kurulum veya ödeme gerekmez; sayfayı açtığın an oynamaya başlarsın.`,
+    },
+    {
+      q: `${label} oyunları telefonda çalışır mı?`,
+      a: `Çalışır. Oyunlar HTML5 tabanlıdır ve telefon, tablet ve bilgisayarda dokunmatik veya klavyeyle akıcı şekilde oynanır.`,
+    },
+    {
+      q: `Oynamak için üye olmam gerekir mi?`,
+      a: `Hayır. ${label} oyunlarını üyelik olmadan oynayabilirsin; istersen favorilerini kaydetmek için ücretsiz hesap açabilirsin.`,
+    },
+  ];
+}
+
 // En güçlü ~180 etiket build'de pre-render (SSG); kalanlar ilk istekte ISR.
 export async function generateStaticParams() {
   const games = await getGames();
@@ -42,7 +80,9 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
   const locale = getLocale();
   const L = (p: string) => localePath(p, locale);
   const list = tg.games;
-  const intro = `${tg.label} sevenler için en iyi ücretsiz oyunlar burada. ${list.length} ${tg.label.toLocaleLowerCase("tr")} oyununu indirmeden, üyelik gerekmeden doğrudan tarayıcında oynayabilirsin. Liste yeni oyunlarla sürekli güncellenir.`;
+  const topTitles = list.slice(0, 3).map((g) => g.title);
+  const intro = tagIntro(tg.label, list.length, topTitles);
+  const faq = tagFaq(tg.label, list.length);
 
   // İç linkleme: ilgili diğer etiketler (yetim sayfa bırakma)
   const related = topTags(games, MIN_TAG_GAMES, 40)
@@ -82,6 +122,15 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
               name: g.title,
             })),
           },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          },
         ]}
       />
 
@@ -104,6 +153,22 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 
       <GameGrid games={list} priorityCount={6} />
+
+      {/* SSS — rich snippet + içerik derinliği */}
+      <section className="border-t border-line pt-6">
+        <h2 className="mb-3 font-display text-xl font-bold text-ink">{tg.label} Oyunları — Sık Sorulan Sorular</h2>
+        <div className="max-w-3xl space-y-3">
+          {faq.map((f, i) => (
+            <details key={i} className="group border-b border-line/60 pb-3 last:border-0">
+              <summary className="cursor-pointer list-none font-semibold text-slate-200 marker:hidden">
+                <span className="text-secondary">▸ </span>
+                {f.q}
+              </summary>
+              <p className="mt-2 pl-4 text-sm text-slate-400">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       {/* İç linkleme: ilgili etiketler + kategoriler */}
       <section className="space-y-3 border-t border-line pt-6">

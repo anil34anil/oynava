@@ -8,6 +8,7 @@ import { useOpenLogin } from "@/lib/useLoginModal";
 import { useT, useAutoTr } from "@/lib/useLocaleClient";
 import { SHOP_ITEMS } from "@/lib/shop";
 import { GameListFromIds } from "@/components/GameListFromIds";
+import { RewardsPanel } from "@/components/RewardsPanel";
 
 type Tab = "begenilen" | "ayarlar";
 
@@ -97,6 +98,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Günlük ödül + başarımlar */}
+      <RewardsPanel />
 
       <div className="grid gap-6 md:grid-cols-[260px_1fr]">
         {/* Sol: istatistikler */}

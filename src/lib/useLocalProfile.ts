@@ -18,6 +18,8 @@ const KEYS = {
   profile: "oh:profile",
   coins: "oh:coins",
   owned: "oh:owned",
+  streak: "oh:streak",
+  playsTotal: "oh:plays_total",
 } as const;
 
 function read<T>(key: string, fallback: T): T {
@@ -101,6 +103,53 @@ export function useRecentCards() {
     return () => window.removeEventListener("oh:storage", sync);
   }, []);
   return cards;
+}
+
+// ── Günlük giriş ödülü (streak) — sanal jeton kazandırır ────────────────────
+type StreakData = { days: number; lastClaim: string };
+const dayStr = (offset = 0) => {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+};
+
+export function useStreak() {
+  const [data, setData] = useState<StreakData>({ days: 0, lastClaim: "" });
+  useEffect(() => {
+    const sync = () => setData(read<StreakData>(KEYS.streak, { days: 0, lastClaim: "" }));
+    sync();
+    window.addEventListener("oh:storage", sync);
+    return () => window.removeEventListener("oh:storage", sync);
+  }, []);
+
+  const canClaim = data.lastClaim !== dayStr(0);
+  const claim = useCallback((): number => {
+    const cur = read<StreakData>(KEYS.streak, { days: 0, lastClaim: "" });
+    if (cur.lastClaim === dayStr(0)) return 0;
+    const days = cur.lastClaim === dayStr(-1) ? cur.days + 1 : 1; // dün geldiyse seri devam
+    write(KEYS.streak, { days, lastClaim: dayStr(0) });
+    const reward = 20 + Math.min(days, 7) * 10; // seri uzadıkça artan ödül (max 90)
+    write(KEYS.coins, read<number>(KEYS.coins, 500) + reward);
+    return reward;
+  }, []);
+
+  return { days: data.days, canClaim, claim };
+}
+
+// ── Toplam oynama sayısı (başarımlar için kümülatif) ───────────────────────
+export function bumpPlays() {
+  if (typeof window === "undefined") return;
+  write(KEYS.playsTotal, read<number>(KEYS.playsTotal, 0) + 1);
+}
+export function usePlaysTotal() {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const sync = () => setN(read<number>(KEYS.playsTotal, 0));
+    sync();
+    window.addEventListener("oh:storage", sync);
+    return () => window.removeEventListener("oh:storage", sync);
+  }, []);
+  return n;
 }
 
 export function useProfile() {

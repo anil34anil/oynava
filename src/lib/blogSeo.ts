@@ -627,6 +627,127 @@ const SPECS: Spec[] = [
     ],
     cta: "En güncel oyunlar [Yeni Eklenen Oyunlar](/yeni-eklenen-oyunlar) ve topluluk favorileri [En Çok Oynanan Oyunlar](/en-cok-oynanan-oyunlar) sayfasında.",
   },
+  {
+    slug: "en-iyi-bulmaca-oyunlari-rehberi",
+    title: "En İyi Bulmaca Oyunları Rehberi (2026)",
+    excerpt: "Match-3'ten mantık bulmacalarına: zekânı zorlayacak en iyi ücretsiz bulmaca oyunları.",
+    intro: "Bulmaca oyunları hem rahatlatır hem zihni keskin tutar. Eşleştirme, mantık ve kelime türleriyle her seviyeye uygun seçenek var. Bu rehberde tarzına göre doğru bulmacayı seçmeni kolaylaştırıyoruz.",
+    sections: [
+      ["Bulmaca türleri", ["- **Match-3:** hızlı, ödüllü, mola dostu", "- **Mantık/blok:** sabır ve planlama ister", "- **Kelime:** kelime dağarcığını geliştirir"]],
+      ["Daha iyi oynamak için", ["Aceleci hamleler yerine birkaç hamle ileriyi düşünmek, çoğu bulmacada daha yüksek skor ve daha az takılma sağlar."]],
+    ],
+    cta: "Tüm seçenekler [En İyi Bulmaca Oyunları](/en-iyi-bulmaca-oyunlari) koleksiyonunda; strateji sevenler [Zekâ & Strateji](/kategori/zeka) kategorisine de bakmalı.",
+  },
+  {
+    slug: "zeka-oyunlari-beyin-egzersizi",
+    title: "Zekâ Oyunları: Eğlenirken Beyin Egzersizi",
+    excerpt: "Strateji ve mantık oyunları hafızayı ve problem çözmeyi nasıl güçlendirir?",
+    intro: "Zekâ oyunları sadece eğlence değil; planlama, dikkat ve problem çözme becerilerini de çalıştırır. Düzenli oynamak, kısa molalarda zihni dinç tutmanın keyifli bir yolu.",
+    sections: [
+      ["Hangi beceriyi geliştirir?", ["- Planlama ve öngörü (strateji)", "- Dikkat ve örüntü tanıma (mantık)", "- Hafıza ve hız (refleks bulmacaları)"]],
+      ["Öneri", ["Her gün 10-15 dakikalık kısa seanslar, uzun ve seyrek oturumlardan daha verimlidir."]],
+    ],
+    cta: "Beyin çalıştıran oyunlar [Zekâ & Strateji](/kategori/zeka) kategorisinde; rahatlatıcı seçenekler için [En İyi Bulmaca Oyunları](/en-iyi-bulmaca-oyunlari) koleksiyonuna göz at.",
+  },
+  {
+    slug: "zombi-oyunlari-hayatta-kalma-taktikleri",
+    title: "Zombi Oyunlarında Hayatta Kalma Taktikleri",
+    excerpt: "Mermini koru, kaçış yolunu planla: zombi oyunlarında daha uzun hayatta kalmanın yolları.",
+    intro: "Zombi oyunları gerilim ve aksiyonu bir arada sunar. Kaynak yönetimi ve konumlanma, çoğu oyunda hayatta kalmanın anahtarıdır. İşte daha uzun dayanmanı sağlayacak temel taktikler.",
+    sections: [
+      ["Temel kurallar", ["- Mermiyi boşa harcama, kafa nişanını tercih et", "- Sırtını duvara ver, çevrelenme", "- Kaçış yolunu önceden belirle"]],
+      ["İleri taktik", ["Dar koridorlar zombileri tek sıraya sokar; kalabalık alanlardan uzak durmak ömrünü ciddi uzatır."]],
+    ],
+    cta: "Tüm hayatta kalma savaşları [Zombi Oyunları](/zombi-oyunlari) koleksiyonunda; daha fazla aksiyon için [En İyi Nişancı Oyunları](/en-iyi-nisanci-oyunlari) sayfasına bak.",
+  },
+  {
+    slug: "minecraft-tarzi-oyunlar",
+    title: "Minecraft Tarzı Oyunlar: Kutu Dünyada Yarat ve Keşfet",
+    excerpt: "İndirme yok! Tarayıcıda oynanan en iyi Minecraft tarzı inşa ve hayatta kalma oyunları.",
+    intro: "Blok dünyalarda inşa etmek, kazmak ve hayatta kalmak kuşaklar boyu sevildi. Tarayıcı sürümleri, kurulum derdi olmadan bu yaratıcı deneyimi sunar.",
+    sections: [
+      ["Bu türde ne var?", ["- Serbest inşa (creative) modları", "- Kaynak toplama ve hayatta kalma", "- Piksel/voxel keşif dünyaları"]],
+      ["Yeni başlayana", ["Önce güvenli bir sığınak inşa et, sonra keşfe çık. Gece düşmanlarına karşı ışık ve duvar en iyi savunmadır."]],
+    ],
+    cta: "Hepsi [En İyi Minecraft Oyunları](/en-iyi-minecraft-oyunlari) koleksiyonunda; bol grafik isteyenler [En İyi 3D Oyunlar](/en-iyi-3d-oyunlar) sayfasına da bakmalı.",
+  },
+  {
+    slug: "en-iyi-futbol-oyunlari-2026",
+    title: "En İyi Futbol Oyunları (2026)",
+    excerpt: "Penaltıdan turnuvaya: tarayıcıda ücretsiz oynanan en iyi futbol oyunları.",
+    intro: "Futbol oyunları, kısa maçlardan turnuva modlarına geniş bir yelpaze sunar. Hızlı bir penaltı atışından tam saha kapışmaya kadar her zevke uygun seçenek var.",
+    sections: [
+      ["Mod çeşitleri", ["- Penaltı atışları (hızlı keyif)", "- Tek maç ve turnuva", "- Kafa topu / mini futbol varyasyonları"]],
+      ["İpucu", ["Şut atarken gücü ve yönü birlikte ayarlamak, kalecisi güçlü oyunlarda gol şansını artırır."]],
+    ],
+    cta: "Sahaya çıkmak için [En İyi Futbol Oyunları](/en-iyi-futbol-oyunlari) koleksiyonu ve [Spor](/kategori/spor) kategorisi seni bekliyor.",
+  },
+  {
+    slug: "giydirme-oyunlari-stil-rehberi",
+    title: "Giydirme ve Makyaj Oyunları: Stil Rehberi",
+    excerpt: "Kendi tarzını yarat: en eğlenceli giydirme, makyaj ve moda oyunları.",
+    intro: "Giydirme ve makyaj oyunları yaratıcılığı serbest bırakır. Renk uyumu, kombin ve detaylarla kendi stilini tasarlamak hem keyifli hem rahatlatıcı.",
+    sections: [
+      ["Tarz ipuçları", ["- Renkleri 2-3 ana tonla sınırlı tut", "- Aksesuarı abartma, dengeyi koru", "- Tema ve mekâna uygun kombin seç"]],
+      ["Eğlence katmanı", ["Birçok oyun mevsim ve etkinlik temaları sunar; aynı karaktere farklı tarzlar deneyerek koleksiyon yapabilirsin."]],
+    ],
+    cta: "Moda tutkunları [Kız Giydirme Oyunları](/kiz-giydirme-oyunlari) ve [Makyaj Oyunları](/makyaj-oyunlari) koleksiyonlarını sevecek.",
+  },
+  {
+    slug: "kule-savunma-strateji-rehberi",
+    title: "Kule Savunma (Tower Defense) Strateji Rehberi",
+    excerpt: "Doğru kuleyi doğru yere koy: kule savunma oyunlarında kazanma stratejileri.",
+    intro: "Kule savunma oyunları, planlama ve ekonomi yönetimini test eder. Düşman dalgalarını durdurmak için kule seçimi ve yerleşimi her şeyi belirler.",
+    sections: [
+      ["Temel strateji", ["- Yol dönüşlerine yüksek hasarlı kuleler koy", "- Yavaşlatan kulelerle hasar kulelerini birleştir", "- Para biriktirip kritik noktayı güçlendir"]],
+      ["İleri seviye", ["Erken dalgalarda fazla harcamayıp ekonomiyi büyütmek, geç dalgalarda güçlü bir savunma kurmanı sağlar."]],
+    ],
+    cta: "Savunmanı kur: [Kule Savunma Oyunları](/kule-savunma-oyunlari) koleksiyonu ve [Zekâ & Strateji](/kategori/zeka) kategorisi.",
+  },
+  {
+    slug: "cocuklar-icin-guvenli-oyun-secimi",
+    title: "Çocuklar İçin Güvenli Oyun Seçimi: Ebeveyn Rehberi",
+    excerpt: "Yaşa uygun, şiddet içermeyen, eğitici oyunları nasıl seçersiniz?",
+    intro: "Çocuklar için oyun seçerken yaş uygunluğu, içerik ve süre önemlidir. Bu rehber, eğlenceli ama güvenli bir oyun deneyimi için ebeveynlere pratik öneriler sunar.",
+    sections: [
+      ["Nelere dikkat etmeli?", ["- Şiddet içermeyen, renkli ve sade oyunlar", "- Eğitici (sayı, renk, eşleştirme) içerikler", "- Makul oyun süresi ve molalar"]],
+      ["Güvenlik notu", ["Oyun sürelerini birlikte belirlemek ve ekran molaları vermek, sağlıklı bir alışkanlık oluşturur. Yaş rehberimiz yol gösterir."]],
+    ],
+    cta: "Aileler için [Çocuklar İçin Oyunlar](/cocuklar-icin-oyunlar) koleksiyonu ve [Çocuk](/kategori/cocuk) kategorisi güvenli seçimler sunar.",
+  },
+  {
+    slug: "mobil-tarayicida-oyun-oynama-rehberi",
+    title: "Mobil Tarayıcıda Oyun Oynama Rehberi",
+    excerpt: "Telefonda akıcı oyun: uygulama indirmeden tarayıcıda en iyi deneyim için ipuçları.",
+    intro: "HTML5 oyunlar telefon tarayıcısında uygulama indirmeden çalışır. Birkaç basit ayarla mobilde daha akıcı ve keyifli bir deneyim elde edebilirsin.",
+    sections: [
+      ["Daha akıcı için", ["- Arka plan sekmelerini kapat", "- Pil tasarrufu modu performansı düşürebilir", "- Wi-Fi, online oyunlarda daha stabildir"]],
+      ["Pratik ipucu", ["Sık oynadığın siteyi 'ana ekrana ekle' ile uygulama gibi açabilir, tam ekran ve hızlı erişim kazanabilirsin."]],
+    ],
+    cta: "Mobilde hemen başlamak için [Popüler HTML5 Oyunlar](/populer-html5-oyunlar) ve [Yeni Eklenen Oyunlar](/yeni-eklenen-oyunlar) sayfalarına göz at.",
+  },
+  {
+    slug: "park-etme-oyunlari-rehberi",
+    title: "Park Etme Oyunları: Hassas Sürüşün Keyfi",
+    excerpt: "Dar alana kusursuz park: park etme oyunlarında ustalaşma ipuçları.",
+    intro: "Park etme oyunları sabır ve hassasiyet ister. Direksiyon, gaz ve fren kontrolünü dengelemek, çiziksiz park etmenin sırrıdır.",
+    sections: [
+      ["Temel teknik", ["- Yavaş ve kontrollü ilerle", "- Aynalara/kamera açısına dikkat et", "- Direksiyonu erken çevirip açıyı ayarla"]],
+      ["Zorluk arttıkça", ["İleri seviyelerde römork ve dar geçitler gelir; sabırlı ve küçük düzeltmelerle ilerlemek en iyi sonucu verir."]],
+    ],
+    cta: "Direksiyon başına: [Park Etme Oyunları](/park-etme-oyunlari) koleksiyonu ve [Yarış](/kategori/yaris) kategorisi.",
+  },
+  {
+    slug: "bilardo-oyunlari-ipuclari",
+    title: "Bilardo Oyunları: Açı ve Vuruş İpuçları",
+    excerpt: "Doğru açı, doğru güç: bilardo oyunlarında daha iyi oynamanın yolları.",
+    intro: "Bilardo, geometri ve kontrolün buluştuğu sakin ama rekabetçi bir oyundur. Açıyı okumak ve vuruş gücünü ayarlamak, masada fark yaratır.",
+    sections: [
+      ["Temel ilkeler", ["- Vuruştan önce açıyı zihninde çiz", "- Gücü topun gideceği mesafeye göre ayarla", "- Beyaz topun nereye gideceğini de planla"]],
+      ["İpucu", ["Sert vuruş her zaman iyi değildir; kontrollü ve planlı vuruşlar pozisyonu korumana yardım eder."]],
+    ],
+    cta: "Istakanı al: [Bilardo Oyunları](/bilardo-oyunlari) koleksiyonu ve daha fazla zihinsel oyun için [Zekâ & Strateji](/kategori/zeka).",
+  },
 ];
 
 export const SEO_POSTS: Post[] = SPECS.map(build);
