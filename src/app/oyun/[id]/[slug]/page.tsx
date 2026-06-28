@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getGameById, getByCategory, categorySlug, getGames } from "@/lib/games";
 import { trDescription } from "@/lib/tr";
 import { slugifyTitle, categoryBySlug } from "@/lib/catalog";
+import { gameTagLinks } from "@/lib/tags";
 import { COLLECTIONS } from "@/lib/collections";
 import { GamePlayer } from "@/components/GamePlayer";
 import { GameGrid } from "@/components/GameGrid";
@@ -174,13 +175,13 @@ export default async function GamePage({ params }: { params: { id: string } }) {
             {t(locale, "game.tags")}
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
-            {game.tags.split(",").filter(Boolean).slice(0, 12).map((tag) => (
+            {gameTagLinks(game).map((tg) => (
               <Link
-                key={tag}
-                href={L(`/ara?q=${encodeURIComponent(tag.trim())}`)}
+                key={tg.slug}
+                href={L(`/etiket/${tg.slug}`)}
                 className="rounded-md bg-white/[0.06] px-2 py-1 text-xs text-slate-400 hover:bg-secondary/15 hover:text-secondary"
               >
-                #{tag.trim()}
+                #{tg.label}
               </Link>
             ))}
           </div>

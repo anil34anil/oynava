@@ -11,8 +11,6 @@ import { LoginModal } from "@/components/LoginModal";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { LocaleHtml } from "@/components/LocaleHtml";
 import { JsonLd } from "@/components/JsonLd";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE } from "@/lib/site";
 
 // CYBERPULSE tipografi: Sora (başlık), Hanken Grotesk (gövde), JetBrains Mono (etiket/veri)
@@ -124,8 +122,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <CookieConsent />
         <LoginModal />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
