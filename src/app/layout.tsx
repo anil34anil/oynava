@@ -51,6 +51,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="tr" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+      <head>
+        {/* Oyun görseli CDN'lerine erken bağlan → LCP/görsel yükleme hızlanır */}
+        <link rel="preconnect" href="https://img.gamemonetize.com" />
+        <link rel="preconnect" href="https://img.gamedistribution.com" />
+        <link rel="dns-prefetch" href="https://img.gamepix.com" />
+        <link rel="dns-prefetch" href="https://flagcdn.com" />
+      </head>
       <body>
         {adsenseClient && (
           <Script
