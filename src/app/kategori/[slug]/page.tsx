@@ -1,13 +1,40 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { getByCategory, categoryBySlug, CATEGORIES } from "@/lib/games";
+import { COLLECTIONS } from "@/lib/collections";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
-import { t } from "@/lib/i18n";
+import { t, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
+
+// Kategori başına SSS (rich snippet + içerik derinliği). Şablon ama kategori adıyla özgünleşir.
+function catFaq(catTr: string, topTitles: string[], count: number) {
+  const name = catTr.toLocaleLowerCase("tr");
+  return [
+    {
+      q: `${catTr} oyunları ücretsiz mi?`,
+      a: `Evet. OYNAVA'daki tüm ${name} oyunları tamamen ücretsizdir; indirme, kurulum veya ödeme gerekmez. Sayfayı açtığın an doğrudan tarayıcında oynamaya başlarsın.`,
+    },
+    {
+      q: `En iyi ${name} oyunları hangileri?`,
+      a: topTitles.length
+        ? `Şu an en çok oynanan ${name} oyunları arasında ${topTitles.slice(0, 3).join(", ")} öne çıkıyor. ${count}+ oyunun tamamı bu sayfada, popülerliğe göre sıralı.`
+        : `Bu sayfadaki ${count}+ oyunu popülerliğe göre sıraladık; en üsttekiler en çok oynananlardır.`,
+    },
+    {
+      q: `${catTr} oyunları telefonda oynanır mı?`,
+      a: `Evet. Tüm oyunlar HTML5 tabanlıdır; telefon, tablet ve bilgisayarda dokunmatik veya klavyeyle akıcı çalışır. Ayrı uygulama indirmene gerek yoktur.`,
+    },
+    {
+      q: `Oynamak için üye olmam gerekir mi?`,
+      a: `Hayır, üyelik zorunlu değildir. İstersen favori ${name} oyunlarını kaydetmek ve beğeni bırakmak için ücretsiz hesap açabilirsin.`,
+    },
+  ];
+}
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));
@@ -56,6 +83,14 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   const catName = t(locale, `cat.${cat.slug}`);
   const introTr = CAT_INTRO[cat.slug] ?? `En iyi ${cat.tr.toLowerCase()} oyunları, ücretsiz ve indirmeden.`;
   const intro = locale === "tr" ? introTr : await translateText(introTr, locale, "tr");
+  const L = (p: string) => localePath(p, locale);
+
+  const faq = catFaq(cat.tr, games.slice(0, 3).map((g) => g.title), games.length);
+  // İç linkleme: diğer kategoriler + bu kategoriyle ilgili koleksiyonlar (yetim sayfa bırakma)
+  const otherCats = CATEGORIES.filter((c) => c.slug !== cat.slug);
+  const relatedCollections = COLLECTIONS.filter(
+    (c) => c.filter && games.slice(0, 30).some((g) => c.filter!(g)),
+  ).slice(0, 6);
 
   return (
     <div className="container-x space-y-6 py-6">
@@ -80,6 +115,17 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           ],
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }}
+      />
       <div className="flex items-center gap-3">
         <h1 className="font-display text-3xl font-black text-ink neon-text">{catName}</h1>
         <span className="rounded-full border border-line px-3 py-1 text-sm text-slate-400">
@@ -93,6 +139,56 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 
       <GameGrid games={games} priorityCount={6} />
+
+      {/* SSS — rich snippet + içerik derinliği */}
+      <section className="border-t border-line pt-6">
+        <h2 className="mb-3 font-display text-xl font-bold text-ink">
+          {cat.tr} Oyunları — Sık Sorulan Sorular
+        </h2>
+        <div className="max-w-3xl space-y-3">
+          {faq.map((f, i) => (
+            <details key={i} className="group border-b border-line/60 pb-3 last:border-0">
+              <summary className="cursor-pointer list-none font-semibold text-slate-200 marker:hidden">
+                <span className="text-secondary">▸ </span>
+                {f.q}
+              </summary>
+              <p className="mt-2 pl-4 text-sm text-slate-400">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* İç linkleme: ilgili koleksiyonlar + diğer kategoriler */}
+      <section className="space-y-3 border-t border-line pt-6">
+        {relatedCollections.length > 0 && (
+          <>
+            <h2 className="font-display text-lg font-bold text-ink">İlgili Koleksiyonlar</h2>
+            <div className="flex flex-wrap gap-2">
+              {relatedCollections.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={L(`/${c.slug}`)}
+                  className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-secondary hover:text-secondary"
+                >
+                  {c.title}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+        <h2 className="pt-2 font-display text-lg font-bold text-ink">Diğer Kategoriler</h2>
+        <div className="flex flex-wrap gap-2">
+          {otherCats.map((c) => (
+            <Link
+              key={c.slug}
+              href={L(`/kategori/${c.slug}`)}
+              className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-neon hover:text-neon"
+            >
+              {t(locale, `cat.${c.slug}`)}
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { LoginModal } from "@/components/LoginModal";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { LocaleHtml } from "@/components/LocaleHtml";
+import { JsonLd } from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE } from "@/lib/site";
@@ -79,6 +80,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Script>
           </>
         )}
+        {/* Marka kimliği + Google Sitelinks arama kutusu (tüm sayfalarda) */}
+        <JsonLd
+          data={[
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: SITE.name,
+              alternateName: "Oynava Oyun Portalı",
+              url: SITE.url,
+              logo: `${SITE.url}/icon-512.png`,
+              description:
+                "OYNAVA — binlerce ücretsiz HTML5 oyunu indirmeden, tarayıcıda oynatan Türkçe oyun portalı.",
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: SITE.name,
+              url: SITE.url,
+              inLanguage: "tr-TR",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${SITE.url}/ara?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ]}
+        />
         <LocaleHtml />
         <BackgroundDecor />
         <Header />
