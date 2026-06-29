@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.oynava.www.twa",
+      "sha256_cert_fingerprints": [
+        "79:DA:BD:51:6E:8C:8D:47:B7:E1:99:DE:2F:3A:8F:38:B8:26:5C:CD:F5:79:98:51:27:DF:61:2A:47:58:B8:68"
+      ]
+    }
+  }
+]
