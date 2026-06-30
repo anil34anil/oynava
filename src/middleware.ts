@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LOCALE_CODES, DEFAULT_LOCALE, COUNTRY_LOCALE, isLocale } from "@/lib/i18n";
+import { LOCALE_CODES, DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 
 const NON_DEFAULT = LOCALE_CODES.filter((l) => l !== DEFAULT_LOCALE);
 const COOKIE = "oh_locale";
 
 /**
- * Çoklu dil yönlendirmesi:
- *  - /en, /es … → önek soyulur, sayfa render edilir; `x-locale` header + cookie set edilir.
- *  - /tr/... → öneksiz kanonik adrese (tr varsayılan) yönlendirilir.
- *  - Öneksiz yol + non-tr cookie → kullanıcının dilinde tutmak için /{dil} adresine.
- *  - İlk ziyaret (cookie yok) + ana sayfa → ülke/tarayıcı diline göre otomatik yönlendirme.
+ * Çoklu dil yönlendirmesi — TR VARSAYILAN, otomatik dil algılama YOK.
+ *  - /en, /es … → önek soyulur, sayfa render; `x-locale` header + cookie set edilir.
+ *  - /tr/... → öneksiz kanonik adrese yönlendirilir.
+ *  - Öneksiz yol + non-tr cookie → kullanıcının SEÇTİĞİ dilde tutmak için /{dil} adresine.
+ *  - İlk ziyaret → HER ZAMAN TR (öneksiz). Dil yalnızca kullanıcı bizzat seçerse değişir.
+ *    (Telefon/tarayıcı diline göre otomatik yönlendirme kaldırıldı.)
  */
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -33,29 +34,12 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 3) Öneksiz yol — kullanıcı bir dil seçtiyse (cookie) orada tut
+  // 3) Öneksiz yol — kullanıcı bir dil SEÇTİYSE (cookie) orada tut
   const cookie = req.cookies.get(COOKIE)?.value;
   if (cookie && cookie !== DEFAULT_LOCALE && isLocale(cookie)) {
     const url = req.nextUrl.clone();
     url.pathname = `/${cookie}${pathname === "/" ? "" : pathname}`;
     return NextResponse.redirect(url);
-  }
-
-  // 4) İlk ziyaret + ana sayfa → ülke / tarayıcı diline göre otomatik
-  if (!cookie && pathname === "/") {
-    const country = (req as unknown as { geo?: { country?: string } }).geo?.country;
-    let want = country ? COUNTRY_LOCALE[country] : undefined;
-    if (!want) {
-      const lang = (req.headers.get("accept-language") || "").split(",")[0].split("-")[0].toLowerCase();
-      if (isLocale(lang)) want = lang;
-    }
-    if (want && want !== DEFAULT_LOCALE) {
-      const url = req.nextUrl.clone();
-      url.pathname = `/${want}`;
-      const res = NextResponse.redirect(url);
-      res.cookies.set(COOKIE, want, { path: "/", maxAge: 31536000, sameSite: "lax" });
-      return res;
-    }
   }
 
   return NextResponse.next();

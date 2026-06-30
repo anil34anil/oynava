@@ -1,12 +1,11 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LOCALES, DEFAULT_LOCALE, isLocale, localeMeta } from "@/lib/i18n";
 import { useLocale } from "@/lib/useLocaleClient";
 
 export function LanguageSwitcher() {
-  const router = useRouter();
   const pathname = usePathname() || "/";
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -28,8 +27,8 @@ export function LanguageSwitcher() {
     const target = code === DEFAULT_LOCALE ? clean : `/${code}${clean === "/" ? "" : clean}`;
     document.cookie = `oh_locale=${code}; path=/; max-age=31536000; samesite=lax`;
     setOpen(false);
-    router.push(target);
-    router.refresh();
+    // Tam sayfa yükleme: cookie kesin gönderilir, RSC-cache yarışı olmaz → dil sabit kalır.
+    window.location.assign(target);
   }
 
   const cur = localeMeta(locale);
