@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LOCALE_CODES, DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
+import { LOCALE_CODES, DEFAULT_LOCALE } from "@/lib/i18n";
 
 const NON_DEFAULT = LOCALE_CODES.filter((l) => l !== DEFAULT_LOCALE);
 const COOKIE = "oh_locale";
 
 /**
- * Çoklu dil yönlendirmesi — TR VARSAYILAN, otomatik dil algılama YOK.
- *  - /en, /es … → önek soyulur, sayfa render; `x-locale` header + cookie set edilir.
+ * Çoklu dil — TR VARSAYILAN ve SABİT. Öneksiz yol HER ZAMAN TR'dir.
+ *  - /en, /es … → önek soyulur, `x-locale` header + cookie (hatırlama için) set edilir.
  *  - /tr/... → öneksiz kanonik adrese yönlendirilir.
- *  - Öneksiz yol + non-tr cookie → kullanıcının SEÇTİĞİ dilde tutmak için /{dil} adresine.
- *  - İlk ziyaret → HER ZAMAN TR (öneksiz). Dil yalnızca kullanıcı bizzat seçerse değişir.
- *    (Telefon/tarayıcı diline göre otomatik yönlendirme kaldırıldı.)
+ *  - Öneksiz yol → HER ZAMAN TR. Cookie'ye göre geri yönlendirme YOK → dil asla kaymaz.
+ *  Diğer diller yalnızca /xx önekli adreslerde geçerlidir (dil değiştiriciden gelir).
+ *  Otomatik dil algılama da YOK → ilk ziyaret hep TR.
  */
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -34,14 +34,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 3) Öneksiz yol — kullanıcı bir dil SEÇTİYSE (cookie) orada tut
-  const cookie = req.cookies.get(COOKIE)?.value;
-  if (cookie && cookie !== DEFAULT_LOCALE && isLocale(cookie)) {
-    const url = req.nextUrl.clone();
-    url.pathname = `/${cookie}${pathname === "/" ? "" : pathname}`;
-    return NextResponse.redirect(url);
-  }
-
+  // 3) Öneksiz yol → varsayılan TR (cookie ile geri yönlendirme yok → dil sabit kalır)
   return NextResponse.next();
 }
 
