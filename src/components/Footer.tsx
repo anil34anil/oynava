@@ -96,6 +96,8 @@ export function Footer() {
           <span className="text-line">·</span>
           <Link href={href("/veri-koruma")} className="hover:text-neon">{dataProtection}</Link>
           <span className="text-line">·</span>
+          <Link href={href("/hesap-sil")} className="hover:text-neon">Hesap Silme</Link>
+          <span className="text-line">·</span>
           <Link href={href("/gizlilik-tercihleri")} className="hover:text-neon">{privacyPrefs}</Link>
           <span className="text-line">·</span>
           <Link href={href("/erisilebilirlik")} className="hover:text-neon">{accessibility}</Link>
