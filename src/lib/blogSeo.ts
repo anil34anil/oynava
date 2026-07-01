@@ -748,6 +748,127 @@ const SPECS: Spec[] = [
     ],
     cta: "Istakanı al: [Bilardo Oyunları](/bilardo-oyunlari) koleksiyonu ve daha fazla zihinsel oyun için [Zekâ & Strateji](/kategori/zeka).",
   },
+  {
+    slug: "tank-oyunlari-rehberi",
+    title: "Tank Oyunları Rehberi: Cephede Hükmet",
+    excerpt: "Zırhını kuşan, hedefi vur: en iyi ücretsiz tank oyunları ve temel taktikler.",
+    intro: "Tank oyunları güç, strateji ve nişan alma becerisini bir araya getirir. Ağır zırhınla cephede ilerlerken doğru pozisyon ve zamanlama her şeyi belirler.",
+    sections: [
+      ["Temel taktikler", ["- Açık alanda durma, siper kullan", "- Namluyu düşman gelmeden hedefe çevir", "- Zırhın en kalın olduğu ön tarafı düşmana dönük tut"]],
+      ["İpucu", ["Hareket hâlindeyken atış isabeti düşer; kısa durup nişan alıp ateş etmek daha etkilidir."]],
+    ],
+    cta: "Cepheye çık: [Tank Oyunları](/tank-oyunlari) ve [En İyi Savaş Oyunları](/en-iyi-savas-oyunlari) koleksiyonları.",
+  },
+  {
+    slug: "uzay-oyunlari-rehberi",
+    title: "Uzay Oyunları: Galaksiyi Keşfet",
+    excerpt: "Uzay gemisi savaşları, gezegen keşfi ve uzaylı istilası — en iyi ücretsiz uzay oyunları.",
+    intro: "Uzay oyunları sonsuz bir keşif ve aksiyon vaat eder. Gemini yönet, düşman filolarını alt et ve galaksinin derinliklerine yolculuk et.",
+    sections: [
+      ["Türler", ["- Uzay savaşı (shooter)", "- Keşif ve hayatta kalma", "- Ticaret ve üs kurma"]],
+      ["İpucu", ["Gemini geliştirmeye erken başla; kalkan ve motor yükseltmeleri hayatta kalmanı ciddi artırır."]],
+    ],
+    cta: "Yıldızlara: [Uzay Oyunları](/uzay-oyunlari) ve grafik sevenler için [En İyi 3D Oyunlar](/en-iyi-3d-oyunlar).",
+  },
+  {
+    slug: "ninja-oyunlari-nedir",
+    title: "Ninja Oyunları: Gölgelerin Savaşçısı",
+    excerpt: "Kılıç, parkur ve gizlilik — en iyi ücretsiz ninja ve samuray oyunları.",
+    intro: "Ninja oyunları hız, refleks ve zarafeti birleştirir. Gölgelerde ilerle, düşmanları sessizce alt et ve engelleri akıcı parkurla aş.",
+    sections: [
+      ["Beceriler", ["- Zamanlama: saldırıyı doğru anda yap", "- Akış: durmadan hareket et", "- Gizlilik: fark edilmeden yaklaş"]],
+      ["İpucu", ["Çoğu ninja oyununda ritmi korumak (kombolar arası duraksamamak) yüksek skorun anahtarıdır."]],
+    ],
+    cta: "Katanayı çek: [Ninja Oyunları](/ninja-oyunlari) koleksiyonu ve [Aksiyon](/kategori/aksiyon) kategorisi.",
+  },
+  {
+    slug: "korku-oyunlari-en-iyileri",
+    title: "Korku Oyunları: Cesaretini Test Et",
+    excerpt: "Kaçış, hayatta kalma ve gerilim — en iyi ücretsiz korku oyunları.",
+    intro: "Korku oyunları adrenalini yükseltir. Karanlık koridorlarda ilerle, kaynaklarını dikkatli kullan ve hayatta kalmaya çalış.",
+    sections: [
+      ["Hayatta kalma", ["- Ses çıkarma, dikkat çekme", "- Kaynakları (pil, mermi) idareli harca", "- Kaçış yolunu önceden belirle"]],
+      ["İpucu", ["Kulaklıkla oynamak ipuçlarını (ayak sesi vb.) duymanı sağlar; hem daha ürkütücü hem daha kolay olur."]],
+    ],
+    cta: "Cesaretin varsa: [Korku Oyunları](/korku-oyunlari) koleksiyonu ve daha fazla gerilim için [Zombi Oyunları](/zombi-oyunlari).",
+  },
+  {
+    slug: "en-iyi-motor-oyunlari",
+    title: "En İyi Motor Oyunları",
+    excerpt: "Gaz, denge ve akrobasi — tarayıcıda ücretsiz en iyi motosiklet oyunları.",
+    intro: "Motor oyunları hız ve dengeyi bir arada test eder. Zorlu parkurlarda gaz ve fren dengesini kurarken akrobasi de yapabilirsin.",
+    sections: [
+      ["Kontrol", ["- İnişte ön tekeri düz tut", "- Rampada gazı kontrollü ver", "- Denge için ağırlığını ayarla"]],
+      ["İpucu", ["Aceleci gaz vermek çoğu motor oyununda takla attırır; kontrollü hızlanmak daha hızlı bitirtir."]],
+    ],
+    cta: "Kontağı çevir: [Motor Oyunları](/motor-oyunlari) ve [En İyi Yarış Oyunları](/en-iyi-yaris-oyunlari) koleksiyonları.",
+  },
+  {
+    slug: "mahjong-nasil-oynanir",
+    title: "Mahjong Nasıl Oynanır? Başlangıç Rehberi",
+    excerpt: "Taşları eşleştir, tahtayı temizle: mahjong kuralları ve kazanma ipuçları.",
+    intro: "Mahjong, aynı desenli serbest taşları eşleştirerek tahtayı temizlediğin sakin ama zihni çalıştıran bir eşleştirme oyunudur.",
+    sections: [
+      ["Kurallar", ["- Sadece serbest (yanı açık) taşlar eşleşir", "- Aynı desenli iki taşı seç", "- Tüm taşları temizleyerek bitir"]],
+      ["Strateji", ["Üst üste kilitli taşları açacak eşleşmeleri önceliklendir; yoksa oyun tıkanır."]],
+    ],
+    cta: "Taşları diz: [Mahjong Oyunları](/mahjong-oyunlari) ve [En İyi Bulmaca Oyunları](/en-iyi-bulmaca-oyunlari) koleksiyonları.",
+  },
+  {
+    slug: "stickman-oyunlari-rehberi",
+    title: "Stickman Oyunları: Basit Çizim, Büyük Eğlence",
+    excerpt: "Dövüşten parkura, nişancıdan yarışa: en sevilen ücretsiz stickman oyunları.",
+    intro: "Stickman oyunları sade çizgi karakterlerle sürükleyici aksiyon sunar. Basit görünümüne aldanma; mekanikleri şaşırtıcı derecede tatmin edicidir.",
+    sections: [
+      ["Türler", ["- Dövüş ve savaş", "- Parkur ve koşu", "- Nişancı ve okçuluk"]],
+      ["İpucu", ["Çoğu stickman oyununda zamanlama esastır; saldırı ve zıplamayı doğru anda yapmak fark yaratır."]],
+    ],
+    cta: "Çizgiye hayat ver: [Stickman Oyunları](/stickman-oyunlari) koleksiyonu ve [Aksiyon](/kategori/aksiyon) kategorisi.",
+  },
+  {
+    slug: "boyama-oyunlari-cocuklar",
+    title: "Çocuklar İçin Boyama Oyunları",
+    excerpt: "Renklerle tanış, yaratıcılığı geliştir: çocuklar için ücretsiz boyama oyunları.",
+    intro: "Boyama oyunları çocukların renk bilgisini ve yaratıcılığını geliştirirken eğlenmelerini sağlar. Güvenli, sakin ve eğitici bir seçenektir.",
+    sections: [
+      ["Faydaları", ["- Renk ve şekil tanıma", "- El-göz koordinasyonu", "- Yaratıcılık ve odaklanma"]],
+      ["Öneri", ["Küçük çocuklar için basit şablonlarla başlayın; başarı hissi motivasyonu artırır."]],
+    ],
+    cta: "Renklere dal: [Boyama Oyunları](/boyama-oyunlari) koleksiyonu ve [Çocuk](/kategori/cocuk) kategorisi.",
+  },
+  {
+    slug: "yemek-yapma-oyunlari-rehberi",
+    title: "Yemek Yapma Oyunları: Mutfağın Şefi Sen Ol",
+    excerpt: "Tarif hazırla, restoran yönet: en eğlenceli ücretsiz yemek oyunları.",
+    intro: "Yemek yapma oyunları zaman yönetimi ve yaratıcılığı test eder. Siparişleri yetiştir, tarifleri tamamla ve mutfağın ustası ol.",
+    sections: [
+      ["İpuçları", ["- Siparişleri sıraya göre hazırla", "- Malzemeleri önceden hazır et", "- Zamanı iyi yönet, müşteriyi bekletme"]],
+      ["Eğlence", ["Restoran temalı oyunlarda kazandığın parayla mutfağını geliştirmek bağımlılık yapar."]],
+    ],
+    cta: "Önlüğü tak: [Yemek Yapma Oyunları](/yemek-yapma-oyunlari) ve [Kız Giydirme Oyunları](/kiz-giydirme-oyunlari) koleksiyonları.",
+  },
+  {
+    slug: "en-iyi-dovus-oyunlari-2026",
+    title: "En İyi Dövüş Oyunları (2026)",
+    excerpt: "Kombolar, özel hareketler ve ringin hâkimiyeti: en iyi ücretsiz dövüş oyunları.",
+    intro: "Dövüş oyunları refleks ve strateji ister. Rakibini okur, doğru anda saldırır ve kombolarınla üstünlük kurarsın.",
+    sections: [
+      ["Temel", ["- Saldırı ve savunmayı dengele", "- Kombo dizilerini öğren", "- Rakibin açığını bekle"]],
+      ["İpucu", ["Sürekli saldırmak yerine blok yapıp karşı atak yapmak, güçlü rakiplere karşı daha etkilidir."]],
+    ],
+    cta: "Ringe çık: [En İyi Dövüş Oyunları](/en-iyi-dovus-oyunlari) koleksiyonu ve [Dövüş](/kategori/dovus) kategorisi.",
+  },
+  {
+    slug: "ucak-oyunlari-rehberi",
+    title: "Uçak ve Helikopter Oyunları Rehberi",
+    excerpt: "Uçuş simülasyonu, hava savaşı ve iniş görevleri — en iyi ücretsiz uçuş oyunları.",
+    intro: "Uçak oyunları gökyüzünün özgürlüğünü sunar. Uçuş kontrolünü öğren, hava savaşlarına katıl veya zorlu iniş görevlerini tamamla.",
+    sections: [
+      ["Kontrol", ["- Yükseliş/alçalışı yumuşak yap", "- Hızını iniş öncesi düşür", "- Rüzgârı ve açıyı hesaba kat"]],
+      ["İpucu", ["Simülasyon tarzı oyunlarda ani manevralardan kaçınmak, kontrolü kaybetmeni önler."]],
+    ],
+    cta: "Kalkışa hazır ol: [Uçak ve Helikopter Oyunları](/ucak-helikopter-oyunlari) koleksiyonu ve [En İyi 3D Oyunlar](/en-iyi-3d-oyunlar).",
+  },
 ];
 
 export const SEO_POSTS: Post[] = SPECS.map(build);

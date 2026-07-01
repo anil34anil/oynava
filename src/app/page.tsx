@@ -4,8 +4,21 @@ import { categorySlug, CATEGORIES, isOnline, slugifyTitle } from "@/lib/catalog"
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { RecentlyPlayedRail } from "@/components/RecentlyPlayedRail";
+import { JsonLd } from "@/components/JsonLd";
+import { COLLECTIONS } from "@/lib/collections";
+import { topTags, MIN_TAG_GAMES } from "@/lib/tags";
 import { t, localePath } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
+
+// Ana sayfa SSS — rich snippet + özgün içerik (SEO)
+const HOME_FAQ = [
+  { q: "OYNAVA nedir?", a: "OYNAVA, binlerce ücretsiz HTML5 oyunu tek çatı altında toplayan Türkçe oyun portalıdır. Aksiyon, yarış, .io, bulmaca, spor ve daha birçok türde oyunu indirme yapmadan doğrudan tarayıcında oynarsın." },
+  { q: "Oyunlar gerçekten ücretsiz mi?", a: "Evet, tüm oyunlar tamamen ücretsizdir. Gizli ücret, ödeme veya abonelik yoktur; site reklam gelirleriyle desteklenir." },
+  { q: "İndirme veya kurulum gerekiyor mu?", a: "Hayır. Oyunlar tarayıcı tabanlıdır (HTML5/WebGL); oyunun üzerine tıkla, saniyeler içinde açılır. Uygulama indirmene gerek yok." },
+  { q: "Mobilde (telefon/tablet) oynayabilir miyim?", a: "Evet. Oyunların çoğu dokunmatik kontrollerle telefon ve tablette akıcı çalışır. Sitemizi ana ekrana ekleyerek uygulama gibi de kullanabilirsin." },
+  { q: "Üye olmam gerekiyor mu?", a: "Hayır, oynamak için üyelik zorunlu değildir. İstersen favori oyunlarını kaydetmek, günlük ödül ve başarımlar kazanmak için ücretsiz hesap açabilirsin." },
+  { q: "Hangi tür oyunlar var?", a: "Araba ve yarış, nişancı (FPS), .io çok oyunculu, bulmaca, zekâ, spor, dövüş, kız oyunları, çocuk ve 3D oyunlar dahil geniş bir yelpaze bulunur." },
+];
 
 const CAT_ICON: Record<string, string> = {
   aksiyon: "💥", macera: "🗺️", yaris: "🏎️", spor: "⚽", dovus: "🥊",
@@ -46,6 +59,10 @@ export default async function HomePage() {
     } else byCat.set(s, [g]);
   }
   const rows = CATEGORIES.map((c) => ({ cat: c, items: byCat.get(c.slug) ?? [] })).filter((r) => r.items.length > 0);
+
+  // İç linkleme + long-tail: popüler koleksiyonlar & etiketler
+  const topCollections = COLLECTIONS.slice(0, 12);
+  const popularTags = topTags(games, MIN_TAG_GAMES, 14);
 
   return (
     <div className="container-x space-y-10 py-6">
@@ -153,6 +170,71 @@ export default async function HomePage() {
       ))}
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_BOTTOM} className="min-h-[90px]" />
+
+      {/* ── SEO içerik bölümü (ana sayfa özgün metni + popüler konular + SSS) ── */}
+      {isTr && (
+        <section className="cv-auto space-y-6 border-t border-line pt-8">
+          <div className="max-w-3xl space-y-3">
+            <h2 className="font-display text-2xl font-black text-ink">Ücretsiz Oyunlar OYNAVA&apos;da</h2>
+            <p className="text-slate-400">
+              OYNAVA, binlerce <strong>ücretsiz online oyunu</strong> tek yerde toplayan Türkçe oyun portalıdır.
+              Araba ve yarış oyunlarından nişancı (FPS) ve <Link href={L("/online")} className="text-secondary hover:underline">online .io oyunlarına</Link>,
+              bulmaca ve zekâ oyunlarından kız ve çocuk oyunlarına kadar her zevke uygun binlerce HTML5 oyun burada.
+              Hepsi <strong>indirme ve kurulum olmadan</strong>, doğrudan tarayıcında açılır.
+            </p>
+            <p className="text-slate-400">
+              Oyunlar telefon, tablet ve bilgisayarda akıcı çalışır; üyelik zorunlu değildir. İstersen favori oyunlarını
+              kaydedebilir, <Link href={L("/premium")} className="text-secondary hover:underline">premium 3D oyunları</Link> keşfedebilir
+              veya <Link href={L("/oyunlar")} className="text-secondary hover:underline">tüm oyunlara</Link> göz atabilirsin.
+              Yeni oyunlar sürekli eklenir — her gün yeni bir şeyler keşfet.
+            </p>
+          </div>
+
+          {/* Popüler konular — iç linkleme (long-tail) */}
+          <div className="space-y-3">
+            <h2 className="font-display text-lg font-bold text-ink">Popüler Oyun Konuları</h2>
+            <div className="flex flex-wrap gap-2">
+              {topCollections.map((c) => (
+                <Link key={c.slug} href={L(`/${c.slug}`)} className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-neon hover:text-neon">
+                  {c.title}
+                </Link>
+              ))}
+              {popularTags.map((tg) => (
+                <Link key={tg.slug} href={L(`/etiket/${tg.slug}`)} className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-secondary hover:text-secondary">
+                  #{tg.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* SSS */}
+          <div className="space-y-3">
+            <h2 className="font-display text-lg font-bold text-ink">Sık Sorulan Sorular</h2>
+            <div className="max-w-3xl space-y-3">
+              {HOME_FAQ.map((f, i) => (
+                <details key={i} className="group border-b border-line/60 pb-3 last:border-0">
+                  <summary className="cursor-pointer list-none font-semibold text-slate-200 marker:hidden">
+                    <span className="text-secondary">▸ </span>{f.q}
+                  </summary>
+                  <p className="mt-2 pl-4 text-sm text-slate-400">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: HOME_FAQ.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            }}
+          />
+        </section>
+      )}
     </div>
   );
 }

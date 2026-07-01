@@ -310,6 +310,70 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["golf oyunları", "golf games", "mini golf"],
     filter: (g) => has(g, re("\\bgolf\\b|mini ?golf")),
   },
+  {
+    slug: "kart-oyunlari",
+    title: "Kart Oyunları",
+    intro:
+      "Solitaire, poker, uno ve daha fazlası! Ücretsiz kart oyunlarının en iyileri — zekânı ve şansını dene, indirmeden tarayıcında oyna.",
+    keywords: ["kart oyunları", "card games", "solitaire", "iskambil oyunları"],
+    filter: (g) => has(g, re("\\bcard\\b|solitaire|\\bpoker\\b|\\buno\\b|blackjack|\\bsolitr|kart oyun|iskambil")),
+  },
+  {
+    slug: "satranc-oyunlari",
+    title: "Satranç Oyunları",
+    intro:
+      "Zekânı test et! Ücretsiz satranç oyunları: bilgisayara veya arkadaşına karşı oyna, stratejini geliştir. İndirmeden, tarayıcında.",
+    keywords: ["satranç oyunları", "chess games", "satranç oyna"],
+    filter: (g) => has(g, re("\\bchess\\b|satranç")),
+  },
+  {
+    slug: "kelime-oyunlari",
+    title: "Kelime Oyunları",
+    intro:
+      "Kelime dağarcığını genişlet! Ücretsiz kelime bulmacaları, kelime avı ve harf oyunları. Eğlenirken öğren — tarayıcında ücretsiz.",
+    keywords: ["kelime oyunları", "word games", "kelime bulmaca", "kelime avı"],
+    filter: (g) => has(g, re("\\bword\\b|kelime|crossword|wordle|anagram")),
+  },
+  {
+    slug: "hayatta-kalma-oyunlari",
+    title: "Hayatta Kalma Oyunları",
+    intro:
+      "Kaynak topla, sığınak kur, hayatta kal! Ücretsiz survival oyunları: zorlu koşullarda dayanma mücadelesi. İndirmeden tarayıcında oyna.",
+    keywords: ["hayatta kalma oyunları", "survival games", "craft oyunları"],
+    filter: (g) => has(g, re("survival|hayatta kal|\\bcraft\\b|craftsman|\\bsurvive")),
+  },
+  {
+    slug: "ciftlik-oyunlari",
+    title: "Çiftlik Oyunları",
+    intro:
+      "Kendi çiftliğini kur! Ücretsiz çiftlik ve tarım oyunları: ek, hasat et, hayvan yetiştir. Sakin ve keyifli — tarayıcında ücretsiz.",
+    keywords: ["çiftlik oyunları", "farm games", "tarım oyunları"],
+    filter: (g) => has(g, re("\\bfarm\\b|çiftlik|harvest|farming|tarım")),
+  },
+  {
+    slug: "balon-patlatma-oyunlari",
+    title: "Balon Patlatma Oyunları",
+    intro:
+      "Renkleri eşleştir, balonları patlat! Ücretsiz bubble shooter ve balon oyunları: rahatlatıcı, bağımlılık yapan eğlence. İndirmeden oyna.",
+    keywords: ["balon patlatma oyunları", "bubble shooter", "balon oyunları"],
+    filter: (g) => has(g, re("bubble|balon")),
+  },
+  {
+    slug: "bebek-bakma-oyunlari",
+    title: "Bebek Bakma Oyunları",
+    intro:
+      "Sevimli bebeklere göz kulak ol! Ücretsiz bebek bakma ve bakıcılık oyunları: besle, giydir, oyna. Çocuklar için eğlenceli ve güvenli.",
+    keywords: ["bebek bakma oyunları", "baby games", "bakıcılık oyunları"],
+    filter: (g) => has(g, re("\\bbaby\\b|bebek|nursery|babysit|newborn")),
+  },
+  {
+    slug: "balik-tutma-oyunlari",
+    title: "Balık Tutma Oyunları",
+    intro:
+      "Oltayı at, en büyük balığı yakala! Ücretsiz balık tutma oyunları: sakin ve keyifli avlanma deneyimi. İndirmeden tarayıcında oyna.",
+    keywords: ["balık tutma oyunları", "fishing games", "balık oyunları"],
+    filter: (g) => has(g, re("\\bfish\\b|balık|fishing|angler")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {
