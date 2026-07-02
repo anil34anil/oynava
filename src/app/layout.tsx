@@ -25,7 +25,8 @@ const SITE_NAME = "OYNAVA";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE_NAME} — Binlerce Ücretsiz Oyun, Tarayıcıda Oyna`,
+    // "oyun oyna" (215K/ay) + "ücretsiz oyunlar" (181K/ay) + "online oyun" hedefli
+    default: `${SITE_NAME} — Ücretsiz Oyun Oyna | Binlerce Online Oyun`,
     template: `%s | ${SITE_NAME}`,
   },
   description:

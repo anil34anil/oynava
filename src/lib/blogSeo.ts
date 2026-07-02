@@ -869,6 +869,39 @@ const SPECS: Spec[] = [
     ],
     cta: "Kalkışa hazır ol: [Uçak ve Helikopter Oyunları](/ucak-helikopter-oyunlari) koleksiyonu ve [En İyi 3D Oyunlar](/en-iyi-3d-oyunlar).",
   },
+  {
+    slug: "ates-ve-su-tarzi-oyunlar",
+    title: "Ateş ve Su Tarzı En İyi Oyunlar",
+    excerpt: "Biri ateş, biri su: arkadaşınla oynayacağın en iyi işbirliği bulmaca oyunları.",
+    intro: "Ateş ve Su, iki karakterin birbirini tamamlayarak bölümleri geçtiği efsanevi bir işbirliği oyunudur. Aynı tarzda, iki oyuncunun birlikte düşünmesini gerektiren pek çok oyun tarayıcıda ücretsiz oynanabilir.",
+    sections: [
+      ["Nasıl oynanır?", ["- Bir oyuncu ateş karakterini (WASD), diğeri su karakterini (yön tuşları) yönetir", "- Ateş lavdan, su havuzdan geçebilir — yeşil çamura ikisi de giremez", "- Kapıları, kolları ve platformları birlikte kullanarak çıkışa ulaşın"]],
+      ["İpucu", ["Acele etmeyin: bölümü önce gözle taramak, hangi karakterin nereden gideceğini planlamak yeniden başlamayı önler."]],
+    ],
+    cta: "Hepsi burada: [Ateş ve Su Tarzı Oyunlar](/ates-ve-su-oyunlari) ve daha fazla ortak keyif için [2 Kişilik Oyunlar](/2-kisilik-oyunlar).",
+  },
+  {
+    slug: "yilan-oyunu-rehberi",
+    title: "Yılan Oyunu Rehberi: Klasikten Slither'a",
+    excerpt: "Nokia klasiğinden çok oyunculu arenalara: en iyi yılan oyunları ve büyüme taktikleri.",
+    intro: "Yılan oyunu, basit kurallarıyla nesillerdir sevilen bir klasik: ye, uza, kendine ve duvara çarpma. Bugün tarayıcıda hem klasik sürümler hem de yüzlerce oyuncuyla aynı arenada yarıştığın slither tarzı sürümler var.",
+    sections: [
+      ["Taktikler", ["- Kuyruğunu takip ederek güvenli alan yarat", "- Büyük rakiplerin önünü kesme, yem topla", "- Slither tarzında hızlanmayı (boost) sadece kaçarken veya av keserken kullan"]],
+      ["Neden hâlâ popüler?", ["Bir dakikada öğrenilir ama ustalaşmak zaman alır; kısa molaların en iyi dolduranıdır."]],
+    ],
+    cta: "Klasiği ve modernini dene: [Yılan Oyunları](/yilan-oyunlari) ve çok oyunculu arenalar için [Ücretsiz Online Oyunlar](/ucretsiz-online-oyunlar).",
+  },
+  {
+    slug: "masa-oyunlari-rehberi",
+    title: "Masa Oyunları Rehberi: Tavla, Dama ve Dahası",
+    excerpt: "Tavla, dama, domino, ludo: klasik masa oyunlarını tarayıcıda ücretsiz oyna.",
+    intro: "Masa oyunları yüzyıllardır zekâ ve şansı buluşturur. Artık tavla, dama, domino ve ludo gibi klasikleri indirmeden, bilgisayara veya gerçek rakiplere karşı tarayıcında oynayabilirsin.",
+    sections: [
+      ["Hangisi sana göre?", ["- **Tavla:** şans + strateji dengesi, hızlı el", "- **Dama:** saf strateji, sade kurallar", "- **Domino/Ludo:** aile dostu, kolay öğrenilir"]],
+      ["İpucu", ["Tavlada kapı almak (ardışık haneleri tutmak) rakibin hareketini kısıtlar; tek pul bırakmaktan kaçın."]],
+    ],
+    cta: "Masaya otur: [Masa Oyunları](/masa-oyunlari), [Satranç Oyunları](/satranc-oyunlari) ve [Kart Oyunları](/kart-oyunlari) koleksiyonları.",
+  },
 ];
 
 export const SEO_POSTS: Post[] = SPECS.map(build);

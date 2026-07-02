@@ -374,6 +374,71 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["balık tutma oyunları", "fishing games", "balık oyunları"],
     filter: (g) => has(g, re("\\bfish\\b|balık|fishing|angler")),
   },
+  // ── Yüksek hacimli TR aramaları (Ahrefs rakip verisi: ateş ve su 285K/ay, yılan vb.) ──
+  {
+    slug: "ates-ve-su-oyunlari",
+    title: "Ateş ve Su Tarzı Oyunlar",
+    intro:
+      "Ateş ve Su tarzı 2 kişilik işbirliği oyunları! Biri ateşi, diğeri suyu yönetsin; bulmacaları birlikte çözün. Ücretsiz, indirmeden tarayıcında oynanır.",
+    keywords: ["ateş ve su", "ateş ve su oyna", "fireboy watergirl", "ateş su oyunu"],
+    filter: (g) => has(g, re("fireboy|watergirl|fire ?(and|&|n) ?water|water ?girl")),
+  },
+  {
+    slug: "yilan-oyunlari",
+    title: "Yılan Oyunları",
+    intro:
+      "Klasik yılan oyunundan çok oyunculu slither arenalarına! Ye, büyü, rakiplerine çarpmadan hayatta kal. En iyi ücretsiz yılan oyunları tarayıcında.",
+    keywords: ["yılan oyunu", "yılan oyna", "snake game", "slither oyunları"],
+    filter: (g) => has(g, re("\\bsnake\\b|slither")),
+  },
+  {
+    slug: "platform-oyunlari",
+    title: "Platform Oyunları",
+    intro:
+      "Zıpla, koş, engelleri aş! En iyi ücretsiz platform oyunları: klasik macera hissi, zorlu bölümler ve akıcı kontroller. İndirmeden tarayıcında oyna.",
+    keywords: ["platform oyunları", "platformer games", "zıplama oyunları"],
+    filter: (g) => has(g, re("platform")),
+  },
+  {
+    slug: "masa-oyunlari",
+    title: "Masa Oyunları",
+    intro:
+      "Tavla, dama, domino ve ludo! Klasik masa oyunlarının en iyileri tarayıcında: bilgisayara veya arkadaşına karşı oyna, ücretsiz ve indirmeden.",
+    keywords: ["masa oyunları", "tavla", "dama oyna", "domino oyunları", "board games"],
+    filter: (g) => has(g, re("backgammon|\\bludo\\b|domino|checkers|\\bdama\\b|board ?game")),
+  },
+  {
+    slug: "penalti-oyunlari",
+    title: "Penaltı Oyunları",
+    intro:
+      "Topu köşeye çak veya kaleyi koru! Ücretsiz penaltı ve frikik oyunları: gerçekçi şut mekaniği, turnuva heyecanı. İndirmeden tarayıcında oyna.",
+    keywords: ["penaltı oyunları", "penaltı atma oyunu", "penalty games", "frikik oyunları"],
+    filter: (g) => has(g, re("penalty|free ?kick|penalt")),
+  },
+  {
+    slug: "tetris-oyunlari",
+    title: "Tetris Tarzı Blok Oyunları",
+    intro:
+      "Blokları diz, satırları patlat! Tetris tarzı blok bulmaca oyunlarının en iyileri: klasik düşen bloklardan modern blok yerleştirmeye. Ücretsiz, tarayıcında.",
+    keywords: ["tetris", "tetris oyna", "blok oyunları", "block puzzle"],
+    filter: (g) => has(g, re("tetris|block ?puzzle|falling ?block")),
+  },
+  {
+    slug: "labirent-oyunlari",
+    title: "Labirent Oyunları",
+    intro:
+      "Çıkışı bul! Ücretsiz labirent oyunları: kıvrımlı yollar, gizli geçitler ve zekânı zorlayan bölümler. İndirmeden tarayıcında oyna.",
+    keywords: ["labirent oyunları", "maze games", "labirent oyna"],
+    filter: (g) => has(g, re("\\bmaze\\b|labyrinth|labirent")),
+  },
+  {
+    slug: "sudoku-oyunlari",
+    title: "Sudoku Oyunları",
+    intro:
+      "Rakamları yerleştir, zihnini çalıştır! Ücretsiz sudoku oyunları: kolaydan zora her seviye. Günlük sudoku keyfi indirmeden tarayıcında.",
+    keywords: ["sudoku", "sudoku oyna", "sudoku çöz", "sudoku games"],
+    filter: (g) => has(g, re("sudoku")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {

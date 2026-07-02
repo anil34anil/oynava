@@ -7,8 +7,8 @@ import { getLocale } from "@/lib/localize";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Tüm Oyunlar — Ücretsiz Oyna",
-  description: "Binlerce ücretsiz HTML5 oyunun tamamı tek sayfada — sonsuz kaydır, indirmeden anında oyna.",
+  title: "Oyunlar — Binlerce Ücretsiz Oyun Oyna",
+  description: "Binlerce ücretsiz oyun tek sayfada! Aksiyon, yarış, bulmaca ve daha fazlası — sonsuz kaydır, indirmeden anında oyun oyna.",
   alternates: { canonical: "/oyunlar" },
 };
 
