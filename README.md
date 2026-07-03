@@ -1,5 +1,6 @@
 # OYNAVA — HTML5 Oyun Portalı
 > *Bir tık, bin oyun*
+🎮 Canlı: https://www.oynava.com
 
 kraloyun.com tarzı, binlerce ücretsiz tarayıcı oyununu listeleyen, reklamla
 gelir getiren bir oyun portalı. **Next.js 14 + Tailwind + GameMonetize feed.**
