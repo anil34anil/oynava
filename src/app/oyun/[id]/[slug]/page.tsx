@@ -74,6 +74,8 @@ export default async function GamePage({ params }: { params: { id: string } }) {
           worstRating: 1,
         }
       : null;
+  // Görünür yıldız puanı — yalnız gerçek oy varsa (≥5). Az oyunda gösterme (sahte görünmesin).
+  const uiRating = votes >= 5 ? Math.round(((reactions.count * 5 + reactions.dislikes) / votes) * 10) / 10 : null;
 
   return (
     <div className="container-x grid gap-6 py-6 lg:grid-cols-[1fr_320px]">
@@ -125,6 +127,11 @@ export default async function GamePage({ params }: { params: { id: string } }) {
 
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h1 className="font-display text-2xl font-black text-ink md:text-3xl">{game.title}</h1>
+          {uiRating !== null && (
+            <span className="font-mono text-xs text-amber-400" title={`${votes} oy`}>
+              ★ {uiRating.toLocaleString("tr-TR")} <span className="text-slate-500">({votes} oy)</span>
+            </span>
+          )}
           {plays > 0 && (
             <span className="font-mono text-xs text-slate-500">🔥 {plays.toLocaleString("tr-TR")} {t(locale, "game.plays")}</span>
           )}
@@ -165,6 +172,49 @@ export default async function GamePage({ params }: { params: { id: string } }) {
 
       <aside className="space-y-4">
         <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_SIDEBAR} className="min-h-[250px]" />
+
+        {/* Oyun Bilgileri — her oyunda özgün yapısal veri (thin-content önleme) */}
+        <div className="card-base p-4">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wider text-slate-300">
+            Oyun Bilgileri
+          </h2>
+          <dl className="mt-3 space-y-2 text-sm">
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-slate-500">Kategori</dt>
+              <dd>
+                <Link href={L(`/kategori/${catSlug}`)} className="text-slate-300 hover:text-secondary">
+                  {cat?.tr ?? game.category}
+                </Link>
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-slate-500">Platform</dt>
+              <dd className="text-slate-300">Tarayıcı (HTML5)</dd>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-slate-500">Ücret</dt>
+              <dd className="text-slate-300">Ücretsiz</dd>
+            </div>
+            {game.width && game.height && (
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-slate-500">Ekran</dt>
+                <dd className="text-slate-300">{game.width}×{game.height}</dd>
+              </div>
+            )}
+            {plays > 0 && (
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-slate-500">Oynanma</dt>
+                <dd className="text-slate-300">{plays.toLocaleString("tr-TR")}</dd>
+              </div>
+            )}
+            {uiRating !== null && (
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-slate-500">Puan</dt>
+                <dd className="text-amber-400">★ {uiRating.toLocaleString("tr-TR")} / 5</dd>
+              </div>
+            )}
+          </dl>
+        </div>
 
         {/* İç linkleme: oyunun ait olduğu koleksiyonlar */}
         {inCollections.length > 0 && (
