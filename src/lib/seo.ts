@@ -1,30 +1,20 @@
 import type { Metadata } from "next";
 import { SITE } from "./site";
-import { LOCALE_CODES, DEFAULT_LOCALE, localePath } from "./i18n";
 
 /**
- * Çok dilli SEO: bir yol için canonical + hreflang alternatifleri üretir.
- * `/en /es /ar` vb. yayında olduğu için Google'a dil eşlemesini bildirmek ŞART
- * (yoksa yinelenen içerik). `x-default` Türkçe köke işaret eder.
+ * SEO alternates — SADECE canonical (TR).
+ *
+ * ⚠️ hreflang KALDIRILDI (2026-07-03): i18n Aşama-2 (server içerik çevirisi) maliyet için geri
+ * alındığından TÜM diller aynı TR içeriği sunuyor. Google'a "8 dil versiyonu var" demek (hreflang)
+ * yanıltıcıydı + her sayfa için 8× yinelenen URL keşfettirip crawl bütçesini kopyalara harcatıyordu
+ * (GSC: 213 "alternatif canonical" + 69 "yinelenen"). Artık yalnız kanonik TR URL bildirilir;
+ * /en /es önekleri kullanıcı için çalışır ama Google'a ayrı indekslenecek sayfa olarak sunulmaz.
  */
 export function seoAlternates(path: string): Metadata["alternates"] {
-  const languages: Record<string, string> = {};
-  for (const code of LOCALE_CODES) {
-    languages[code] = `${SITE.url}${localePath(path, code)}`;
-  }
-  languages["x-default"] = `${SITE.url}${path}`;
-  return {
-    canonical: `${SITE.url}${path}`,
-    languages,
-  };
+  return { canonical: `${SITE.url}${path}` };
 }
 
-/** Sitemap girişleri için dil alternatifleri (hreflang). */
-export function sitemapLanguages(path: string): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const code of LOCALE_CODES) {
-    if (code === DEFAULT_LOCALE) continue;
-    out[code] = `${SITE.url}${localePath(path, code)}`;
-  }
-  return out;
+/** Sitemap hreflang alternatifleri — artık boş (tüm diller aynı TR içeriği, hreflang kaldırıldı). */
+export function sitemapLanguages(_path: string): Record<string, string> {
+  return {};
 }
