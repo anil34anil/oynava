@@ -439,6 +439,62 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["sudoku", "sudoku oyna", "sudoku çöz", "sudoku games"],
     filter: (g) => has(g, re("sudoku")),
   },
+  {
+    slug: "restoran-oyunlari",
+    title: "Restoran ve Yemek Oyunları",
+    intro:
+      "Mutfağın şefi ol! Ücretsiz restoran ve yemek oyunları: sipariş hazırla, restoranını yönet, tarifleri tamamla. İndirmeden tarayıcında oyna.",
+    keywords: ["restoran oyunları", "yemek oyunları", "aşçılık oyunları", "cooking games"],
+    filter: (g) => has(g, re("restaurant|restoran|\\bcook|\\bchef\\b|kitchen|diner|cafe")),
+  },
+  {
+    slug: "hayvan-oyunlari",
+    title: "Hayvan Oyunları",
+    intro:
+      "Sevimli hayvanlarla tanış! Ücretsiz hayvan oyunları: evcil hayvan bakımı, hayvanat bahçesi ve macera. Çocuklar için eğlenceli, tarayıcında ücretsiz.",
+    keywords: ["hayvan oyunları", "evcil hayvan oyunları", "animal games", "pet games"],
+    filter: (g) => has(g, re("\\banimal|puppy|kitten|\\bpony\\b|\\bpet\\b|hayvan|\\bzoo\\b")),
+  },
+  {
+    slug: "prenses-oyunlari",
+    title: "Prenses Oyunları",
+    intro:
+      "Prenseslerle stil dünyasına adım at! Ücretsiz prenses oyunları: giydirme, makyaj ve masalsı maceralar. En yeni prenses oyunları tarayıcında ücretsiz.",
+    keywords: ["prenses oyunları", "princess games", "prenses giydirme"],
+    filter: (g) => has(g, re("princess|prenses")),
+  },
+  {
+    slug: "gizli-nesne-oyunlari",
+    title: "Gizli Nesne Oyunları",
+    intro:
+      "Dikkatini test et! Ücretsiz gizli nesne oyunları: sahnedeki saklı nesneleri bul, bulmacaları çöz. Rahatlatıcı ve sürükleyici — tarayıcında ücretsiz.",
+    keywords: ["gizli nesne oyunları", "hidden object games", "nesne bulma oyunları"],
+    filter: (g) => has(g, re("hidden ?object|find ?(the|hidden)|gizli nesne|seek")),
+  },
+  {
+    slug: "kuafor-oyunlari",
+    title: "Kuaför ve Saç Oyunları",
+    intro:
+      "Makasla sanat yap! Ücretsiz kuaför ve saç kesme oyunları: saç tasarla, boya, şekillendir. Yaratıcılığını konuştur — indirmeden tarayıcında oyna.",
+    keywords: ["kuaför oyunları", "saç kesme oyunları", "haircut games", "saç tasarım"],
+    filter: (g) => has(g, re("haircut|hair ?(salon|cut|style|dresser)|barber|kuaför|\\bsaç\\b")),
+  },
+  {
+    slug: "market-oyunlari",
+    title: "Market ve Kasiyer Oyunları",
+    intro:
+      "Kasanın başına geç! Ücretsiz market, süpermarket ve kasiyer oyunları: müşterilere hizmet et, ürünleri diz, para üstünü ver. Tarayıcında ücretsiz.",
+    keywords: ["market oyunları", "kasiyer oyunları", "supermarket games", "süpermarket oyunu"],
+    filter: (g) => has(g, re("supermarket|cashier|grocery|\\bmarket\\b|kasiyer|süpermarket")),
+  },
+  {
+    slug: "bilgi-yarismasi-oyunlari",
+    title: "Bilgi Yarışması Oyunları",
+    intro:
+      "Bilgini yarıştır! Ücretsiz bilgi yarışması ve quiz oyunları: soruları yanıtla, puanını topla, kendini test et. Eğlenirken öğren — tarayıcında ücretsiz.",
+    keywords: ["bilgi yarışması oyunları", "quiz oyunları", "trivia games", "soru cevap oyunları"],
+    filter: (g) => has(g, re("\\bquiz\\b|trivia|bilgi ?yarış")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {

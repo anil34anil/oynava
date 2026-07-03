@@ -55,6 +55,7 @@ export function Footer() {
           <h4 className="font-display text-sm font-semibold uppercase tracking-wider text-slate-300">{info}</h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-500">
             <li><Link href={href("/premium")} className="hover:text-neon">{t("nav.premium")}</Link></li>
+            <li><Link href={href("/koleksiyonlar")} className="hover:text-neon">Koleksiyonlar</Link></li>
             <li><Link href={href("/etiketler")} className="hover:text-neon">Etiketler</Link></li>
             <li><Link href={href("/blog")} className="hover:text-neon">{t("nav.blog")}</Link></li>
             <li><Link href={href("/sss")} className="hover:text-neon">{faq}</Link></li>

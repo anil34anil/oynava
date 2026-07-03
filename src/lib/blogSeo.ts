@@ -902,6 +902,39 @@ const SPECS: Spec[] = [
     ],
     cta: "Masaya otur: [Masa Oyunları](/masa-oyunlari), [Satranç Oyunları](/satranc-oyunlari) ve [Kart Oyunları](/kart-oyunlari) koleksiyonları.",
   },
+  {
+    slug: "restoran-oyunlari-rehberi",
+    title: "Restoran Oyunları: Mutfağın Yıldızı Ol",
+    excerpt: "Sipariş yetiştir, restoranını büyüt: en eğlenceli ücretsiz restoran ve yemek oyunları.",
+    intro: "Restoran oyunları hız, planlama ve yaratıcılığı bir araya getirir. Müşterileri memnun et, tarifleri zamanında tamamla ve mekânını adım adım büyüt.",
+    sections: [
+      ["Nasıl başarılı olunur?", ["- Siparişleri geliş sırasına göre hazırla", "- Sık kullanılan malzemeleri önceden hazır et", "- Kazandığın parayla mutfağı/mekânı geliştir"]],
+      ["İpucu", ["Aynı anda birden fazla masaya bakarken, hazırlığı en uzun süren yemeği ilk başlatmak beklemeyi azaltır."]],
+    ],
+    cta: "Önlüğü tak: [Restoran ve Yemek Oyunları](/restoran-oyunlari) ve [Market Oyunları](/market-oyunlari) koleksiyonları.",
+  },
+  {
+    slug: "hayvan-oyunlari-cocuklar-icin",
+    title: "Çocuklar İçin Hayvan Oyunları",
+    excerpt: "Sevimli dostlarla eğlence: çocuklar için en iyi ücretsiz hayvan ve evcil hayvan oyunları.",
+    intro: "Hayvan oyunları çocukların hayvan sevgisini beslerken sorumluluk ve bakım kavramlarını eğlenceli biçimde öğretir. Besleme, temizlik ve oyunla dolu güvenli bir dünya sunar.",
+    sections: [
+      ["Ne öğretir?", ["- Sorumluluk ve bakım", "- Hayvan türlerini tanıma", "- Şefkat ve empati"]],
+      ["Öneri", ["Küçük çocuklar için basit bakım oyunlarıyla başlayın; her başarı motivasyonu artırır."]],
+    ],
+    cta: "Dostlarınla tanış: [Hayvan Oyunları](/hayvan-oyunlari) koleksiyonu ve [Çocuk](/kategori/cocuk) kategorisi.",
+  },
+  {
+    slug: "gizli-nesne-oyunlari-rehberi",
+    title: "Gizli Nesne Oyunları: Dikkatini Test Et",
+    excerpt: "Sahnedeki saklı nesneleri bul: en sürükleyici ücretsiz gizli nesne oyunları ve ipuçları.",
+    intro: "Gizli nesne oyunları gözlem ve dikkat becerisini test eden, rahatlatıcı bir türdür. Karmaşık sahnelerde listelenen nesneleri bulman, hem keyifli hem zihin açıcıdır.",
+    sections: [
+      ["Daha hızlı bulmak için", ["- Sahneyi bölgelere ayırıp sistematik tara", "- Renk ve şekil ipuçlarına odaklan", "- Takıldığında ipucu (hint) özelliğini idareli kullan"]],
+      ["Neden rahatlatıcı?", ["Zaman baskısı olmadan oynanabildiği için mola vermenin ve odaklanmanın keyifli bir yoludur."]],
+    ],
+    cta: "Aramaya başla: [Gizli Nesne Oyunları](/gizli-nesne-oyunlari) ve daha fazla zihin oyunu için [En İyi Bulmaca Oyunları](/en-iyi-bulmaca-oyunlari).",
+  },
 ];
 
 export const SEO_POSTS: Post[] = SPECS.map(build);

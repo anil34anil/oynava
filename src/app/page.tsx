@@ -192,7 +192,12 @@ export default async function HomePage() {
 
           {/* Popüler konular — iç linkleme (long-tail) */}
           <div className="space-y-3">
-            <h2 className="font-display text-lg font-bold text-ink">Popüler Oyun Konuları</h2>
+            <div className="flex items-end justify-between gap-3">
+              <h2 className="font-display text-lg font-bold text-ink">Popüler Oyun Konuları</h2>
+              <Link href={L("/koleksiyonlar")} className="shrink-0 text-sm font-semibold text-neon hover:underline">
+                Tüm Koleksiyonlar →
+              </Link>
+            </div>
             <div className="flex flex-wrap gap-2">
               {topCollections.map((c) => (
                 <Link key={c.slug} href={L(`/${c.slug}`)} className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-neon hover:text-neon">
