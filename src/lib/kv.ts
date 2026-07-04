@@ -60,6 +60,18 @@ export async function getTopPlayedIds(limit = 60): Promise<string[]> {
   }
 }
 
+/** Admin: en çok oynanan oyunlar — id + oynanma sayısı (skorlu). */
+export async function getTopPlayed(limit = 100): Promise<{ gameId: string; plays: number }[]> {
+  const kv = await getClient();
+  if (!kv) return [];
+  try {
+    const rows = await kv.zRangeWithScores(PLAYS_Z, 0, limit - 1, { REV: true });
+    return rows.map((r) => ({ gameId: String(r.value), plays: Math.round(Number(r.score)) }));
+  } catch {
+    return [];
+  }
+}
+
 // ── Genel cache (çeviri önbelleği) — TTL'li ────────────────────────────────
 const CACHE_TTL = 60 * 60 * 24 * 30; // 30 gün → free Redis dolmasın
 
