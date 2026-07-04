@@ -12,6 +12,7 @@ export type Post = {
 };
 
 import { SEO_POSTS } from "./blogSeo";
+import { ORIGINAL_POSTS } from "./blogOriginal";
 
 const BASE_POSTS: Post[] = [
   {
@@ -376,7 +377,7 @@ const BASE_POSTS: Post[] = [
 ];
 
 // Temel yazılar + programmatic SEO yazıları, tarihe göre (yeni üstte) birleşik liste.
-export const POSTS: Post[] = [...BASE_POSTS, ...SEO_POSTS].sort((a, b) => (a.date < b.date ? 1 : -1));
+export const POSTS: Post[] = [...ORIGINAL_POSTS, ...BASE_POSTS, ...SEO_POSTS].sort((a, b) => (a.date < b.date ? 1 : -1));
 
 export function getPost(slug: string): Post | undefined {
   return POSTS.find((p) => p.slug === slug);
