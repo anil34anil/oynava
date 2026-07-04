@@ -35,7 +35,7 @@ export function GamePlayer({ game }: { game: Game }) {
             onClick={() => {
               setStarted(true);
               pushRecent(game.id);
-              pushRecentCard({ id: game.id, title: game.title, thumb: game.thumb });
+              pushRecentCard({ id: game.id, title: game.title, thumb: game.thumb, category: game.category });
               bumpPlays(); // başarımlar için kümülatif oynama sayacı
               // Oynanma sayacını artır (ArcadeCMS "most played" paritesi)
               fetch(`/api/play/${game.id}`, { method: "POST" }).catch(() => {});

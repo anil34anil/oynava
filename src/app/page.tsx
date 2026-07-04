@@ -4,6 +4,7 @@ import { categorySlug, CATEGORIES, isOnline, slugifyTitle } from "@/lib/catalog"
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { RecentlyPlayedRail } from "@/components/RecentlyPlayedRail";
+import { RecommendedRail, type RecoItem } from "@/components/RecommendedRail";
 import { JsonLd } from "@/components/JsonLd";
 import { COLLECTIONS } from "@/lib/collections";
 import { topTags, MIN_TAG_GAMES } from "@/lib/tags";
@@ -64,6 +65,13 @@ export default async function HomePage() {
   const topCollections = COLLECTIONS.slice(0, 12);
   const popularTags = topTags(games, MIN_TAG_GAMES, 14);
 
+  // "Senin İçin Önerilenler" havuzu — çeşitli (her kategoriden) slim liste; kişiselleştirme istemcide
+  const recoPool: RecoItem[] = Array.from(
+    new Map([...popular, ...rows.flatMap((r) => r.items)].map((g) => [g.id, g])).values(),
+  )
+    .slice(0, 120)
+    .map((g) => ({ id: g.id, title: g.title, thumb: g.thumb, category: g.category }));
+
   return (
     <div className="container-x space-y-10 py-6">
       {/* Kategori hızlı erişim ikonları — EN ÜSTTE */}
@@ -109,6 +117,9 @@ export default async function HomePage() {
 
       {/* Son oynadıkların — kişiselleştirilmiş ray (localStorage, sunucu maliyeti yok) */}
       <RecentlyPlayedRail />
+
+      {/* Senin İçin Önerilenler — ziyaretçiye özel, her ziyarette değişken (localStorage) */}
+      <RecommendedRail pool={recoPool} />
 
       {/* Premium tanıtım banner */}
       <Link

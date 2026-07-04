@@ -86,7 +86,7 @@ export function useRecent() {
 }
 
 // Son oynananları kart olarak göstermek için hafif meta önbelleği (sunucuya gitmeden render).
-export type RecentCard = { id: string; title: string; thumb: string };
+export type RecentCard = { id: string; title: string; thumb: string; category?: string };
 
 export function pushRecentCard(card: RecentCard) {
   if (typeof window === "undefined") return;
