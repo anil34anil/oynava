@@ -66,33 +66,7 @@ export default async function HomePage() {
 
   return (
     <div className="container-x space-y-10 py-6">
-      {/* Oyunlar hemen görünsün — siteye girer girmez oynamaya başla */}
-      <section>
-        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
-        <GameGrid games={popular} priorityCount={6} />
-      </section>
-
-      {/* Son oynadıkların — kişiselleştirilmiş ray (localStorage, sunucu maliyeti yok) */}
-      <RecentlyPlayedRail />
-
-      {/* Günün Oyunu */}
-      {gotd && (
-        <Link
-          href={L(`/oyun/${gotd.id}/${slugifyTitle(gotd.title)}`)}
-          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-neon/30 bg-gradient-to-r from-neon/15 via-card to-secondary/10 p-3 transition hover:border-neon sm:p-4"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={gotd.thumb} alt={gotd.title} width={112} height={84} loading="lazy" className="h-20 w-28 shrink-0 rounded-xl object-cover" />
-          <div className="min-w-0">
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-neon">🌟 {gotdLabel}</span>
-            <h2 className="truncate font-display text-lg font-black text-ink sm:text-xl">{gotd.title}</h2>
-            <span className="text-sm text-slate-400">{gotd.category}</span>
-          </div>
-          <span className="btn-primary ml-auto shrink-0 group-hover:scale-105">▶</span>
-        </Link>
-      )}
-
-      {/* Kategori hızlı erişim ikonları */}
+      {/* Kategori hızlı erişim ikonları — EN ÜSTTE */}
       <section>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
           {CATEGORIES.map((c) => (
@@ -109,6 +83,32 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Günün Oyunu — kategorilerin hemen altında */}
+      {gotd && (
+        <Link
+          href={L(`/oyun/${gotd.id}/${slugifyTitle(gotd.title)}`)}
+          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-neon/30 bg-gradient-to-r from-neon/15 via-card to-secondary/10 p-3 transition hover:border-neon sm:p-4"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={gotd.thumb} alt={gotd.title} width={112} height={84} loading="lazy" className="h-20 w-28 shrink-0 rounded-xl object-cover" />
+          <div className="min-w-0">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-neon">🌟 {gotdLabel}</span>
+            <div className="truncate font-display text-lg font-black text-ink sm:text-xl">{gotd.title}</div>
+            <span className="text-sm text-slate-400">{gotd.category}</span>
+          </div>
+          <span className="btn-primary ml-auto shrink-0 group-hover:scale-105">▶</span>
+        </Link>
+      )}
+
+      {/* Popüler oyunlar */}
+      <section>
+        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
+        <GameGrid games={popular} priorityCount={6} />
+      </section>
+
+      {/* Son oynadıkların — kişiselleştirilmiş ray (localStorage, sunucu maliyeti yok) */}
+      <RecentlyPlayedRail />
 
       {/* Premium tanıtım banner */}
       <Link
