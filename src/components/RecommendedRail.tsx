@@ -55,7 +55,7 @@ export function RecommendedRail({ pool }: { pool: RecoItem[] }) {
                 alt={g.title}
                 fill
                 sizes="180px"
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
                 unoptimized
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-base/95 to-transparent p-1.5 pt-5 opacity-0 transition group-hover:opacity-100">

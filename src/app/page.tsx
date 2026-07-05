@@ -162,7 +162,7 @@ export default async function HomePage() {
               ? "Çok oyunculu .io arenaları ve online FPS — dünyanın dört bir yanından oyuncularla canlı rekabet."
               : onlineDesc}
           </p>
-          <GameGrid games={online} />
+          <GameGrid games={online} scroll />
         </section>
       )}
 
@@ -176,7 +176,7 @@ export default async function HomePage() {
               {t(locale, "common.seeAll")} →
             </Link>
           </div>
-          <GameGrid games={items} />
+          <GameGrid games={items} scroll />
         </section>
       ))}
 

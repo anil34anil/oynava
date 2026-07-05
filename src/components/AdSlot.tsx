@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { HousePromo } from "./HousePromo";
 import { SITE } from "@/lib/site";
 
 /**
@@ -31,9 +30,9 @@ export function AdSlot({
     }
   }, [client, slot]);
 
-  if (!client || !slot) {
-    return <HousePromo format={format} className={className} />;
-  }
+  // Gerçek reklam slotu yoksa HİÇBİR ŞEY gösterme (AdSense onaylanıp slot girilene kadar
+  // boş "house promo" kutuları çıkmasın). Slot tanımlanınca gerçek reklam basılır.
+  if (!client || !slot) return null;
 
   return (
     <ins
