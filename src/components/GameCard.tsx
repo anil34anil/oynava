@@ -47,8 +47,20 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         unoptimized
       />
 
-      {/* Canlı önizleme: fare üstündeyken oyunu iframe ile göster (tıklama Link'e geçsin) */}
-      {preview && (
+      {/* Gameplay önizleme: sağlayıcının resmi video klibi varsa onu oynat (reklamsız),
+          yoksa canlı iframe'e düş (tıklama Link'e geçsin) */}
+      {preview && game.previewVideo && (
+        <video
+          src={game.previewVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[1] h-full w-full bg-black object-contain"
+        />
+      )}
+      {preview && !game.previewVideo && (
         <iframe
           src={game.url}
           title={`${game.title} önizleme`}

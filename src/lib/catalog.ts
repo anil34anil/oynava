@@ -15,6 +15,8 @@ export type Game = {
   thumb: string;
   width: string;
   height: string;
+  /** Sağlayıcının resmi gameplay önizleme klibi (varsa) — reklamsız, hover'da oynatılır. */
+  previewVideo?: string;
 };
 
 // İngilizce kategori -> Türkçe + slug eşlemesi
