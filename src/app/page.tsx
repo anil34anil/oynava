@@ -143,7 +143,7 @@ export default async function HomePage() {
       </Link>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
-      <PlaygamaWidget widgetId="WA0000001258" className="mx-auto w-full max-w-[728px]" />
+      <PlaygamaWidget widgetId="WA0000000001258" className="mx-auto w-full max-w-[728px]" />
 
       {/* Online Oyunlar widget'ı */}
       {online.length > 0 && (
