@@ -3,7 +3,6 @@ import { getGames } from "@/lib/games";
 import { categorySlug, CATEGORIES, isOnline, slugifyTitle } from "@/lib/catalog";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
-import { PlaygamaWidget } from "@/components/PlaygamaWidget";
 import { RecentlyPlayedRail } from "@/components/RecentlyPlayedRail";
 import { RecommendedRail, type RecoItem } from "@/components/RecommendedRail";
 import { JsonLd } from "@/components/JsonLd";
@@ -143,7 +142,6 @@ export default async function HomePage() {
       </Link>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
-      <PlaygamaWidget widgetId="WA0000000001258" className="mx-auto w-full max-w-[728px]" />
 
       {/* Online Oyunlar widget'ı */}
       {online.length > 0 && (

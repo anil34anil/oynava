@@ -58,7 +58,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://img.gamedistribution.com" />
         <link rel="dns-prefetch" href="https://img.gamepix.com" />
         <link rel="dns-prefetch" href="https://flagcdn.com" />
-        <Script id="playgama-widgets-loader" src="https://widgets.playgama.com/index.js" strategy="afterInteractive" async />
       </head>
       <body>
         <AdsenseScript />
