@@ -9,10 +9,7 @@ gelir getiren bir oyun portalı. **Next.js 14 + Tailwind + GameMonetize feed.**
 
 - ✅ Bu site **HTML5/WebGL oyunlarını** (tarayıcıda çalışan oyunlar) listeler ve oynatır.
   Bunların arasında gerçekten iyi görünen 3D/WebGL oyunlar (yarış, FPS, .io) vardır.
-- ❌ **GTA, God of War, Call of Duty gibi AAA konsol/PC oyunları tarayıcıda çalışmaz**
-  ve yasal olarak host edilemez (telif + 50-100 GB boyut + konsol donanımı).
-  kraloyun dahil hiçbir yasal sitede bu oyunlar yoktur. Para kazanma modeli
-  HTML5 oyun + reklam üzerinedir.
+Para kazanma modeli  HTML5 oyun + reklam üzerinedir.
 
 ## Nasıl para kazandırır?
 
@@ -86,11 +83,10 @@ src/
 
 ## Mevcut özellikler
 
-- **~1500 gerçek oyun** gömülü (`src/data/games.seed.json`) — feed kopunca bile site dolu.
+- **~6000 gerçek oyun** gömülü (`src/data/games.seed.json`) — feed kopunca bile site dolu.
 - **Sonsuz kaydırma** — `/oyunlar` (IntersectionObserver, ağ isteği yok).
 - **Favoriler + son oynananlar** — `/favorilerim` (localStorage, giriş gerekmez).
 - **Profil + kozmetik mağaza** — `/profil`, `/magaza` (avatar/rozet/tema, sanal jeton).
-- **Oynava Originals** — `/orijinal/golge-savascisi`: tamamen özgün (telifsiz)
   HTML5 Canvas aksiyon-survival oyunu. Skordan sanal jeton kazandırır.
 
 ## Giriş & ödeme — gerçek hesap sistemi nasıl eklenir?
@@ -100,11 +96,8 @@ gerçek-para satışı için backend gerekir. Yol haritası:
 
 1. **Kimlik (login):** [NextAuth.js](https://authjs.dev) + bir veritabanı (Postgres/Supabase).
    Google/Discord/e-posta ile giriş. `localStorage` verisini ilk girişte hesaba taşı.
-2. **Gerçek ödeme:** [Stripe](https://stripe.com) Checkout. Jeton paketleri
-   (`src/lib/shop.ts` → `COIN_PACKS`) Stripe Price'larına bağlanır; webhook ile
-   ödeme onaylanınca jeton hesaba yüklenir.
-   ⚠️ Stripe hesabı **senin adına** açılmalı (yasal + para sana akacağı için);
-   bu adımı senin yerine kimse yapamaz.
+
+
 
 ## Sırada ne var (öneriler)
 - NextAuth + DB ile gerçek hesap.
@@ -112,3 +105,23 @@ gerçek-para satışı için backend gerekir. Yol haritası:
 - Daha fazla Originals oyunu (yarış / bulmaca).
 - PWA (telefona ekle) — mobil reklam geliri yüksektir.
 - İkinci feed kaynağı (GameDistribution) ile katalog genişletme.
+
+## AI Development
+
+Bu proje Claude Code ile geliştirilmektedir.
+
+Claude çalışma kuralları:
+
+CLAUDE.md
+
+Proje durumu:
+
+PROJECT_STATE.md
+
+Yapılacaklar:
+
+TODO.md
+
+Değişiklik geçmişi:
+
+CHANGELOG.md
