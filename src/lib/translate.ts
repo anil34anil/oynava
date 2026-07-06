@@ -10,7 +10,6 @@
  */
 import { createHash } from "crypto";
 import { kvGet, kvSet } from "./kv";
-import { DEFAULT_LOCALE } from "./i18n";
 
 function hash(s: string): string {
   return createHash("sha1").update(s).digest("hex").slice(0, 16);
@@ -39,6 +38,11 @@ async function fetchTranslation(text: string, target: string, source: string): P
 /**
  * Tek bir metni hedef dile çevirir (Redis önbellekli). Hedef = kaynak ise veya
  * çeviri başarısızsa orijinali döndürür.
+ *
+ * NOT: target === DEFAULT_LOCALE (tr) için de erken dönmez artık — oyun açıklaması
+ * gibi ELİMİZDE YAZILI Türkçe şablonlar için gerek yok (o yollarda zaten çağrılmıyor),
+ * ama sağlayıcıdan gelen serbest metin (ör. oyun talimatları) için gerçek çeviri şart;
+ * aksi halde kaba kalıp-eşleştirme kalıntısı yarı İngilizce metin sızdırır.
  */
 export async function translateText(
   text: string,
@@ -46,7 +50,7 @@ export async function translateText(
   source: string = "en",
 ): Promise<string> {
   const trimmed = (text || "").trim();
-  if (!trimmed || target === source || target === DEFAULT_LOCALE) return text;
+  if (!trimmed || target === source) return text;
 
   const cacheKey = `oh:tr:${source}:${target}:${hash(trimmed)}`;
   const cached = await kvGet(cacheKey);

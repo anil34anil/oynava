@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRecentCards } from "@/lib/useLocalProfile";
 import { slugifyTitle } from "@/lib/catalog";
 import { useLocale, localizedHref, useAutoTr } from "@/lib/useLocaleClient";
+import { ScrollRow } from "./ScrollRow";
 
 /**
  * "Son Oynadıkların" yatay rayı — tamamen localStorage'tan (sunucuya istek YOK).
@@ -20,7 +21,7 @@ export function RecentlyPlayedRail() {
   return (
     <section className="cv-auto">
       <h2 className="mb-4 font-display text-xl font-bold text-ink">🕒 {heading}</h2>
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
+      <ScrollRow>
         {cards.map((c) => (
           <Link
             key={c.id}
@@ -42,7 +43,7 @@ export function RecentlyPlayedRail() {
             </p>
           </Link>
         ))}
-      </div>
+      </ScrollRow>
     </section>
   );
 }

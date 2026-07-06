@@ -28,10 +28,20 @@ export async function gameDescription(game: Game, locale: Locale): Promise<strin
   return translateText(base, locale, "en");
 }
 
-/** Oyun talimatları — tr: Türkçe; en: İngilizce kaynak; diğer: çeviri. */
+/**
+ * Oyun talimatları — tr: sağlayıcıdan gelen serbest metni GERÇEK çeviriyle Türkçeye
+ * çevirir (kalıp-eşleştirme değil; aksi halde "Move with Arrow Keys" gibi cümleler
+ * yarı çevrilip yarı İngilizce kalabiliyordu). Çeviri hizmeti başarısız olursa
+ * (nadir) kalıp-tabanlı trInstructions'a düşer. en: İngilizce kaynak; diğer: çeviri.
+ */
 export async function gameInstructions(game: Game, locale: Locale): Promise<string> {
-  if (locale === "tr") return trInstructions(game.instructions);
-  const base = (game.instructions || "").trim() || "Use your mouse or keyboard to play. Controls are shown in-game.";
+  const raw = (game.instructions || "").trim();
+  if (locale === "tr") {
+    if (!raw) return trInstructions(raw);
+    const translated = await translateText(raw, "tr", "en");
+    return translated.trim() && translated !== raw ? translated : trInstructions(raw);
+  }
+  const base = raw || "Use your mouse or keyboard to play. Controls are shown in-game.";
   if (locale === "en") return base;
   return translateText(base, locale, "en");
 }
@@ -45,8 +55,9 @@ export async function localizeText(textEn: string, locale: Locale): Promise<stri
 /** Oyun için SSS (FAQ) üretir — rich snippet + içerik derinliği. Locale'e çevrilir. */
 export async function gameFaq(game: Game, locale: Locale): Promise<{ q: string; a: string }[]> {
   const title = game.title;
+  const howTo = await gameInstructions(game, "tr");
   const tr: { q: string; a: string }[] = [
-    { q: `${title} nasıl oynanır?`, a: trInstructions(game.instructions) },
+    { q: `${title} nasıl oynanır?`, a: howTo },
     { q: `${title} ücretsiz mi?`, a: `Evet, ${title} tamamen ücretsizdir. Üyelik veya ödeme gerekmez; sayfayı aç ve hemen oyna.` },
     { q: `${title} için indirme gerekiyor mu?`, a: `Hayır. ${title} bir HTML5 oyunudur ve doğrudan tarayıcında çalışır — indirme veya kurulum yoktur.` },
     { q: `${title} telefonda oynanır mı?`, a: `Evet, ${title} mobil tarayıcılarda (telefon ve tablet) da oynanabilir.` },

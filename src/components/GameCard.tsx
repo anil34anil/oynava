@@ -32,15 +32,39 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
       aria-label={game.title}
       onMouseEnter={startHover}
       onMouseLeave={endHover}
-      className="group relative block aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-card transition-all duration-200 hover:-translate-y-1 hover:border-neon hover:shadow-glow"
+      className="group relative z-0 block aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-card transition-transform duration-200 hover:z-20 hover:scale-125 hover:border-neon hover:shadow-glow"
     >
       <FavoriteButton id={game.id} />
+
+      {/* Gercek veriye dayali rozet: HOT = Redis'teki gercek oynanma sayisina gore ilk 20,
+          YENI = katalogda yeni eklenen oyun. Sahte/rastgele rozet yok. */}
+      {!preview && (game.hot || game.isNew) && (
+        <span
+          className={`absolute left-2 top-2 z-10 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow ${
+            game.hot ? "bg-orange-500" : "bg-emerald-500"
+          }`}
+        >
+          {game.hot ? "🔥 HOT" : "🆕 YENİ"}
+        </span>
+      )}
+
+      {/* Arka plan dolgu: aynı görselin bulanık/büyütülmüş hali — görsel oranı kutuyla
+          eşleşmediğinde düz boşluk yerine bunu gösterir, hiçbir şey kırpılmaz/boşluk kalmaz */}
+      <Image
+        src={game.thumb}
+        alt=""
+        aria-hidden
+        fill
+        sizes="(max-width:640px) 50vw, (max-width:1024px) 25vw, 16vw"
+        className="scale-110 object-cover opacity-60 blur-xl"
+        unoptimized
+      />
       <Image
         src={game.thumb}
         alt={`${game.title} - ücretsiz oyna`}
         fill
         sizes="(max-width:640px) 50vw, (max-width:1024px) 25vw, 16vw"
-        className="object-contain transition-transform duration-300 group-hover:scale-105"
+        className="object-contain"
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
@@ -48,7 +72,8 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
       />
 
       {/* Gameplay önizleme: sağlayıcının resmi video klibi varsa onu oynat (reklamsız),
-          yoksa canlı iframe'e düş (tıklama Link'e geçsin) */}
+          yoksa canlı iframe'e düş (tıklama Link'e geçsin). object-contain: gerçek oynanış
+          kırpılmadan tam görünür; bulanık arka plan altından süzülür, boşluk hissi vermez. */}
       {preview && game.previewVideo && (
         <video
           src={game.previewVideo}
@@ -57,7 +82,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
           loop
           playsInline
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[1] h-full w-full bg-black object-contain"
+          className="pointer-events-none absolute inset-0 z-[1] h-full w-full object-contain"
         />
       )}
       {preview && !game.previewVideo && (

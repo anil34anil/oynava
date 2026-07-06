@@ -1,5 +1,6 @@
 import { Game } from "@/lib/catalog";
 import { GameCard } from "./GameCard";
+import { ScrollRow } from "./ScrollRow";
 
 type Props = {
   games: Game[];
@@ -22,18 +23,18 @@ export function GameGrid({ games, priorityCount = 0, scroll = false }: Props) {
 
   if (scroll) {
     return (
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
+      <ScrollRow>
         {games.map((g, i) => (
-          <div key={g.id} className="w-36 shrink-0 sm:w-40 md:w-44">
+          <div key={g.id} className="w-40 shrink-0 sm:w-44 md:w-52">
             <GameCard game={g} priority={i < priorityCount} />
           </div>
         ))}
-      </div>
+      </ScrollRow>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       {games.map((g, i) => (
         <GameCard key={g.id} game={g} priority={i < priorityCount} />
       ))}

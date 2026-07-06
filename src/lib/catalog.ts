@@ -17,6 +17,10 @@ export type Game = {
   height: string;
   /** Sağlayıcının resmi gameplay önizleme klibi (varsa) — reklamsız, hover'da oynatılır. */
   previewVideo?: string;
+  /** Yakın zamanda kataloğa eklendi (statik, kaynak veriden gelir). */
+  isNew?: boolean;
+  /** Gerçek oynanma sayısına göre en popüler oyunlardan biri (sunucuda hesaplanır). */
+  hot?: boolean;
 };
 
 // İngilizce kategori -> Türkçe + slug eşlemesi

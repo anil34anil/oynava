@@ -73,7 +73,7 @@ export default async function HomePage() {
     .map((g) => ({ id: g.id, title: g.title, thumb: g.thumb, category: g.category }));
 
   return (
-    <div className="container-x space-y-10 py-6">
+    <div className="container-x space-y-6 py-6">
       {/* Kategori hızlı erişim ikonları — EN ÜSTTE */}
       <section>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">

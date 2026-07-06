@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRecentCards, useFavorites } from "@/lib/useLocalProfile";
 import { slugifyTitle } from "@/lib/catalog";
 import { useLocale, localizedHref, useAutoTr } from "@/lib/useLocaleClient";
+import { ScrollRow } from "./ScrollRow";
 
 export type RecoItem = { id: string; title: string; thumb: string; category: string };
 
@@ -41,7 +42,7 @@ export function RecommendedRail({ pool }: { pool: RecoItem[] }) {
   return (
     <section className="cv-auto">
       <h2 className="mb-4 font-display text-xl font-bold text-ink">🎯 {heading}</h2>
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]">
+      <ScrollRow>
         {recommended.map((g) => (
           <Link
             key={g.id}
@@ -64,7 +65,7 @@ export function RecommendedRail({ pool }: { pool: RecoItem[] }) {
             </div>
           </Link>
         ))}
-      </div>
+      </ScrollRow>
     </section>
   );
 }

@@ -45,6 +45,16 @@ body {
     @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
   }
 
+  /* CrazyGames tarzı yatay kaydırmalı oyun rayları: kaydırma çubuğu gizli,
+     kaydırma yön okları ile yapılır (bkz. ScrollRow.tsx) */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /* CWV: ekran dışı bölümlerin render maliyetini atla (INP/render süresi düşer) */
   .cv-auto {
     content-visibility: auto;

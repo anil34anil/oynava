@@ -13,6 +13,7 @@ import gpSeed from "@/data/games.gp.seed.json";
 import pgmSeed from "@/data/games.pgm.seed.json";
 import { Game, categorySlug, isOnline, isFpsShooter } from "./catalog";
 import { searchTerms, normalizeTr } from "./tr";
+import { getTopPlayedIds } from "./kv";
 
 export type { Game } from "./catalog";
 export {
@@ -32,6 +33,14 @@ const GD_FEED = "https://catalog.api.gamedistribution.com/api/v1.0/rss/All/?form
 // GamePix canlı feed (sayfalı, kaliteli/3D oyunlar). sid = Oynava yayıncı kimliği (gelir buna yazılır).
 const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "92818";
 const GP_FEED = `https://feeds.gamepix.com/v2/json?sid=${GAMEPIX_SID}&pagination=48`;
+
+/**
+ * Sağlayıcının kendi tarafında bozuk/oynatılamayan oyunlar (id ile engellenir).
+ * Ör. gd-7f80acce...: GameDistribution'ın kendi SDK'sı bu oyunu bizim domain'den
+ * oynatılırken "block-and-redirect" ile kullanıcıyı siteden dışarı atıyor — canlı
+ * feed'de tekrar gelebileceği için burada, birleştirme sonrasında da filtrelenir.
+ */
+const BLOCKED_GAME_IDS = new Set<string>(["gd-7f80acce2a524af9bc3dfa53eaaa8ff6"]);
 
 // Gömülü gerçek katalog (feed kopsa bile site dolu kalır). Playgama statik seed'dir
 // (canlı feed'i yok; gameURL'leri CLID taşır → gelir Oynava'ya yazılır).
@@ -157,28 +166,36 @@ async function fetchFeed(): Promise<Game[]> {
  * Üç kaynağı (GameMonetize + GameDistribution + GamePix) paralel çeker, birleştirir.
  * Kaynaklar koparsa gömülü birleşik kataloğa (SEED) düşer → site asla boş kalmaz.
  */
+const HOT_LIMIT = 20; // gercek oynanma sayisina gore "HOT" rozeti alacak oyun adedi
+
 export async function getGames(): Promise<Game[]> {
   if (_cache && Date.now() - _cache.at < MEM_TTL) return _cache.games;
 
-  const [gm, gd, gp] = await Promise.allSettled([
+  const [gm, gd, gp, hotIdsRes] = await Promise.allSettled([
     fetchFeed(),
     fetchGameDistribution(),
     fetchGamePix(),
+    getTopPlayedIds(HOT_LIMIT),
   ]);
 
   const gmGames = gm.status === "fulfilled" ? gm.value : [];
   const gdGames = gd.status === "fulfilled" ? gd.value : [];
   const gpGames = gp.status === "fulfilled" ? gp.value : [];
+  const hotIds = new Set(hotIdsRes.status === "fulfilled" ? hotIdsRes.value : []);
 
-  // Canlı veriyi HER ZAMAN gömülü seed ile birleştir.
-  const merged = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]);
+  // Canlı veriyi HER ZAMAN gömülü seed ile birleştir; bozuk/engellenen oyunları at.
+  const merged = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]).filter(
+    (g) => !BLOCKED_GAME_IDS.has(g.id),
+  );
 
   // En son eklenen + premium hissi veren kaynaklar her kategoride EN ÜSTTE:
   // Playgama (en yeni) → GamePix (premium) → GameDistribution → GameMonetize.
   // (Array.sort kararlıdır; aynı kaynak içi sıra korunur.)
   const rank = (g: Game) =>
     g.id.startsWith("pgm-") ? 0 : g.id.startsWith("gp-") ? 1 : g.id.startsWith("gd-") ? 2 : 3;
-  const games = [...merged].sort((a, b) => rank(a) - rank(b));
+  const games = [...merged]
+    .sort((a, b) => rank(a) - rank(b))
+    .map((g) => (hotIds.has(g.id) ? { ...g, hot: true } : g));
 
   _cache = { at: Date.now(), games };
   return games;
