@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getByCategory, categoryBySlug, CATEGORIES } from "@/lib/games";
+import { getByCategory, categoryBySlug, CATEGORIES, slugifyTitle } from "@/lib/games";
 import { COLLECTIONS } from "@/lib/collections";
 import { GameGrid } from "@/components/GameGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -123,6 +123,19 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             "@type": "Question",
             name: f.q,
             acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          numberOfItems: games.length,
+          itemListElement: games.slice(0, 24).map((g, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `${SITE.url}/oyun/${g.id}/${slugifyTitle(g.title)}`,
+            name: g.title,
           })),
         }}
       />

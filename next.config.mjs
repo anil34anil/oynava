@@ -12,6 +12,7 @@ const nextConfig = {
       { protocol: "https", hostname: "static.playgama.com" },
       { protocol: "https", hostname: "**.playgama.com" },
       { protocol: "https", hostname: "**.gamemonetize.com" },
+      { protocol: "https", hostname: "data.gameflare.com" },
     ],
   },
 };

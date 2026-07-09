@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>BlokKraft — Oynava Originals</title>
+<style>
+  :root { --neon:#22d3ee; --gold:#fbbf24; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0b1026; font-family:system-ui,Segoe UI,Roboto,sans-serif; touch-action:none; user-select:none; }
+  #c { display:block; width:100%; height:100%; }
+  button { font:inherit; }
+
+  /* Nişangah */
+  #cross { position:fixed; left:50%; top:50%; width:20px; height:20px; margin:-10px 0 0 -10px; pointer-events:none; z-index:5; opacity:.85; display:none; }
+  body.playing #cross { display:block; }
+  #cross::before,#cross::after { content:""; position:absolute; background:#fff; mix-blend-mode:difference; }
+  #cross::before { left:9px; top:0; width:2px; height:20px; }
+  #cross::after { left:0; top:9px; width:20px; height:2px; }
+
+  /* Hotbar */
+  #hotbar { position:fixed; left:50%; bottom:10px; transform:translateX(-50%); display:none; gap:4px; z-index:6; padding:5px; background:rgba(5,8,20,.55); border:1px solid rgba(255,255,255,.15); border-radius:12px; backdrop-filter:blur(6px); }
+  body.playing #hotbar { display:flex; }
+  .slot { width:46px; height:46px; border-radius:8px; border:2px solid rgba(255,255,255,.18); background:rgba(255,255,255,.05); display:grid; place-items:center; position:relative; cursor:pointer; }
+  .slot canvas { width:32px; height:32px; image-rendering:pixelated; border-radius:4px; }
+  .slot.sel { border-color:var(--neon); box-shadow:0 0 10px rgba(34,211,238,.5); }
+  .slot .k { position:absolute; left:3px; top:1px; font-size:9px; color:rgba(255,255,255,.55); font-weight:700; }
+  .slot .n { position:absolute; right:2px; bottom:1px; font-size:10px; font-weight:800; color:#fff; text-shadow:0 1px 2px #000; }
+  .slot.empty canvas { opacity:.28; filter:grayscale(.8); }
+  @media (max-width:640px){ .slot{width:38px;height:38px} .slot canvas{width:26px;height:26px} .slot .k{display:none} }
+
+  /* ---------- Premium menü ---------- */
+  #menu { position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; padding:16px;
+    background:linear-gradient(180deg, rgba(5,8,20,.25) 0%, rgba(5,8,20,.55) 100%); }
+  #menu.hide { display:none; }
+  .panel { width:min(430px,94vw); max-height:92vh; overflow:auto; border-radius:22px; padding:26px 26px 20px; text-align:center; color:#e8ecf8;
+    background:linear-gradient(160deg, rgba(13,18,38,.92), rgba(9,12,28,.88));
+    border:1px solid rgba(255,255,255,.14); box-shadow:0 24px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter:blur(14px); }
+  .brand { display:inline-flex; align-items:center; gap:7px; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:800;
+    border:1px solid rgba(251,191,36,.35); background:rgba(251,191,36,.08); padding:5px 13px; border-radius:99px; }
+  .logo { margin:14px 0 2px; font-size:min(12vw,52px); font-weight:900; letter-spacing:1px; line-height:1;
+    background:linear-gradient(180deg,#fff 30%, #9adbe8 70%, var(--neon)); -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 6px 22px rgba(34,211,238,.35)); }
+  .logo .k { background:linear-gradient(180deg,#ffe9b0, var(--gold)); -webkit-background-clip:text; background-clip:text; }
+  .tag { font-size:13px; color:#9fb0cc; margin-bottom:18px; }
+
+  .modes { display:flex; gap:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:5px; margin-bottom:14px; }
+  .mode { flex:1; border:0; border-radius:10px; background:transparent; color:#93a4c3; font-weight:700; font-size:13px; padding:10px 6px; cursor:pointer; transition:.15s; }
+  .mode small { display:block; font-weight:500; font-size:10px; opacity:.75; margin-top:2px; }
+  .mode.sel { background:linear-gradient(160deg, rgba(34,211,238,.25), rgba(34,211,238,.1)); color:#fff; box-shadow:inset 0 0 0 1px rgba(34,211,238,.5); }
+
+  .btn { display:block; width:100%; font-weight:800; font-size:16px; padding:14px; border-radius:14px; border:0; cursor:pointer; color:#04222b; margin-bottom:9px;
+    background:linear-gradient(160deg, #7ee7f7, var(--neon) 55%, #0ea5c4); box-shadow:0 8px 24px rgba(34,211,238,.35), inset 0 1px 0 rgba(255,255,255,.5); transition:.15s; }
+  .btn:hover { transform:translateY(-2px); filter:brightness(1.08); }
+  .btn.ghost { background:rgba(255,255,255,.07); color:#dbe4f5; border:1px solid rgba(255,255,255,.18); box-shadow:none; font-weight:600; font-size:14px; padding:12px; }
+  .btn.ghost:hover { background:rgba(255,255,255,.12); }
+
+  details.help { text-align:left; margin-top:6px; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:rgba(255,255,255,.04); }
+  details.help summary { list-style:none; cursor:pointer; padding:10px 14px; font-size:13px; font-weight:700; color:#b9c6de; }
+  details.help summary::before { content:"🎮 "; }
+  details.help .body { padding:0 14px 12px; font-size:12.5px; line-height:2; color:#9fb0cc; }
+  details.help b { color:#e8ecf8; }
+  kbd { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); border-radius:5px; padding:1px 7px; font-family:inherit; font-size:11px; }
+  .foot { margin-top:12px; font-size:10px; color:#5c6b8a; letter-spacing:1px; }
+
+  /* ---------- Envanter & Craft ---------- */
+  #inv { position:fixed; inset:0; z-index:18; display:none; align-items:center; justify-content:center; padding:14px; background:rgba(5,8,20,.55); }
+  #inv.open { display:flex; }
+  .invPanel { width:min(460px,96vw); max-height:88vh; overflow:auto; border-radius:20px; padding:20px; color:#e8ecf8;
+    background:linear-gradient(160deg, rgba(13,18,38,.95), rgba(9,12,28,.92)); border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 24px 80px rgba(0,0,0,.55); backdrop-filter:blur(12px); }
+  .invHead { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .invHead h2 { font-size:17px; font-weight:900; }
+  .invHead .x { border:0; background:rgba(255,255,255,.08); color:#cbd5e1; width:32px; height:32px; border-radius:10px; font-size:15px; cursor:pointer; }
+  .invGrid { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin-bottom:16px; }
+  .invItem { border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); border-radius:10px; padding:7px 4px 5px; text-align:center; }
+  .invItem canvas { width:30px; height:30px; image-rendering:pixelated; border-radius:4px; }
+  .invItem .nm { font-size:9.5px; color:#93a4c3; margin-top:2px; }
+  .invItem .ct { font-size:12px; font-weight:800; color:#fff; }
+  .invItem.zero { opacity:.35; }
+  .crTitle { font-size:13px; font-weight:800; color:var(--gold); margin-bottom:8px; text-transform:uppercase; letter-spacing:1.5px; }
+  .recipe { display:flex; align-items:center; gap:8px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.035); border-radius:12px; padding:8px 10px; margin-bottom:7px; }
+  .recipe canvas { width:26px; height:26px; image-rendering:pixelated; border-radius:4px; vertical-align:middle; }
+  .recipe .io { flex:1; display:flex; align-items:center; gap:6px; font-size:12px; color:#b9c6de; flex-wrap:wrap; }
+  .recipe .arrow { color:var(--gold); font-weight:900; }
+  .recipe .qty { font-size:11px; font-weight:800; color:#fff; }
+  .recipe .mk { border:0; border-radius:9px; padding:8px 14px; font-weight:800; font-size:12px; cursor:pointer;
+    background:linear-gradient(160deg,#ffe9b0,var(--gold)); color:#4a3305; }
+  .recipe .mk:disabled { background:rgba(255,255,255,.08); color:#5c6b8a; cursor:not-allowed; }
+  .creativeNote { font-size:12.5px; color:#9fb0cc; line-height:1.7; border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:12px; }
+
+  /* Bildirim */
+  #toast { position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:25; background:rgba(5,8,20,.85); border:1px solid rgba(34,211,238,.4); color:#e8ecf8; font-size:13px; padding:8px 18px; border-radius:99px; opacity:0; transition:opacity .3s; pointer-events:none; }
+
+  /* Saat göstergesi */
+  #clock { position:fixed; top:12px; right:12px; z-index:6; display:none; align-items:center; gap:6px; font-size:12px; color:#e8ecf8; background:rgba(5,8,20,.5); border:1px solid rgba(255,255,255,.15); padding:5px 12px; border-radius:99px; backdrop-filter:blur(6px); }
+  body.playing #clock { display:flex; }
+
+  /* Mobil kontroller */
+  #mobile { display:none; }
+  body.touch.playing #mobile { display:block; }
+  #joy { position:fixed; left:18px; bottom:78px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,.07); border:2px solid rgba(255,255,255,.18); z-index:7; }
+  #joyk { position:absolute; left:50%; top:50%; width:52px; height:52px; margin:-26px 0 0 -26px; border-radius:50%; background:rgba(34,211,238,.4); border:2px solid rgba(34,211,238,.7); }
+  .mbtn { position:fixed; z-index:7; width:60px; height:60px; border-radius:50%; border:2px solid rgba(255,255,255,.25); background:rgba(5,8,20,.5); color:#fff; font-size:24px; display:grid; place-items:center; }
+  #btnJump { right:20px; bottom:152px; }
+  #btnDig  { right:94px; bottom:84px; border-color:rgba(251,146,60,.6); }
+  #btnPut  { right:20px; bottom:84px; border-color:rgba(52,211,153,.6); }
+  #btnInv  { right:94px; bottom:152px; font-size:20px; border-color:rgba(251,191,36,.55); }
+  .mbtn:active { background:rgba(34,211,238,.35); }
+  body.touch #cross { opacity:.6; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="cross"></div>
+<div id="hotbar"></div>
+<div id="clock"><span id="clockIcon">☀️</span><span id="clockText">Gündüz</span></div>
+<div id="toast"></div>
+
+<div id="mobile">
+  <div id="joy"><div id="joyk"></div></div>
+  <div class="mbtn" id="btnJump">⬆</div>
+  <div class="mbtn" id="btnDig">⛏</div>
+  <div class="mbtn" id="btnPut">🧱</div>
+  <div class="mbtn" id="btnInv">🎒</div>
+</div>
+
+<!-- Envanter & Craft -->
+<div id="inv">
+  <div class="invPanel">
+    <div class="invHead"><h2>🎒 Envanter</h2><button class="x" id="invClose">✕</button></div>
+    <div class="invGrid" id="invGrid"></div>
+    <div id="craftWrap">
+      <div class="crTitle">⚒️ Üretim (Craft)</div>
+      <div id="recipes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Premium giriş / duraklatma menüsü (arkada canlı dünya döner) -->
+<div id="menu">
+  <div class="panel">
+    <span class="brand">✦ Oynava Originals</span>
+    <div class="logo">Blok<span class="k">Kraft</span></div>
+    <div class="tag">Kaz, topla, üret ve hayalindeki dünyayı inşa et.</div>
+
+    <div class="modes">
+      <button class="mode" data-m="survival">⛏ Toplayıcı<small>Kaz, biriktir, craft et</small></button>
+      <button class="mode" data-m="creative">✨ Yaratıcı<small>Sınırsız blok, özgür inşa</small></button>
+    </div>
+
+    <button class="btn" id="btnPlay">▶ Oyna</button>
+    <button class="btn ghost" id="btnNew">🌍 Yeni Dünya Oluştur</button>
+
+    <details class="help">
+      <summary>Nasıl oynanır?</summary>
+      <div class="body">
+        <span class="pc"><kbd>W A S D</kbd> hareket · <kbd>Boşluk</kbd> zıpla · <kbd>Shift</kbd> koş<br>
+        <b>Sol tık (bas. tut)</b> kaz · <b>Sağ tık</b> blok koy · <kbd>E</kbd> envanter &amp; craft<br>
+        <kbd>1–9</kbd> / tekerlek blok seç · <kbd>ESC</kbd> menü</span>
+        <span class="mob" style="display:none">Sol joystick: yürü · Ekranı kaydır: bak<br>⛏ basılı tut: kaz · 🧱 dokun: koy · ⬆ zıpla · 🎒 envanter</span>
+      </div>
+    </details>
+    <div class="foot">BLOKKRAFT v2 — OYNAVA.COM</div>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script>
+"use strict";
+/* ================================================================
+   BlokKraft v2 — Oynava Originals
+   Voksel sandbox: prosedürel dünya, envanter + craft, Yaratıcı /
+   Toplayıcı modları, gündüz-gece (yıldızlı, aydınlık gece), mobil
+   kontroller, otomatik kayıt. Tek dosya; tek bağımlılık three.min.js.
+   ================================================================ */
+
+// ---------- Dünya sabitleri ----------
+const WX = 96, WY = 48, WZ = 96;
+const SEA = 13;
+const CH = 16, CXN = WX / CH, CZN = WZ / CH;
+const DAY_LEN = 300;                    // tam döngü (sn) — gece 2.4× hızlı akar
+const SAVE_KEY = "oynava.blokkraft.v1";
+
+const AIR=0, GRASS=1, DIRT=2, STONE=3, SAND=4, LOG=5, LEAF=6, PLANK=7, BRICK=8, GLASS=9, WATER=10;
+const TRANSP = new Set([GLASS, WATER]);
+const SOLID = id => id !== AIR && id !== WATER;
+const BREAK_TIME = {1:.45,2:.45,3:1.3,4:.4,5:.8,6:.2,7:.7,8:1.3,9:.25};
+const NAMES = {1:"Çim",2:"Toprak",3:"Taş",4:"Kum",5:"Kütük",6:"Yaprak",7:"Tahta",8:"Tuğla",9:"Cam"};
+const HOTBAR = [GRASS, DIRT, STONE, SAND, LOG, LEAF, PLANK, BRICK, GLASS];
+// Kazınca envantere düşen eşya (çim → toprak; gerisi kendisi)
+const DROP = id => id === GRASS ? DIRT : id;
+
+// Craft tarifleri: girdiler → çıktı
+const RECIPES = [
+  { in: [[LOG,1]],            out: [PLANK,4] },
+  { in: [[SAND,4]],           out: [GLASS,2] },
+  { in: [[STONE,2]],          out: [BRICK,2] },
+  { in: [[DIRT,1],[LEAF,1]],  out: [GRASS,1] },
+];
+
+// ---------- Yardımcılar ----------
+const $ = s => document.querySelector(s);
+const IS_TOUCH = matchMedia("(hover: none), (pointer: coarse)").matches;
+if (IS_TOUCH) { document.body.classList.add("touch");
+  document.querySelector(".help .pc").style.display = "none";
+  document.querySelector(".help .mob").style.display = "inline"; }
+
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+// 2B değer gürültüsü + oktavlar — arazi yüksekliği
+function makeNoise(seed){
+  const r = mulberry32(seed), perm = new Uint8Array(512), p = [...Array(256).keys()];
+  for (let i=255;i>0;i--){ const j=(r()*(i+1))|0; [p[i],p[j]]=[p[j],p[i]]; }
+  for (let i=0;i<512;i++) perm[i]=p[i&255];
+  const g = (x,z)=> perm[(perm[x&255]+z)&255]/255;
+  const sm = t=> t*t*(3-2*t);
+  function n2(x,z){
+    const xi=Math.floor(x), zi=Math.floor(z), xf=x-xi, zf=z-zi;
+    const a=g(xi,zi), b=g(xi+1,zi), c=g(xi,zi+1), d=g(xi+1,zi+1);
+    return a+(b-a)*sm(xf)+(c-a)*sm(zf)+(a-b-c+d)*sm(xf)*sm(zf);
+  }
+  return (x,z,oct=4,fr=0.02)=>{ let v=0, amp=1, tot=0;
+    for(let o=0;o<oct;o++){ v+=n2(x*fr,z*fr)*amp; tot+=amp; amp*=.5; fr*=2; }
+    return v/tot; };
+}
+
+// ---------- Ses (WebAudio, dosyasız) ----------
+let AC=null;
+function sfx(kind){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    if (AC.state==="suspended") AC.resume();
+    const t=AC.currentTime, o=AC.createOscillator(), gn=AC.createGain();
+    const cfg = { dig:[90,.08,"square",.06], put:[220,.07,"triangle",.08], pop:[340,.12,"triangle",.09],
+                  jump:[170,.09,"sine",.05], craft:[520,.15,"triangle",.09], deny:[120,.12,"sawtooth",.05] }[kind];
+    o.type=cfg[2]; o.frequency.setValueAtTime(cfg[0],t); o.frequency.exponentialRampToValueAtTime(cfg[0]*.55,t+cfg[1]);
+    gn.gain.setValueAtTime(cfg[3],t); gn.gain.exponentialRampToValueAtTime(.001,t+cfg[1]);
+    o.connect(gn).connect(AC.destination); o.start(t); o.stop(t+cfg[1]+.02);
+  }catch(e){}
+}
+
+// ---------- Doku atlası (prosedürel pixel-art) ----------
+const NT = 12;
+function buildAtlas(){
+  const cv=document.createElement("canvas"); cv.width=16*NT; cv.height=16;
+  const cx=cv.getContext("2d"), rnd=mulberry32(1337);
+  const px=(t,x,y,c)=>{ cx.fillStyle=c; cx.fillRect(t*16+x,y,1,1); };
+  const fill=(t,base,vary)=>{ for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+    const v=(rnd()-.5)*vary; px(t,x,y,`rgb(${base[0]+v|0},${base[1]+v|0},${base[2]+v|0})`); } };
+  fill(0,[88,168,72],36);
+  fill(2,[121,85,58],30);
+  fill(1,[121,85,58],30);
+  for(let y=0;y<4;y++)for(let x=0;x<16;x++){ if(y<3||rnd()>.4) px(1,x,y,`rgb(${80+(rnd()*30|0)},${150+(rnd()*30|0)},${60+(rnd()*20|0)})`); }
+  fill(3,[135,135,138],26);
+  for(let i=0;i<5;i++){ let x=rnd()*16|0,y=rnd()*16|0; for(let j=0;j<4;j++){ px(3,x&15,y&15,"rgb(105,105,108)"); x+=rnd()>.5?1:-1; y+=1; } }
+  fill(4,[221,205,143],22);
+  for(let x=0;x<16;x++)for(let y=0;y<16;y++){
+    const s=(x%4<2)?-14:8; const v=(rnd()-.5)*14; px(5,x,y,`rgb(${102+s+v|0},${72+s*.6+v|0},${43+v|0})`); }
+  fill(6,[142,108,66],18);
+  for(let y=0;y<16;y++)for(let x=0;x<16;x++){ const d=Math.hypot(x-7.5,y-7.5)|0; if(d%3===0) px(6,x,y,"rgb(116,84,48)"); }
+  fill(7,[52,122,42],30);
+  for(let i=0;i<30;i++) px(7,rnd()*16|0,rnd()*16|0,"rgb(38,96,32)");
+  for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+    const s=(y%4===0)?-26:((rnd()-.5)*14); px(8,x,y,`rgb(${176+s|0},${138+s|0},${85+s|0})`); }
+  for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+    const row=(y/4)|0, off=row%2?2:0, mortar=(y%4===3)||(((x+off)%8)===7);
+    px(9,x,y,mortar?"rgb(188,178,170)":`rgb(${168+(rnd()*20|0)},${72+(rnd()*14|0)},${58+(rnd()*10|0)})`); }
+  const img=cx.getImageData(0,0,16*NT,16);
+  const setA=(t,fn)=>{ for(let y=0;y<16;y++)for(let x=0;x<16;x++){ const i=((y*16*NT)+(t*16+x))*4; fn(i,x,y); } };
+  setA(10,(i,x,y)=>{ const edge=x===0||y===0||x===15||y===15, spark=(x+y)%9===0;
+    img.data[i]=205; img.data[i+1]=235; img.data[i+2]=245; img.data[i+3]=edge?170:(spark?95:45); });
+  setA(11,(i,x,y)=>{ const w=(Math.sin(x*.9+y*.5)*14)|0;
+    img.data[i]=40+w; img.data[i+1]=98+w; img.data[i+2]=190+w; img.data[i+3]=165; });
+  cx.putImageData(img,0,0);
+  return cv;
+}
+const atlasCanvas = buildAtlas();
+function tileFor(id, face){
+  switch(id){
+    case GRASS: return face===3?0:(face===2?2:1);
+    case DIRT:  return 2;  case STONE: return 3;  case SAND: return 4;
+    case LOG:   return (face===2||face===3)?6:5;
+    case LEAF:  return 7;  case PLANK: return 8;  case BRICK: return 9;
+    case GLASS: return 10; case WATER: return 11;
+  } return 3;
+}
+// UI için karo ikonu çizen yardımcı
+function iconCanvas(id){
+  const c=document.createElement("canvas"); c.width=16; c.height=16;
+  c.getContext("2d").drawImage(atlasCanvas, tileFor(id,4)*16,0,16,16, 0,0,16,16);
+  return c;
+}
+
+// ---------- Oyun durumu ----------
+let seed = (Math.random()*1e9)|0;
+let edits = {};
+let mode = "survival";                  // "survival" | "creative"
+let inv = {};                           // blok id → adet (toplayıcı modda)
+const vox = new Uint8Array(WX*WY*WZ);
+const vi = (x,y,z)=> y*WX*WZ + z*WX + x;
+const inW = (x,y,z)=> x>=0&&x<WX&&y>=0&&y<WY&&z>=0&&z<WZ;
+const getV = (x,y,z)=> inW(x,y,z) ? vox[vi(x,y,z)] : AIR;
+
+function generate(){
+  vox.fill(AIR);
+  const noise = makeNoise(seed), rnd = mulberry32(seed^0x9e3779b9);
+  const hmap = new Uint8Array(WX*WZ);
+  for(let z=0;z<WZ;z++)for(let x=0;x<WX;x++){
+    const base = noise(x,z,4,.018), ridge = noise(x+512,z+512,3,.05);
+    let h = 8 + base*20 + ridge*8; h = Math.max(2, Math.min(WY-14, h|0));
+    hmap[z*WX+x]=h;
+    for(let y=0;y<=h;y++){
+      let id = STONE;
+      if (y===h) id = (h<=SEA+1) ? SAND : GRASS;
+      else if (y>=h-3) id = (h<=SEA+1) ? SAND : DIRT;
+      vox[vi(x,y,z)] = id;
+    }
+    for(let y=h+1;y<=SEA;y++) vox[vi(x,y,z)] = WATER;
+  }
+  for(let z=3;z<WZ-3;z++)for(let x=3;x<WX-3;x++){
+    const h=hmap[z*WX+x];
+    if (vox[vi(x,h,z)]!==GRASS || rnd()>=.012) continue;
+    const th = 4+(rnd()*2|0);
+    for(let y=h+1;y<=h+th;y++) vox[vi(x,y,z)]=LOG;
+    for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++){
+      const d=Math.abs(dx)+Math.abs(dy)+Math.abs(dz);
+      if (d>3 || (dy<0&&d>2)) continue;
+      const X=x+dx, Y=h+th+dy, Z=z+dz;
+      if (inW(X,Y,Z) && vox[vi(X,Y,Z)]===AIR) vox[vi(X,Y,Z)]=LEAF;
+    }
+  }
+  for (const k in edits){ const [x,y,z]=k.split(",").map(Number); if(inW(x,y,z)) vox[vi(x,y,z)]=edits[k]; }
+}
+function groundY(x,z){ for(let y=WY-1;y>=0;y--){ if(SOLID(getV(x|0,y,z|0))) return y; } return SEA; }
+
+// ---------- Kayıt ----------
+let saveTimer=null;
+function saveGame(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify({ seed, edits, mode, inv,
+    p:[player.pos.x,player.pos.y,player.pos.z], r:[yaw,pitch] })); }catch(e){}
+}
+function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveGame,2000); }
+function loadSave(){ try{ const d=JSON.parse(localStorage.getItem(SAVE_KEY)); return d&&d.seed?d:null; }catch(e){ return null; } }
+
+// ---------- Three.js sahnesi ----------
+const renderer = new THREE.WebGLRenderer({ canvas:$("#c"), antialias:false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(72, 2, .1, 300);
+const atlasTex = new THREE.CanvasTexture(atlasCanvas);
+atlasTex.magFilter = THREE.NearestFilter; atlasTex.minFilter = THREE.NearestFilter;
+atlasTex.generateMipmaps = false;
+
+const matOpaque = new THREE.MeshLambertMaterial({ map:atlasTex, vertexColors:true });
+const matTrans  = new THREE.MeshLambertMaterial({ map:atlasTex, vertexColors:true, transparent:true, depthWrite:false, side:THREE.DoubleSide });
+
+const amb = new THREE.AmbientLight(0xffffff, .55); scene.add(amb);
+const sun = new THREE.DirectionalLight(0xffffff, .9); scene.add(sun);
+const moon = new THREE.DirectionalLight(0x8fa8ff, 0); scene.add(moon); // gece ay ışığı
+scene.fog = new THREE.Fog(0x87ceeb, 70, 170);
+
+// Bulutlar
+const clouds = new THREE.Group();
+{ const g=new THREE.BoxGeometry(1,1,1), m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.5,fog:false});
+  const r=mulberry32(7);
+  for(let i=0;i<14;i++){ const c=new THREE.Mesh(g,m);
+    c.scale.set(8+r()*14,1.6,5+r()*9); c.position.set(r()*WX, 44+r()*3, r()*WZ); clouds.add(c); } }
+scene.add(clouds);
+
+// Yıldızlar — gece görünür (premium gece atmosferi)
+const stars = (()=>{
+  const r=mulberry32(42), pos=[];
+  for(let i=0;i<420;i++){
+    const th=r()*Math.PI*2, ph=Math.acos(1-r()); // üst yarımküre
+    pos.push(Math.sin(ph)*Math.cos(th)*240, Math.abs(Math.cos(ph))*240+10, Math.sin(ph)*Math.sin(th)*240);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos,3));
+  const m=new THREE.PointsMaterial({ color:0xdfe8ff, size:1.6, sizeAttenuation:false, transparent:true, opacity:0, fog:false });
+  const s=new THREE.Points(g,m); scene.add(s); return s;
+})();
+
+// Hedef vurgusu + kazma çatlağı
+const hiBox = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(1.002,1.002,1.002)),
+  new THREE.LineBasicMaterial({ color:0x111111, transparent:true, opacity:.85 }));
+hiBox.visible=false; scene.add(hiBox);
+const crack = new THREE.Mesh(new THREE.BoxGeometry(1.004,1.004,1.004),
+  new THREE.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:0 }));
+crack.visible=false; scene.add(crack);
+
+// ---------- Chunk mesh üretimi ----------
+const FACES = [
+  { d:[-1,0,0], sh:.68, c:[[0,1,0,0,1],[0,0,0,0,0],[0,1,1,1,1],[0,0,1,1,0]] },
+  { d:[ 1,0,0], sh:.68, c:[[1,1,1,0,1],[1,0,1,0,0],[1,1,0,1,1],[1,0,0,1,0]] },
+  { d:[0,-1,0], sh:.52, c:[[1,0,1,1,0],[0,0,1,0,0],[1,0,0,1,1],[0,0,0,0,1]] },
+  { d:[0, 1,0], sh:1.0, c:[[0,1,1,1,1],[1,1,1,0,1],[0,1,0,1,0],[1,1,0,0,0]] },
+  { d:[0,0,-1], sh:.82, c:[[1,0,0,0,0],[0,0,0,1,0],[1,1,0,0,1],[0,1,0,1,1]] },
+  { d:[0,0, 1], sh:.82, c:[[0,0,1,0,0],[1,0,1,1,0],[0,1,1,0,1],[1,1,1,1,1]] },
+];
+const chunkMeshes = [];
+function buildChunk(ci, cj){
+  const x0=ci*CH, z0=cj*CH;
+  const P=[],U=[],C=[],I=[], tP=[],tU=[],tC=[],tI=[];
+  for(let x=x0;x<x0+CH;x++)for(let z=z0;z<z0+CH;z++)for(let y=0;y<WY;y++){
+    const id = vox[vi(x,y,z)]; if(id===AIR) continue;
+    const trans = TRANSP.has(id);
+    const [pos,uv,col,idx] = trans ? [tP,tU,tC,tI] : [P,U,C,I];
+    for(let f=0;f<6;f++){
+      const F=FACES[f], n=getV(x+F.d[0], y+F.d[1], z+F.d[2]);
+      if(!(n===AIR || (TRANSP.has(n) && n!==id))) continue;
+      const tile=tileFor(id,f), base=pos.length/3;
+      for(const [px,py,pz,ux,uy] of F.c){
+        pos.push(x+px, y+py, z+pz);
+        uv.push((tile+ux)/NT, uy);
+        col.push(F.sh, F.sh, F.sh);
+      }
+      idx.push(base,base+1,base+2, base+2,base+1,base+3);
+    }
+  }
+  function mk(pos,uv,col,idx,mat,rt){
+    if(!idx.length) return null;
+    const g=new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos,3));
+    g.setAttribute("uv", new THREE.Float32BufferAttribute(uv,2));
+    g.setAttribute("color", new THREE.Float32BufferAttribute(col,3));
+    g.setIndex(idx);
+    g.computeVertexNormals(); // Lambert aydınlatması için şart
+    const m=new THREE.Mesh(g,mat); m.renderOrder=rt; scene.add(m); return m;
+  }
+  const k=cj*CXN+ci, old=chunkMeshes[k];
+  if(old){ for(const m of [old.op,old.tr]) if(m){ scene.remove(m); m.geometry.dispose(); } }
+  chunkMeshes[k] = { op:mk(P,U,C,I,matOpaque,0), tr:mk(tP,tU,tC,tI,matTrans,1) };
+}
+function buildAll(){ for(let j=0;j<CZN;j++)for(let i=0;i<CXN;i++) buildChunk(i,j); }
+function rebuildAt(x,z){
+  const ci=(x/CH)|0, cj=(z/CH)|0; buildChunk(ci,cj);
+  if(x%CH===0&&ci>0)buildChunk(ci-1,cj); if(x%CH===CH-1&&ci<CXN-1)buildChunk(ci+1,cj);
+  if(z%CH===0&&cj>0)buildChunk(ci,cj-1); if(z%CH===CH-1&&cj<CZN-1)buildChunk(ci,cj+1);
+}
+
+// ---------- Voksel ışını (DDA) ----------
+function raycast(origin, dir, maxD=7){
+  let x=Math.floor(origin.x), y=Math.floor(origin.y), z=Math.floor(origin.z);
+  const sx=Math.sign(dir.x), sy=Math.sign(dir.y), sz=Math.sign(dir.z);
+  const dx=Math.abs(1/dir.x), dy=Math.abs(1/dir.y), dz=Math.abs(1/dir.z);
+  let tx=(sx>0?(x+1-origin.x):(origin.x-x))*dx || Infinity;
+  let ty=(sy>0?(y+1-origin.y):(origin.y-y))*dy || Infinity;
+  let tz=(sz>0?(z+1-origin.z):(origin.z-z))*dz || Infinity;
+  let t=0, px=x,py=y,pz=z;
+  while(t<=maxD){
+    const id=getV(x,y,z);
+    if(id!==AIR && id!==WATER) return { x,y,z, px,py,pz, id };
+    px=x; py=y; pz=z;
+    if(tx<ty&&tx<tz){ x+=sx; t=tx; tx+=dx; }
+    else if(ty<tz){ y+=sy; t=ty; ty+=dy; }
+    else { z+=sz; t=tz; tz+=dz; }
+  }
+  return null;
+}
+
+// ---------- Oyuncu fiziği ----------
+const player = { pos:new THREE.Vector3(WX/2+.5, 30, WZ/2+.5), vel:new THREE.Vector3(),
+  w:.3, h:1.8, eye:1.62, onGround:false, inWater:false };
+let yaw=0, pitch=0;
+
+function collide(axis, amt){
+  const p=player.pos; p[axis]+=amt;
+  const minX=Math.floor(p.x-player.w), maxX=Math.floor(p.x+player.w);
+  const minY=Math.floor(p.y),          maxY=Math.floor(p.y+player.h);
+  const minZ=Math.floor(p.z-player.w), maxZ=Math.floor(p.z+player.w);
+  for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++)for(let z=minZ;z<=maxZ;z++){
+    if(!SOLID(getV(x,y,z))) continue;
+    if(axis==="x"){ p.x = amt>0 ? x-player.w-.001 : x+1+player.w+.001; player.vel.x=0; }
+    if(axis==="z"){ p.z = amt>0 ? z-player.w-.001 : z+1+player.w+.001; player.vel.z=0; }
+    if(axis==="y"){ if(amt<=0){ p.y=y+1.001; player.onGround=true; } else p.y=y-player.h-.001; player.vel.y=0; }
+    return;
+  }
+}
+
+const keys={};
+function stepPlayer(dt){
+  const head=getV(player.pos.x|0,(player.pos.y+player.eye)|0,player.pos.z|0);
+  const body=getV(player.pos.x|0,(player.pos.y+.5)|0,player.pos.z|0);
+  player.inWater = body===WATER || head===WATER;
+
+  let fx=0, fz=0;
+  if(keys.KeyW||keys.ArrowUp)fz-=1; if(keys.KeyS||keys.ArrowDown)fz+=1;
+  if(keys.KeyA||keys.ArrowLeft)fx-=1; if(keys.KeyD||keys.ArrowRight)fx+=1;
+  fx+=joy.x; fz+=joy.y;
+  const len=Math.hypot(fx,fz)||1; fx/=Math.max(1,len); fz/=Math.max(1,len);
+  const sprint=(keys.ShiftLeft||keys.ShiftRight)?1.55:1;
+  const speed=(player.inWater?2.6:4.3)*sprint;
+  const sin=Math.sin(yaw), cos=Math.cos(yaw);
+  const vx=(fx*cos - fz*sin)*speed, vz=(fx*sin + fz*cos)*speed;
+  player.vel.x += (vx-player.vel.x)*Math.min(1,dt*12);
+  player.vel.z += (vz-player.vel.z)*Math.min(1,dt*12);
+
+  if(player.inWater){
+    player.vel.y += -4*dt; player.vel.y*=.92;
+    if(keys.Space||joyJump) player.vel.y=Math.min(player.vel.y+16*dt,2.6);
+  } else {
+    player.vel.y -= 22*dt;
+    if((keys.Space||joyJump) && player.onGround){ player.vel.y=7.6; player.onGround=false; sfx("jump"); }
+  }
+  player.vel.y=Math.max(player.vel.y,-40);
+
+  player.onGround=false;
+  collide("x", player.vel.x*dt);
+  collide("z", player.vel.z*dt);
+  collide("y", player.vel.y*dt);
+  player.pos.x=Math.min(Math.max(player.pos.x,player.w+.01),WX-player.w-.01);
+  player.pos.z=Math.min(Math.max(player.pos.z,player.w+.01),WZ-player.w-.01);
+  if(player.pos.y<-8){ player.pos.set(WX/2+.5, groundY(WX/2,WZ/2)+2, WZ/2+.5); player.vel.set(0,0,0); }
+
+  camera.position.set(player.pos.x, player.pos.y+player.eye, player.pos.z);
+  camera.rotation.set(0,0,0); camera.rotateY(-yaw); camera.rotateX(-pitch);
+}
+
+// ---------- Envanter ----------
+function invCount(id){ return inv[id]||0; }
+function invAdd(id,n){ inv[id]=(inv[id]||0)+n; updateHotbar(); if($("#inv").classList.contains("open")) renderInv(); queueSave(); }
+function canAfford(rec){ return rec.in.every(([id,n])=>invCount(id)>=n); }
+function craft(rec){
+  if(!canAfford(rec)){ sfx("deny"); return; }
+  for(const [id,n] of rec.in) inv[id]-=n;
+  invAdd(rec.out[0], rec.out[1]);
+  toast(`${rec.out[1]}× ${NAMES[rec.out[0]]} üretildi ⚒️`); sfx("craft");
+  renderInv();
+}
+function renderInv(){
+  const grid=$("#invGrid"); grid.innerHTML="";
+  for(const id of HOTBAR){
+    const d=document.createElement("div");
+    d.className="invItem"+(mode==="survival"&&!invCount(id)?" zero":"");
+    d.appendChild(iconCanvas(id));
+    d.insertAdjacentHTML("beforeend",
+      `<div class="ct">${mode==="creative"?"∞":invCount(id)}</div><div class="nm">${NAMES[id]}</div>`);
+    grid.appendChild(d);
+  }
+  const wrap=$("#craftWrap"), list=$("#recipes");
+  if(mode==="creative"){
+    wrap.style.display="none";
+    if(!$("#creativeNote")){
+      const n=document.createElement("div"); n.id="creativeNote"; n.className="creativeNote";
+      n.textContent="✨ Yaratıcı moddasın — tüm bloklar sınırsız. Craft'a gerek yok, hayal gücün yeter!";
+      wrap.parentNode.appendChild(n);
+    }
+  } else {
+    wrap.style.display=""; $("#creativeNote")?.remove();
+    list.innerHTML="";
+    for(const rec of RECIPES){
+      const row=document.createElement("div"); row.className="recipe";
+      const io=document.createElement("div"); io.className="io";
+      rec.in.forEach(([id,n],i)=>{
+        if(i>0) io.insertAdjacentHTML("beforeend",`<span>+</span>`);
+        io.appendChild(iconCanvas(id));
+        io.insertAdjacentHTML("beforeend",`<span class="qty">×${n}</span>`);
+      });
+      io.insertAdjacentHTML("beforeend",`<span class="arrow">→</span>`);
+      io.appendChild(iconCanvas(rec.out[0]));
+      io.insertAdjacentHTML("beforeend",`<span class="qty">×${rec.out[1]}</span>`);
+      const btn=document.createElement("button"); btn.className="mk"; btn.textContent="Üret";
+      btn.disabled=!canAfford(rec);
+      btn.addEventListener("click",()=>craft(rec));
+      row.appendChild(io); row.appendChild(btn);
+      list.appendChild(row);
+    }
+  }
+}
+let invOpen=false;
+function toggleInv(open){
+  invOpen = open ?? !invOpen;
+  $("#inv").classList.toggle("open", invOpen);
+  if(invOpen){ digging=false; renderInv();
+    if(!IS_TOUCH && document.pointerLockElement) document.exitPointerLock();
+  } else if(!IS_TOUCH && running) canvas.requestPointerLock();
+}
+$("#invClose").addEventListener("click",()=>toggleInv(false));
+
+// ---------- Kazma / koyma ----------
+let selected=0, target=null, digging=false, digT=0;
+function toast(msg){ const el=$("#toast"); el.textContent=msg; el.style.opacity=1; clearTimeout(el._t); el._t=setTimeout(()=>el.style.opacity=0,1500); }
+
+function setBlock(x,y,z,id){
+  vox[vi(x,y,z)]=id; edits[`${x},${y},${z}`]=id; rebuildAt(x,z); queueSave();
+}
+function tryPlace(){
+  if(!target) return;
+  const {px,py,pz}=target;
+  if(!inW(px,py,pz)) return;
+  const cur=getV(px,py,pz); if(cur!==AIR&&cur!==WATER) return;
+  const p=player.pos;
+  if(px+1>p.x-player.w && px<p.x+player.w && pz+1>p.z-player.w && pz<p.z+player.w &&
+     py+1>p.y && py<p.y+player.h) return;
+  const id=HOTBAR[selected];
+  if(mode==="survival"){
+    if(invCount(id)<=0){ toast(`${NAMES[id]} yok — kaz veya craft et! 🎒`); sfx("deny"); return; }
+    inv[id]--; updateHotbar(); queueSave();
+  }
+  setBlock(px,py,pz,id); sfx("put");
+}
+function updateDig(dt){
+  const dir=new THREE.Vector3(); camera.getWorldDirection(dir);
+  const hit=raycast(camera.position, dir);
+  target = (hit && hit.y!==0) ? hit : null; // y=0 ana kaya, kırılamaz
+  if(target){ hiBox.visible=true; hiBox.position.set(target.x+.5,target.y+.5,target.z+.5); }
+  else hiBox.visible=false;
+  if(digging && target){
+    if(crack._at!==`${target.x},${target.y},${target.z}`){ digT=0; crack._at=`${target.x},${target.y},${target.z}`; }
+    digT+=dt;
+    const need=BREAK_TIME[target.id]??1;
+    crack.visible=true; crack.position.copy(hiBox.position);
+    crack.material.opacity=Math.min(digT/need,.98)*.55;
+    if(digT>=need){
+      const drop=DROP(target.id);
+      if(mode==="survival"){ invAdd(drop,1); toast(`+1 ${NAMES[drop]} 🎒`); }
+      else toast(`${NAMES[target.id]??"Blok"} kazıldı ⛏`);
+      setBlock(target.x,target.y,target.z,AIR); sfx("pop"); digT=0; crack.visible=false;
+    }
+  } else { digT=0; crack.visible=false; crack._at=null; }
+}
+
+// ---------- Hotbar UI ----------
+function buildHotbar(){
+  const bar=$("#hotbar"); bar.innerHTML="";
+  HOTBAR.forEach((id,i)=>{
+    const s=document.createElement("div"); s.className="slot"+(i===selected?" sel":"");
+    s.innerHTML=`<span class="k">${i+1}</span><span class="n"></span>`;
+    s.insertBefore(iconCanvas(id), s.querySelector(".n"));
+    s.title=NAMES[id];
+    s.addEventListener("pointerdown",e=>{ e.stopPropagation(); selectSlot(i); });
+    bar.appendChild(s);
+  });
+  updateHotbar();
+}
+function updateHotbar(){
+  document.querySelectorAll("#hotbar .slot").forEach((s,i)=>{
+    const id=HOTBAR[i], n=s.querySelector(".n");
+    if(mode==="creative"){ n.textContent=""; s.classList.remove("empty"); }
+    else { const c=invCount(id); n.textContent=c>0?c:""; s.classList.toggle("empty",c<=0); }
+  });
+}
+function selectSlot(i){
+  selected=(i+HOTBAR.length)%HOTBAR.length;
+  document.querySelectorAll(".slot").forEach((s,j)=>s.classList.toggle("sel",j===selected));
+  toast(NAMES[HOTBAR[selected]] + (mode==="survival"?` (${invCount(HOTBAR[selected])})`:""));
+}
+
+// ---------- Girdi: klavye + fare ----------
+let running=false, worldReady=false;
+const canvas=$("#c");
+addEventListener("keydown",e=>{
+  if(e.code==="KeyE" && running){ e.preventDefault(); toggleInv(); return; }
+  if(e.code==="Escape" && invOpen){ toggleInv(false); return; }
+  keys[e.code]=true;
+  if(e.code.startsWith("Digit")){ const n=+e.code.slice(5); if(n>=1&&n<=9) selectSlot(n-1); }
+  if(["Space","ArrowUp","ArrowDown"].includes(e.code)) e.preventDefault();
+});
+addEventListener("keyup",e=>keys[e.code]=false);
+addEventListener("wheel",e=>{ if(running&&!invOpen) selectSlot(selected+(e.deltaY>0?1:-1)); },{passive:true});
+addEventListener("contextmenu",e=>e.preventDefault());
+
+canvas.addEventListener("mousedown",e=>{
+  if(!running||invOpen) return;
+  if(!IS_TOUCH && document.pointerLockElement!==canvas){ canvas.requestPointerLock(); return; }
+  if(e.button===0) digging=true;
+  if(e.button===2) tryPlace();
+});
+addEventListener("mouseup",e=>{ if(e.button===0) digging=false; });
+addEventListener("mousemove",e=>{
+  if(document.pointerLockElement!==canvas) return;
+  yaw+=e.movementX*.0024; pitch=Math.max(-1.55,Math.min(1.55,pitch+e.movementY*.0024));
+});
+document.addEventListener("pointerlockchange",()=>{
+  if(!IS_TOUCH && running && !invOpen && document.pointerLockElement!==canvas) openMenu();
+});
+
+// ---------- Girdi: mobil ----------
+const joy={x:0,y:0}; let joyJump=false;
+{
+  const jd=$("#joy"), jk=$("#joyk"); let jid=null;
+  jd.addEventListener("touchstart",e=>{ jid=e.changedTouches[0].identifier; },{passive:true});
+  jd.addEventListener("touchmove",e=>{
+    for(const t of e.changedTouches){ if(t.identifier!==jid) continue;
+      const r=jd.getBoundingClientRect();
+      let dx=(t.clientX-r.left-60)/45, dy=(t.clientY-r.top-60)/45;
+      const m=Math.hypot(dx,dy); if(m>1){dx/=m;dy/=m;}
+      joy.x=dx; joy.y=dy; jk.style.transform=`translate(${dx*32}px,${dy*32}px)`;
+    } e.preventDefault(); },{passive:false});
+  const end=e=>{ for(const t of e.changedTouches){ if(t.identifier===jid){ jid=null; joy.x=joy.y=0; jk.style.transform=""; } } };
+  jd.addEventListener("touchend",end); jd.addEventListener("touchcancel",end);
+
+  let lid=null, lx=0, ly=0;
+  canvas.addEventListener("touchstart",e=>{
+    if(!running||invOpen) return;
+    const t=e.changedTouches[0]; lid=t.identifier; lx=t.clientX; ly=t.clientY;
+  },{passive:true});
+  canvas.addEventListener("touchmove",e=>{
+    for(const t of e.changedTouches){ if(t.identifier!==lid) continue;
+      yaw+=(t.clientX-lx)*.005; pitch=Math.max(-1.55,Math.min(1.55,pitch+(t.clientY-ly)*.005));
+      lx=t.clientX; ly=t.clientY; }
+    e.preventDefault(); },{passive:false});
+  canvas.addEventListener("touchend",e=>{ for(const t of e.changedTouches) if(t.identifier===lid) lid=null; });
+
+  const hold=(el,on,off)=>{ el.addEventListener("touchstart",e=>{e.preventDefault();on();},{passive:false});
+    el.addEventListener("touchend",off); el.addEventListener("touchcancel",off); };
+  hold($("#btnJump"),()=>joyJump=true,()=>joyJump=false);
+  hold($("#btnDig"), ()=>digging=true, ()=>digging=false);
+  $("#btnPut").addEventListener("touchstart",e=>{ e.preventDefault(); tryPlace(); },{passive:false});
+  $("#btnInv").addEventListener("touchstart",e=>{ e.preventDefault(); toggleInv(); },{passive:false});
+}
+
+// ---------- Gündüz / gece (aydınlık gece + yıldızlar) ----------
+const SKY_DAY=new THREE.Color(0x87ceeb), SKY_EVE=new THREE.Color(0xf2a15c), SKY_NIGHT=new THREE.Color(0x1a2447);
+let dayT=DAY_LEN*.22; // sabah başla
+window.__bkTime = f => { dayT = ((f%1)+1)%1 * DAY_LEN; }; // test/debug: günün saatini ayarla (0..1)
+function stepSky(dt){
+  const a0=dayT/DAY_LEN*Math.PI*2;
+  // Gece sıkıcı olmasın: karanlıkta zaman 2.4× hızlı akar
+  dayT=(dayT+dt*(Math.sin(a0)<-.05?2.4:1))%DAY_LEN;
+  const a=dayT/DAY_LEN*Math.PI*2, elev=Math.sin(a);
+  sun.position.set(Math.cos(a)*80, elev*100, 30);
+  sun.intensity=Math.max(elev,0)*.75+.15;
+  moon.position.set(-Math.cos(a)*80, -elev*100, -30);
+  moon.intensity=Math.max(-elev,0)*.35;                 // ay ışığı — gece asla zifiri olmaz
+  amb.intensity=.42+Math.max(elev,0)*.32;               // taban aydınlık yükseltildi
+  const sky=new THREE.Color();
+  if(elev>.25) sky.copy(SKY_DAY);
+  else if(elev>-.12){ const k=(elev+.12)/.37; sky.copy(SKY_NIGHT).lerp(SKY_EVE,k).lerp(SKY_DAY,Math.max(0,k-.5)*2*.7); }
+  else sky.copy(SKY_NIGHT);
+  scene.background=sky; scene.fog.color.copy(sky);
+  stars.material.opacity=Math.min(Math.max(-elev*3,0),.9);
+  clouds.position.x=(clouds.position.x+dt*.8)%WX;
+  // HUD saat
+  const icon=elev>.15?"☀️":(elev>-.05?"🌅":"🌙");
+  const txt=elev>.15?"Gündüz":(elev>-.05?"Gün batımı":"Gece");
+  if($("#clockIcon").textContent!==icon){ $("#clockIcon").textContent=icon; $("#clockText").textContent=txt; }
+}
+
+// ---------- Menü akışı ----------
+const menu=$("#menu");
+function setMode(m, silent){
+  mode=m;
+  document.querySelectorAll(".mode").forEach(b=>b.classList.toggle("sel", b.dataset.m===m));
+  updateHotbar(); if(!silent) queueSave();
+}
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{ setMode(b.dataset.m); sfx("put"); }));
+
+function openMenu(){
+  running=false; digging=false; document.body.classList.remove("playing");
+  menu.classList.remove("hide");
+  $("#btnPlay").textContent="▶ Devam Et";
+  saveGame();
+}
+function startPlaying(){
+  menu.classList.add("hide"); running=true; document.body.classList.add("playing");
+  if(!IS_TOUCH) canvas.requestPointerLock();
+}
+function spawnPlayer(){
+  const sx=WX/2+.5, sz=WZ/2+.5;
+  player.pos.set(sx, groundY(sx,sz)+2.2, sz);
+  player.vel.set(0,0,0); yaw=Math.PI*.25; pitch=.05;
+}
+$("#btnPlay").addEventListener("click",()=>{ startPlaying(); sfx("put"); });
+$("#btnNew").addEventListener("click",()=>{
+  seed=(Math.random()*1e9)|0; edits={}; inv={};
+  localStorage.removeItem(SAVE_KEY);
+  generate(); buildAll(); spawnPlayer(); updateHotbar();
+  toast("Yeni dünya oluşturuldu 🌍"); startPlaying(); sfx("craft");
+});
+addEventListener("visibilitychange",()=>{ if(document.hidden&&worldReady) saveGame(); });
+addEventListener("beforeunload",()=>{ if(worldReady) saveGame(); });
+
+// ---------- Başlangıç: dünyayı hemen üret, menü arkasında sergile ----------
+{
+  const sv=loadSave();
+  if(sv){ seed=sv.seed; edits=sv.edits||{}; inv=sv.inv||{}; setMode(sv.mode||"survival",true);
+    $("#btnPlay").textContent="▶ Devam Et"; }
+  else setMode("survival",true);
+  generate(); buildAll();
+  if(sv&&sv.p){ player.pos.set(sv.p[0],sv.p[1],sv.p[2]); yaw=sv.r?.[0]??0; pitch=sv.r?.[1]??0; }
+  else spawnPlayer();
+  worldReady=true;
+}
+buildHotbar();
+
+// ---------- Ana döngü ----------
+function resize(){
+  renderer.setSize(innerWidth,innerHeight,false);
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+}
+addEventListener("resize",resize); resize();
+
+let last=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min((now-last)/1000,.05); last=now;
+  if(!worldReady) return;
+  stepSky(dt);
+  if(running){
+    if(!invOpen){ stepPlayer(dt); updateDig(dt); }
+  } else {
+    // Menü arkasında sinematik yörünge kamerası (premium giriş)
+    const t=now*.00006, cx=WX/2, cz=WZ/2, gy=groundY(cx,cz);
+    camera.position.set(cx+Math.cos(t)*34, gy+13, cz+Math.sin(t)*34);
+    camera.lookAt(cx, gy+1, cz);
+    hiBox.visible=false; crack.visible=false;
+  }
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

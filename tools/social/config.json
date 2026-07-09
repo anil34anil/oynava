@@ -1,0 +1,71 @@
+{
+  "concurrency": 2,
+  "outputDir": "tools/social/output",
+  "cacheDir": "tools/social/.cache",
+  "stateFile": "tools/social/state/ledger.json",
+  "providers": {
+    "playgama": { "enabled": true },
+    "gamemonetize": { "enabled": true },
+    "gamedistribution": { "enabled": true },
+    "gamepix": { "enabled": true },
+    "originals": { "enabled": true }
+  },
+  "video": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "minDurationSec": 20,
+    "maxDurationSec": 40,
+    "defaultDurationSec": 24,
+    "codec": "libx264",
+    "crf": 16,
+    "preset": "slow",
+    "endCardSec": 3,
+    "endCardText": "ŞİMDİ OYNA"
+  },
+  "brand": {
+    "name": "OYNAVA",
+    "url": "oynava.com",
+    "colors": { "bg": "#0b1326", "accent": "#4cd7f6", "accent2": "#d0bcff", "ink": "#dae2fd" },
+    "fonts": {
+      "display": "tools/social/assets/fonts/Sora.ttf",
+      "body": "tools/social/assets/fonts/HankenGrotesk.ttf"
+    },
+    "logoPath": "tools/social/assets/logo.png",
+    "logoScaleW": 90
+  },
+  "captions": {
+    "youtubeTitleMax": 95,
+    "youtubeDescMax": 1800,
+    "tiktokDescMax": 150,
+    "instagramDescMax": 300,
+    "maxHashtagsYoutube": 6,
+    "maxHashtagsTiktok": 8,
+    "maxHashtagsInstagram": 20,
+    "brandHashtags": ["#Oynava", "#UcretsizOyunlar", "#TarayiciOyunlari", "#HTML5Games"],
+    "genericHashtags": ["#Shorts", "#Gaming", "#FreeGames", "#MobileGaming", "#Oyun", "#OyunOner"],
+    "categoryHashtags": {
+      "originals": ["#Minecraft", "#Sandbox", "#Craft", "#OpenWorld"],
+      "aksiyon": ["#ActionGames", "#Shooter", "#FPS", "#Aksiyon"],
+      "macera": ["#Adventure", "#Macera"],
+      "yaris": ["#RacingGames", "#CarGames", "#Yaris", "#Drift"],
+      "spor": ["#SportsGames", "#Futbol", "#Basketbol"],
+      "dovus": ["#FightingGames", "#Dovus", "#Boxing"],
+      "bulmaca": ["#PuzzleGames", "#Bulmaca", "#BrainGames"],
+      "zeka": ["#StrategyGames", "#Zeka", "#BoardGames"],
+      "io": ["#IOGames", "#Multiplayer", "#OnlineGames"],
+      "kiz": ["#GirlGames", "#DressUp"],
+      "cocuk": ["#KidsGames", "#Cocuk"],
+      "arcade": ["#ArcadeGames", "#Casual", "#Hypercasual"],
+      "3d": ["#3DGames", "#WebGL"]
+    }
+  },
+  "qualityWeights": {
+    "preview": 100,
+    "trailer": 95,
+    "gameplay": 90,
+    "animated_thumbnail": 55,
+    "gif": 45,
+    "thumbnail": 20
+  }
+}

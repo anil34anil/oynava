@@ -32,7 +32,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
       aria-label={game.title}
       onMouseEnter={startHover}
       onMouseLeave={endHover}
-      className="group relative z-0 block aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-card transition-transform duration-200 hover:z-20 hover:scale-125 hover:border-neon hover:shadow-glow"
+      className="group relative z-0 block aspect-[4/3] overflow-hidden rounded-2xl bg-card ring-1 ring-inset ring-white/5 transition-transform duration-200 hover:z-20 hover:scale-125 hover:shadow-glow"
     >
       <FavoriteButton id={game.id} />
 
@@ -48,23 +48,16 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         </span>
       )}
 
-      {/* Arka plan dolgu: aynı görselin bulanık/büyütülmüş hali — görsel oranı kutuyla
-          eşleşmediğinde düz boşluk yerine bunu gösterir, hiçbir şey kırpılmaz/boşluk kalmaz */}
-      <Image
-        src={game.thumb}
-        alt=""
-        aria-hidden
-        fill
-        sizes="(max-width:640px) 50vw, (max-width:1024px) 25vw, 16vw"
-        className="scale-110 object-cover opacity-60 blur-xl"
-        unoptimized
-      />
+      {/* CrazyGames/Poki tarzı: görsel kutuyu TAM doldurur (object-cover), farklı en-boy
+          oranlarında bulanık kutu/çerçeve görünümü oluşturan letterbox katmanı YOK.
+          object-position: top → çoğu kaynağın logo/başlık grafiği görselin üst-orta
+          bölgesinde olduğundan kırpma orada değil altta/kenarlarda gerçekleşir. */}
       <Image
         src={game.thumb}
         alt={`${game.title} - ücretsiz oyna`}
         fill
         sizes="(max-width:640px) 50vw, (max-width:1024px) 25vw, 16vw"
-        className="object-contain"
+        className="object-cover object-top"
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
@@ -103,9 +96,10 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
         </div>
       )}
 
-      {/* Oyun adı — hover'da alt şeritte (temiz; SEO için DOM'da) */}
+      {/* Oyun adı — hover'da alt şeritte (temiz; SEO için DOM'da). line-clamp-2: uzun
+          isimler kesilip "..." ile boğulmak yerine 2 satıra sarılarak tam okunur. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-base/95 via-base/70 to-transparent p-2 pt-6 opacity-0 transition group-hover:opacity-100">
-        <span className="block truncate text-xs font-semibold text-slate-100">{game.title}</span>
+        <span className="line-clamp-2 text-xs font-semibold leading-tight text-slate-100">{game.title}</span>
       </div>
 
       {preview && (

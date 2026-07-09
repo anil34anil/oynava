@@ -11,6 +11,8 @@ import seed from "@/data/games.seed.json";
 import gdSeed from "@/data/games.gd.seed.json";
 import gpSeed from "@/data/games.gp.seed.json";
 import pgmSeed from "@/data/games.pgm.seed.json";
+import ovSeed from "@/data/games.originals.seed.json";
+import gfSeed from "@/data/games.gf.seed.json";
 import { Game, categorySlug, isOnline, isFpsShooter } from "./catalog";
 import { searchTerms, normalizeTr } from "./tr";
 import { getTopPlayedIds } from "./kv";
@@ -34,6 +36,9 @@ const GD_FEED = "https://catalog.api.gamedistribution.com/api/v1.0/rss/All/?form
 const GAMEPIX_SID = process.env.GAMEPIX_SID ?? "92818";
 const GP_FEED = `https://feeds.gamepix.com/v2/json?sid=${GAMEPIX_SID}&pagination=48`;
 
+// GameFlare canlı feed — açık/anahtarsız JSON feed (yayıncı girişi/onayı gerekmiyor).
+const GF_FEED = "https://distribution.gameflare.com/feed.json";
+
 /**
  * Sağlayıcının kendi tarafında bozuk/oynatılamayan oyunlar (id ile engellenir).
  * Ör. gd-7f80acce...: GameDistribution'ın kendi SDK'sı bu oyunu bizim domain'den
@@ -47,11 +52,16 @@ const BLOCKED_GAME_IDS = new Set<string>(["gd-7f80acce2a524af9bc3dfa53eaaa8ff6"]
 const GD_SEED = (gdSeed as Game[]).filter((g) => g.id && g.url);
 const GP_SEED = applySid((gpSeed as Game[]).filter((g) => g.id && g.url));
 const PGM_SEED = (pgmSeed as Game[]).filter((g) => g.id && g.url);
+// Oynava Originals — kendi geliştirdiğimiz oyunlar (public/originals altında barınır)
+const OV_SEED = (ovSeed as Game[]).filter((g) => g.id && g.url);
+const GF_SEED = (gfSeed as Game[]).filter((g) => g.id && g.url);
 const SEED = mergeUnique([
+  ...OV_SEED,
   ...(seed as Game[]).filter((g) => g.id && g.url),
   ...GD_SEED,
   ...GP_SEED,
   ...PGM_SEED,
+  ...GF_SEED,
 ]);
 
 /** GamePix embed url'lerindeki sid'i kendi yayıncı sid'inle değiştirir (gelir için). */
@@ -138,6 +148,42 @@ async function fetchGamePix(pages = 4): Promise<Game[]> {
   return applySid(out);
 }
 
+/** GameFlare: tek parça JSON feed (sayfalı değil), canlı çek + normalize et. */
+async function fetchGameFlare(): Promise<Game[]> {
+  try {
+    const r = await fetch(GF_FEED, {
+      headers: { "User-Agent": "OyunPortali/1.0" },
+      next: { revalidate: 3600 },
+    });
+    if (!r.ok) return [];
+    const d = (await r.json()) as { games?: { game: any }[] };
+    const items = d?.games ?? [];
+    const out: Game[] = [];
+    for (const item of items) {
+      const g = item?.game;
+      const m = /\/embed\/([^/]+)\//.exec(g?.url || "");
+      const slug = m?.[1];
+      if (!g || !slug || !g.url) continue;
+      const cats: string[] = Array.isArray(g.categoryList) ? g.categoryList.map((c: any) => c.name) : [];
+      out.push({
+        id: "gf-" + slug,
+        title: (g.title || "").trim(),
+        description: g.description || "",
+        instructions: g.instructions || "",
+        url: g.url,
+        category: cats[0] || "Arcade",
+        tags: cats.join(", "),
+        thumb: g.assetList?.[0]?.name || "",
+        width: String(g.width || 800),
+        height: String(g.height || 600),
+      });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 let _cache: { at: number; games: Game[] } | null = null;
 const MEM_TTL = 1000 * 60 * 10; // 10 dk bellek-içi cache
 
@@ -171,28 +217,40 @@ const HOT_LIMIT = 20; // gercek oynanma sayisina gore "HOT" rozeti alacak oyun a
 export async function getGames(): Promise<Game[]> {
   if (_cache && Date.now() - _cache.at < MEM_TTL) return _cache.games;
 
-  const [gm, gd, gp, hotIdsRes] = await Promise.allSettled([
+  const [gm, gd, gp, gf, hotIdsRes] = await Promise.allSettled([
     fetchFeed(),
     fetchGameDistribution(),
     fetchGamePix(),
+    fetchGameFlare(),
     getTopPlayedIds(HOT_LIMIT),
   ]);
 
   const gmGames = gm.status === "fulfilled" ? gm.value : [];
   const gdGames = gd.status === "fulfilled" ? gd.value : [];
   const gpGames = gp.status === "fulfilled" ? gp.value : [];
+  const gfGames = gf.status === "fulfilled" ? gf.value : [];
   const hotIds = new Set(hotIdsRes.status === "fulfilled" ? hotIdsRes.value : []);
 
   // Canlı veriyi HER ZAMAN gömülü seed ile birleştir; bozuk/engellenen oyunları at.
-  const merged = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...SEED]).filter(
+  const merged = mergeUnique([...gmGames, ...gdGames, ...gpGames, ...gfGames, ...SEED]).filter(
     (g) => !BLOCKED_GAME_IDS.has(g.id),
   );
 
   // En son eklenen + premium hissi veren kaynaklar her kategoride EN ÜSTTE:
-  // Playgama (en yeni) → GamePix (premium) → GameDistribution → GameMonetize.
+  // Originals (bizim) → Playgama (en yeni) → GamePix (premium) → GameFlare → GameDistribution → GameMonetize.
   // (Array.sort kararlıdır; aynı kaynak içi sıra korunur.)
   const rank = (g: Game) =>
-    g.id.startsWith("pgm-") ? 0 : g.id.startsWith("gp-") ? 1 : g.id.startsWith("gd-") ? 2 : 3;
+    g.id.startsWith("ov-")
+      ? 0
+      : g.id.startsWith("pgm-")
+        ? 1
+        : g.id.startsWith("gp-")
+          ? 2
+          : g.id.startsWith("gf-")
+            ? 3
+            : g.id.startsWith("gd-")
+              ? 4
+              : 5;
   const games = [...merged]
     .sort((a, b) => rank(a) - rank(b))
     .map((g) => (hotIds.has(g.id) ? { ...g, hot: true } : g));

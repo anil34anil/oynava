@@ -25,6 +25,7 @@ export type Game = {
 
 // İngilizce kategori -> Türkçe + slug eşlemesi
 export const CATEGORIES: { slug: string; tr: string; match: string[] }[] = [
+  { slug: "originals", tr: "Oynava Originals", match: ["originals"] },
   { slug: "aksiyon", tr: "Aksiyon", match: ["action", "shooter", "shooting"] },
   { slug: "macera", tr: "Macera", match: ["adventure"] },
   { slug: "yaris", tr: "Yarış", match: ["racing", "driving", "car"] },

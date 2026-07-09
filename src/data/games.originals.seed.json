@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ov-blokkraft",
+    "title": "BlokKraft",
+    "description": "BlokKraft is Oynava's own Minecraft-style 3D sandbox game. Explore a procedurally generated world of hills, lakes, beaches and forests. Choose your play style: in Gatherer mode you mine blocks, collect resources in your inventory and craft new materials like planks, glass and bricks; in Creative mode all blocks are unlimited so you can build freely. Watch the sun rise and set in a full day-night cycle with a starry night sky, and your world is saved automatically so you can continue building whenever you return. Works on both desktop and mobile with touch controls.",
+    "instructions": "Move with WASD and jump with Space. Hold the left mouse button to mine blocks and right-click to place them. Press E to open your inventory and craft new blocks. Select blocks with keys 1-9 or the mouse wheel. Hold Shift to sprint. On mobile, use the joystick to walk, drag the screen to look around, hold the pickaxe button to dig, tap the block button to build and the backpack button for the inventory.",
+    "url": "/originals/blokkraft/index.html",
+    "category": "Originals",
+    "tags": "originals, minecraft, craft, sandbox, building, mining, blocks, 3d, open world",
+    "thumb": "/originals/blokkraft/thumb.jpg",
+    "width": "1280",
+    "height": "720",
+    "isNew": true
+  },
+  {
+    "id": "ov-golgediyari",
+    "title": "GölgeDiyarı",
+    "description": "GölgeDiyarı is Oynava's own isometric action RPG. Fight your way through the Ash Plains, slay shadow creatures, elites and the mighty Dark Warden boss inside the Dark Dungeon. Collect loot in five rarity tiers from common to legendary, equip weapons and armor with random affixes, socket gems, upgrade and enchant your gear. Level up to earn stat and talent points, unlock four powerful skills, complete quest chains and daily hunts from the steward NPC, survive periodic Shadow Invasion world events and earn achievements. Your character is saved automatically. Playable with keyboard and mouse, gamepad or touch controls on mobile.",
+    "instructions": "Move with WASD or click the ground to walk. Attack with J or the left action button, dodge with Space. Use skills with keys 1-4 once unlocked. Press I for inventory, C for character stats, T for talents and E to talk to NPCs. Zoom with the mouse wheel. On mobile, use the left joystick to move and the action buttons on the right to attack, dodge and cast skills.",
+    "url": "/originals/golgediyari/index.html",
+    "category": "Originals",
+    "tags": "originals, arpg, rpg, action rpg, diablo, isometric, dungeon, boss, loot, hack and slash, 3d",
+    "thumb": "/originals/golgediyari/thumb.jpg",
+    "width": "1280",
+    "height": "720",
+    "isNew": true
+  }
+]

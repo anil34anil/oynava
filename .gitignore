@@ -5,6 +5,12 @@ out
 *.log
 .DS_Store
 next-env.d.ts
+tsconfig.tsbuildinfo
 
 # Play Store ekran goruntusu ciktilari
 screenshots/
+
+# Social Media Factory — uretilen video/gorsel + medya onbellegi (agir binary,
+# tekrar uretilebilir; ledger.json (state/) KASITLI olarak commit'lenir)
+tools/social/output/
+tools/social/.cache/

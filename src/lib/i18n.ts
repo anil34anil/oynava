@@ -63,6 +63,7 @@ export const UI: Record<string, Record<string, string>> = {
     "cat.aksiyon": "Aksiyon", "cat.macera": "Macera", "cat.yaris": "Yarış", "cat.spor": "Spor",
     "cat.dovus": "Dövüş", "cat.bulmaca": "Bulmaca", "cat.zeka": "Zekâ & Strateji", "cat.io": ".io Oyunları",
     "cat.kiz": "Kız Oyunları", "cat.cocuk": "Çocuk", "cat.arcade": "Arcade", "cat.3d": "3D Oyunlar",
+    "cat.originals": "Oynava Originals",
   },
   en: {
     "nav.online": "Online Games", "nav.fps": "FPS / Shooter", "nav.premium": "Premium Games",
@@ -75,6 +76,7 @@ export const UI: Record<string, Record<string, string>> = {
     "cat.aksiyon": "Action", "cat.macera": "Adventure", "cat.yaris": "Racing", "cat.spor": "Sports",
     "cat.dovus": "Fighting", "cat.bulmaca": "Puzzle", "cat.zeka": "Brain & Strategy", "cat.io": ".io Games",
     "cat.kiz": "Girls", "cat.cocuk": "Kids", "cat.arcade": "Arcade", "cat.3d": "3D Games",
+    "cat.originals": "Oynava Originals",
   },
   nl: {
     "nav.online": "Online Spellen", "nav.fps": "FPS / Schutter", "nav.premium": "Premium Spellen",

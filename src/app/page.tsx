@@ -22,7 +22,7 @@ const HOME_FAQ = [
 ];
 
 const CAT_ICON: Record<string, string> = {
-  aksiyon: "💥", macera: "🗺️", yaris: "🏎️", spor: "⚽", dovus: "🥊",
+  originals: "⛏️", aksiyon: "💥", macera: "🗺️", yaris: "🏎️", spor: "⚽", dovus: "🥊",
   bulmaca: "🧩", zeka: "♟️", io: "🌐", kiz: "💖", cocuk: "🧸", arcade: "🕹️", "3d": "🧊",
 };
 
@@ -76,7 +76,7 @@ export default async function HomePage() {
     <div className="container-x space-y-6 py-6">
       {/* Kategori hızlı erişim ikonları — EN ÜSTTE */}
       <section>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-[repeat(13,minmax(0,1fr))]">
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
