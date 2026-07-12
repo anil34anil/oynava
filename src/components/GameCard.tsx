@@ -40,7 +40,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
           YENI = katalogda yeni eklenen oyun. Sahte/rastgele rozet yok. */}
       {!preview && (game.hot || game.isNew) && (
         <span
-          className={`absolute left-2 top-2 z-10 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow ${
+          className={`absolute left-2 top-2 z-10 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#fff] shadow ${
             game.hot ? "bg-orange-500" : "bg-emerald-500"
           }`}
         >
@@ -103,7 +103,7 @@ export function GameCard({ game, priority = false }: { game: Game; priority?: bo
       </div>
 
       {preview && (
-        <span className="absolute left-2 top-2 z-[3] rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+        <span className="absolute left-2 top-2 z-[3] rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#fff]">
           ● Önizleme
         </span>
       )}

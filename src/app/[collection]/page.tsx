@@ -13,6 +13,7 @@ import { t, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
 import { getTopPlayedIds } from "@/lib/kv";
+import { COLLECTION_CONTENT } from "@/lib/collectionContent";
 
 export const revalidate = 3600;
 
@@ -58,6 +59,8 @@ export default async function CollectionPage({ params }: { params: { collection:
   // İç linkler: diğer koleksiyonlar + kategoriler (yetim sayfa bırakma)
   const others = COLLECTIONS.filter((x) => x.slug !== c.slug).slice(0, 8);
   const L = (p: string) => localePath(p, locale);
+  // Özgün gövde metni — yalnız en yüksek öncelikli koleksiyonlarda ve yalnız TR'de (çeviri maliyeti)
+  const bodyTr = locale === "tr" ? COLLECTION_CONTENT[c.slug] ?? [] : [];
 
   return (
     <div className="container-x space-y-6 py-6">
@@ -111,6 +114,18 @@ export default async function CollectionPage({ params }: { params: { collection:
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_TOP} className="min-h-[90px]" />
 
       <GameGrid games={games} priorityCount={6} />
+
+      {/* Özgün koleksiyon içeriği (SEO derinliği + AdSense değerli içerik) — yalnız TR, seçili koleksiyonlarda */}
+      {bodyTr.length > 0 && (
+        <section className="border-t border-line pt-6">
+          <h2 className="mb-3 font-display text-xl font-bold text-ink">{c.title} Hakkında</h2>
+          <div className="max-w-3xl space-y-3">
+            {bodyTr.map((p, i) => (
+              <p key={i} className="text-slate-400">{p}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* İç linkleme: ilgili koleksiyonlar + kategoriler */}
       <section className="space-y-3 border-t border-line pt-6">

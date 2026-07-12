@@ -13,35 +13,41 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // ── CYBERPULSE (Stitch) — derin uzay + cam + neon ────────────────
-        base: "#0b1326",     // arka plan (background/surface)
-        surface: "#131b2e",  // sidebar/header taban (cam için /70 + blur)
-        card: "#171f33",     // kart/konteyner
-        line: "#2d3449",     // kenarlık (outline)
-        ink: "#dae2fd",      // ana açık metin (on-surface, mavimsi beyaz)
+        // ── CYBERPULSE — derin uzay + cam + neon ─────────────────────────
+        // Renkler CSS değişkeninden okunur (globals.css): koyu tema :root'ta,
+        // açık tema :root[data-theme="light"]'ta tanımlı → tema seçici tek
+        // noktadan tüm siteyi değiştirir. "<alpha-value>" /60 gibi opaklıkları korur.
+        base: "rgb(var(--c-base) / <alpha-value>)",     // arka plan
+        surface: "rgb(var(--c-surface) / <alpha-value>)", // sidebar/header taban
+        card: "rgb(var(--c-card) / <alpha-value>)",     // kart/konteyner
+        line: "rgb(var(--c-line) / <alpha-value>)",     // kenarlık (outline)
+        ink: "rgb(var(--c-ink) / <alpha-value>)",       // ana metin (on-surface)
+        // text-white / bg-white/[x] kullanımları da temaya uysun diye "white"
+        // değişkene bağlanır (koyu: gerçek beyaz, açık: koyu lacivert).
+        white: "rgb(var(--c-white) / <alpha-value>)",
 
         // Vurgular (eski "neon" anahtarları korunur)
         neon: {
-          DEFAULT: "#d0bcff", // elektrik moru (primary)
-          purple: "#a078ff",  // koyu mor (primary-container)
-          pink: "#ffb4ab",    // hata/kırmızı (dislike)
-          lime: "#90db00",    // asit yeşili (online/başarı = tertiary)
+          DEFAULT: "rgb(var(--c-neon) / <alpha-value>)",       // elektrik moru (primary)
+          purple: "rgb(var(--c-neon-purple) / <alpha-value>)", // koyu mor
+          pink: "rgb(var(--c-neon-pink) / <alpha-value>)",     // hata/kırmızı
+          lime: "rgb(var(--c-neon-lime) / <alpha-value>)",     // asit yeşili
         },
-        secondary: "#4cd7f6", // cyber mavi (bilgi/ikincil)
-        tertiary: "#90db00",  // asit yeşili
+        secondary: "rgb(var(--c-secondary) / <alpha-value>)", // cyber mavi
+        tertiary: "rgb(var(--c-neon-lime) / <alpha-value>)",  // asit yeşili
 
-        // Mavimsi-soğuk açık metin ölçeği (koyu tema)
+        // Mavimsi-soğuk metin ölçeği (açık temada ters çevrilir)
         slate: {
-          50: "#f3f5ff",
-          100: "#e4e8fb",
-          200: "#cbd2ec",
-          300: "#aab3d4",
-          400: "#8b93b0",
-          500: "#6f7796",
-          600: "#586079",
-          700: "#414863",
-          800: "#2d3449",
-          900: "#1c2235",
+          50: "rgb(var(--c-slate-50) / <alpha-value>)",
+          100: "rgb(var(--c-slate-100) / <alpha-value>)",
+          200: "rgb(var(--c-slate-200) / <alpha-value>)",
+          300: "rgb(var(--c-slate-300) / <alpha-value>)",
+          400: "rgb(var(--c-slate-400) / <alpha-value>)",
+          500: "rgb(var(--c-slate-500) / <alpha-value>)",
+          600: "rgb(var(--c-slate-600) / <alpha-value>)",
+          700: "rgb(var(--c-slate-700) / <alpha-value>)",
+          800: "rgb(var(--c-slate-800) / <alpha-value>)",
+          900: "rgb(var(--c-slate-900) / <alpha-value>)",
         },
       },
       fontFamily: {

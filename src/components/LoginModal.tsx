@@ -198,7 +198,7 @@ export function LoginModal() {
                 icon=""
                 label={T[7]}
                 soonLabel={T[20]}
-                className="bg-white text-black hover:bg-slate-200"
+                className="bg-[#fff] text-black hover:bg-[#e2e2e2]"
                 ready={appleReady}
                 onClick={() => setErr(`Apple — ${T[20]}`)}
               />

@@ -8,6 +8,8 @@ import { RecommendedRail, type RecoItem } from "@/components/RecommendedRail";
 import { JsonLd } from "@/components/JsonLd";
 import { COLLECTIONS } from "@/lib/collections";
 import { topTags, MIN_TAG_GAMES } from "@/lib/tags";
+import { POSTS } from "@/lib/blog";
+import { trDescription } from "@/lib/tr";
 import { t, localePath } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
 
@@ -49,6 +51,8 @@ export default async function HomePage() {
 
   const popular = games.slice(0, 18);
   const online = games.filter(isOnline).slice(0, 8);
+  const originals = games.filter((g) => g.id.startsWith("ov-"));
+  const recentPosts = POSTS.slice(0, 4);
 
   // Tek geçişte kategorilere ayır (her kategori için tüm diziyi filtrelemek yerine)
   const byCat = new Map<string, typeof games>();
@@ -115,6 +119,38 @@ export default async function HomePage() {
         <GameGrid games={popular} priorityCount={6} />
       </section>
 
+      {/* Oynava Özel — kendi geliştirdiğimiz özgün oyunlar (özgün içerik sinyali + iç link) */}
+      {originals.length > 0 && (
+        <section className="cv-auto rounded-3xl border border-neon-purple/25 bg-gradient-to-br from-neon-purple/10 via-card to-secondary/5 p-5">
+          <div className="mb-1 flex items-end justify-between gap-3">
+            <div>
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-neon-purple">✦ Oynava Özel</span>
+              <h2 className="mt-1 font-display text-2xl font-black text-ink">Kendi Geliştirdiğimiz Oyunlar</h2>
+            </div>
+          </div>
+          <p className="mb-4 max-w-2xl text-sm text-slate-400">
+            Oynava ekibinin sıfırdan tasarlayıp geliştirdiği, yalnızca burada oynayabileceğin özgün oyunlar.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {originals.map((g) => (
+              <Link
+                key={g.id}
+                href={L(`/oyun/${g.id}/${slugifyTitle(g.title)}`)}
+                className="group flex gap-4 rounded-2xl border border-line bg-card/60 p-3 transition hover:-translate-y-0.5 hover:border-neon-purple"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={g.thumb} alt={g.title} width={160} height={120} loading="lazy" className="h-24 w-32 shrink-0 rounded-xl object-cover" />
+                <div className="min-w-0">
+                  <div className="font-display text-lg font-black text-ink group-hover:text-neon-purple">{g.title}</div>
+                  <p className="mt-1 line-clamp-2 text-sm text-slate-400">{trDescription(g).slice(0, 120)}</p>
+                  <span className="mt-2 inline-block text-sm font-semibold text-neon-purple">▶ Hemen Oyna</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Son oynadıkların — kişiselleştirilmiş ray (localStorage, sunucu maliyeti yok) */}
       <RecentlyPlayedRail />
 
@@ -179,6 +215,33 @@ export default async function HomePage() {
           <GameGrid games={items} scroll />
         </section>
       ))}
+
+      {/* Rehberler & İpuçları — özgün Türkçe blog içeriği (AdSense "değerli içerik" sinyali) */}
+      {recentPosts.length > 0 && (
+        <section className="cv-auto">
+          <div className="mb-4 flex items-end justify-between gap-3">
+            <h2 className="flex items-center gap-2 font-display text-xl font-bold text-ink">
+              📖 Rehberler &amp; İpuçları
+            </h2>
+            <Link href={L("/blog")} className="shrink-0 text-sm font-semibold text-neon hover:underline">
+              Tüm Yazılar →
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {recentPosts.map((p) => (
+              <Link
+                key={p.slug}
+                href={L(`/blog/${p.slug}`)}
+                className="group flex flex-col rounded-2xl border border-line bg-card/60 p-4 transition hover:-translate-y-0.5 hover:border-neon"
+              >
+                <h3 className="line-clamp-2 font-display font-bold text-ink group-hover:text-neon">{p.title}</h3>
+                <p className="mt-2 line-clamp-3 text-sm text-slate-400">{p.excerpt}</p>
+                <span className="mt-3 text-xs font-semibold text-neon">Devamını oku →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_BOTTOM} className="min-h-[90px]" />
 

@@ -38,3 +38,19 @@ export async function probeDurationSec(file: string): Promise<number> {
     return parseDuration((e as Error).message);
   }
 }
+
+/**
+ * Kaynak dosyada ses akışı (Audio stream) var mı? ffprobe olmadığı için yine
+ * ffmpeg'in "-i" başlık çıktısını (stderr) tarıyoruz — "Stream #0:x: Audio:" satırı.
+ */
+export async function hasAudioStream(file: string): Promise<boolean> {
+  const AUDIO_RE = /Stream #\d+:\d+[^\n]*:\s*Audio:/;
+  try {
+    const stderr = await runFfmpeg(["-i", file, "-f", "null", "-"]);
+    return AUDIO_RE.test(stderr);
+  } catch (e) {
+    // Bazı kaynaklarda "-f null -" hatayla sonuçlanabilir (ör. video-only, kısa dosya);
+    // yine de başlık bilgisi hata mesajının içinde (stderr) yer alır.
+    return AUDIO_RE.test((e as Error).message);
+  }
+}

@@ -45,12 +45,35 @@ const TITLE_MAX_SIZE = 54;
 const TITLE_MIN_SIZE = 30;
 const CHAR_WIDTH_RATIO = 0.62; // Sora kalın büyük harf için ampirik genişlik/punto oranı
 
-function fitTitle(rawTitle: string, maxWidthPx: number): { text: string; fontSize: number } {
-  let text = rawTitle.toUpperCase();
-  if (text.length > TITLE_MAX_CHARS) text = text.slice(0, TITLE_MAX_CHARS - 1).trimEnd() + "…";
+function fitLine(
+  rawText: string,
+  maxWidthPx: number,
+  opts: { maxChars: number; maxSize: number; minSize: number; upper?: boolean },
+): { text: string; fontSize: number } {
+  let text = opts.upper ? rawText.toUpperCase() : rawText;
+  if (text.length > opts.maxChars) text = text.slice(0, opts.maxChars - 1).trimEnd() + "…";
   const idealSize = Math.floor(maxWidthPx / (text.length * CHAR_WIDTH_RATIO));
-  const fontSize = Math.max(TITLE_MIN_SIZE, Math.min(TITLE_MAX_SIZE, idealSize));
+  const fontSize = Math.max(opts.minSize, Math.min(opts.maxSize, idealSize));
   return { text, fontSize };
+}
+
+function fitTitle(rawTitle: string, maxWidthPx: number): { text: string; fontSize: number } {
+  return fitLine(rawTitle, maxWidthPx, {
+    maxChars: TITLE_MAX_CHARS,
+    maxSize: TITLE_MAX_SIZE,
+    minSize: TITLE_MIN_SIZE,
+    upper: true,
+  });
+}
+
+// Hook başlığı (üst, dikkat çekici) — cümle biçiminde (BÜYÜK HARFE çevrilmez),
+// başlık pill'inden daha büyük punto ile açılır.
+const HOOK_MAX_CHARS = 46;
+const HOOK_MAX_SIZE = 58;
+const HOOK_MIN_SIZE = 34;
+
+function fitHook(rawText: string, maxWidthPx: number): { text: string; fontSize: number } {
+  return fitLine(rawText, maxWidthPx, { maxChars: HOOK_MAX_CHARS, maxSize: HOOK_MAX_SIZE, minSize: HOOK_MIN_SIZE });
 }
 
 export type BrandingInput = {
@@ -58,6 +81,8 @@ export type BrandingInput = {
   gameTitle: string;
   categoryLabel: string;
   durationSec: number;
+  /** Video üstüne baştan sona bindirilen dikkat çekici başlık (emoji YOK — bkz. captions/hooks.mts). */
+  hookText?: string;
 };
 
 /**
@@ -65,7 +90,7 @@ export type BrandingInput = {
  * `[branded]` çıktısını üretir. Pipeline bu filtre parçasını kendi
  * filter_complex'ine ekler.
  */
-export function buildBrandingFilter({ config, gameTitle, categoryLabel, durationSec }: BrandingInput): string {
+export function buildBrandingFilter({ config, gameTitle, categoryLabel, durationSec, hookText }: BrandingInput): string {
   const { brand, video } = config;
   const endStart = Math.max(0, durationSec - video.endCardSec);
   const titleMargin = 96; // sol+sağ toplam boşluk
@@ -84,10 +109,27 @@ export function buildBrandingFilter({ config, gameTitle, categoryLabel, duration
     `[base][logo]overlay=x=44:y=64:format=auto[withlogo]`,
   );
 
+  // 1b) Hook başlığı: logonun altında, videonun BAŞINDAN SONUNA kadar (kapanış
+  // kartı bunun üstüne tam opak karartma çizdiği için otomatik gizlenir —
+  // ayrı bir enable= koşuluna gerek yok, aşağıdaki [dark] katmanıyla aynı mantık).
+  let hookBase = "withlogo";
+  if (hookText) {
+    const hookMargin = 80;
+    const { text: hookFitted, fontSize: hookSize } = fitHook(hookText, video.width - hookMargin);
+    const hook = escDrawtext(hookFitted);
+    const hookY = 210;
+    const hookBoxH = 116;
+    parts.push(
+      `[withlogo]drawbox=x=(w-${video.width - hookMargin})/2:y=${hookY}:w=${video.width - hookMargin}:h=${hookBoxH}:color=${brand.colors.accent2}@0.92:t=fill[hookbox]`,
+      `[hookbox]drawtext=fontfile=${displayFont}:text='${hook}':fontcolor=${brand.colors.bg}:fontsize=${hookSize}:x=(w-text_w)/2:y=${hookY + hookBoxH / 2 - Math.round(hookSize / 2) - 4}[hooked]`,
+    );
+    hookBase = "hooked";
+  }
+
   // 2) Alt bilgi şeridi: oyun adı (uzunluğa göre otomatik küçültülür) + kategori.
   const pillY = video.height - 260;
   parts.push(
-    `[withlogo]drawbox=x=0:y=${pillY}:w=${video.width}:h=140:color=${brand.colors.bg}@0.72:t=fill[pill]`,
+    `[${hookBase}]drawbox=x=0:y=${pillY}:w=${video.width}:h=140:color=${brand.colors.bg}@0.72:t=fill[pill]`,
     `[pill]drawtext=fontfile=${displayFont}:text='${title}':fontcolor=${brand.colors.ink}:fontsize=${titleSize}:borderw=2:bordercolor=${brand.colors.accent}:x=(w-text_w)/2:y=${pillY + 70 - Math.round(titleSize / 2)}[titled]`,
     `[titled]drawtext=fontfile=${bodyFont}:text='${category}':fontcolor=${brand.colors.accent2}:fontsize=32:x=(w-text_w)/2:y=${pillY + 92}[cat]`,
   );

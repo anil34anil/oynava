@@ -9,10 +9,11 @@ import path from "node:path";
 import { CATEGORIES, slugifyTitle } from "../../../src/lib/catalog.ts";
 import { cacheMedia } from "../media/cache.mts";
 import { captureOriginalsGameplay } from "./capture.mts";
-import { probeDurationSec, runFfmpeg } from "./ffmpeg.mts";
+import { probeDurationSec, runFfmpeg, hasAudioStream } from "./ffmpeg.mts";
 import { templateFor } from "./templates/registry.mts";
 import { buildBrandingFilter } from "./branding.mts";
 import { extractThumbnail } from "./thumbnail.mts";
+import { hookFor } from "../captions/hooks.mts";
 import type { SelectedMedia, SocialConfig } from "../types.mts";
 
 function categoryLabelTr(slug: string): string {
@@ -38,6 +39,13 @@ export async function renderGameVideo(
 
   const sourceDurationSec = candidate.isVideo || candidate.capture ? await probeDurationSec(localPath) : 0;
 
+  // Ses: yalnızca ÜÇÜNCÜ TARAF sağlayıcı dosyalarında (capture DEĞİL) ve kaynakta
+  // gerçekten bir ses akışı varsa korunur — bu dosyalar sağlayıcının (Playgama vb.)
+  // resmi tanıtım klibidir, kendi sesiyle birlikte yayılım için sağlanmıştır.
+  // Kendi oyunlarımızın (Originals) Playwright kaydında ses akışı hiç yakalanmaz
+  // (bkz. capture.mts) — o yüzden capture=true olan kaynaklarda her zaman sessiz kalır.
+  const keepAudio = !candidate.capture && candidate.isVideo && (await hasAudioStream(localPath));
+
   const template = templateFor(candidate.tier);
   const built = template({ mediaPath: localPath, config, sourceDurationSec });
 
@@ -46,6 +54,7 @@ export async function renderGameVideo(
     gameTitle: game.title,
     categoryLabel: categoryLabelTr(game.categorySlug),
     durationSec: built.durationSec,
+    hookText: hookFor(game),
   });
 
   // Klasör adı oyun adına göre (+ id son eki, tekillik ve ledger/rapor eşlemesi için) —
@@ -55,6 +64,22 @@ export async function renderGameVideo(
   fs.mkdirSync(outDir, { recursive: true });
   const videoPath = path.join(outDir, "video.mp4");
   const thumbnailPath = path.join(outDir, "thumbnail.jpg");
+
+  // Ses korunuyorsa: kapanış kartının başladığı anda kısa bir fade-out (0.3sn) —
+  // sesin "Şimdi Oyna" karartmasıyla aynı anda kesilmesi yerine yumuşak biter.
+  const endStart = Math.max(0, built.durationSec - config.video.endCardSec);
+  const audioArgs = keepAudio
+    ? [
+        "-map",
+        "0:a",
+        "-af",
+        `afade=t=out:st=${endStart}:d=0.3`,
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+      ]
+    : ["-an"];
 
   await runFfmpeg([
     "-y",
@@ -67,7 +92,7 @@ export async function renderGameVideo(
     `${built.filterGraph};${brandingFilter}`,
     "-map",
     "[branded]",
-    "-an",
+    ...audioArgs,
     "-r",
     String(config.video.fps),
     "-t",

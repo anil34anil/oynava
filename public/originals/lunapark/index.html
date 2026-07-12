@@ -1,0 +1,2408 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>LunaPark — 3D Lunapark İnşa & Yönetim</title>
+<style>
+  :root{
+    --bg:#0b1326; --surface:#131b2e; --card:#171f33; --line:#2d3449;
+    --ink:#dae2fd; --neon:#d0bcff; --cyan:#4cd7f6; --lime:#90db00; --red:#ff6b6b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',sans-serif}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+  canvas{display:block}
+  button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:8px;padding:6px 10px;font-size:13px;transition:.15s}
+  button:hover{border-color:var(--cyan);color:var(--cyan)}
+  button.active{background:var(--neon);color:#23005c;border-color:var(--neon);font-weight:700}
+
+  /* Üst durum çubuğu */
+  #topbar{position:fixed;top:0;left:0;right:0;display:flex;gap:14px;align-items:center;
+    padding:8px 14px;background:rgba(11,19,38,.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);z-index:20;font-size:14px;flex-wrap:wrap}
+  #topbar .stat{display:flex;align-items:center;gap:5px;white-space:nowrap}
+  #topbar .stat b{color:var(--cyan)}
+  #topbar .money b{color:var(--lime)}
+  #speedCtrl{margin-left:auto;display:flex;gap:4px}
+  #speedCtrl button{padding:4px 9px}
+
+  /* İnşa menüsü */
+  #buildbar{position:fixed;bottom:0;left:0;right:0;background:rgba(11,19,38,.9);
+    backdrop-filter:blur(8px);border-top:1px solid var(--line);z-index:20;padding:6px 10px}
+  #buildTabs{display:flex;gap:6px;margin-bottom:6px}
+  #buildItems{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+  .bitem{min-width:86px;text-align:center;padding:6px 8px;border:1px solid var(--line);
+    border-radius:10px;background:var(--card);font-size:11px;user-select:none}
+  .bitem:hover{border-color:var(--neon)}
+  .bitem.active{border-color:var(--lime);background:#1d2a1a}
+  .bitem .em{font-size:22px;display:block}
+  .bitem .pr{color:var(--lime);font-weight:700}
+
+  /* Sağ bilgi paneli */
+  #panel{position:fixed;top:52px;right:10px;width:270px;max-height:70vh;overflow-y:auto;
+    background:rgba(19,27,46,.95);border:1px solid var(--line);border-radius:14px;
+    padding:12px;z-index:20;display:none;font-size:13px}
+  #panel h3{font-size:15px;margin-bottom:6px;color:var(--neon)}
+  #panel .row{display:flex;justify-content:space-between;margin:4px 0}
+  #panel .bar{height:8px;border-radius:4px;background:#0008;overflow:hidden;margin:2px 0 6px}
+  #panel .bar>i{display:block;height:100%;border-radius:4px}
+  #panel .btnrow{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  #panel .close{position:absolute;top:8px;right:10px;border:none;background:none;font-size:16px;padding:2px}
+
+  /* Minimap */
+  #minimap{position:fixed;right:10px;bottom:118px;width:180px;height:180px;z-index:15;
+    border:1px solid var(--line);border-radius:12px;background:#0d1830;opacity:.94;cursor:pointer}
+
+  /* Bildirimler */
+  #notifs{position:fixed;right:200px;bottom:118px;z-index:25;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .notif{background:rgba(19,27,46,.95);border:1px solid var(--cyan);border-left:4px solid var(--cyan);
+    padding:8px 12px;border-radius:10px;font-size:13px;max-width:300px;animation:nin .3s ease}
+  .notif.warn{border-color:var(--red);border-left-color:var(--red)}
+  .notif.good{border-color:var(--lime);border-left-color:var(--lime)}
+  @keyframes nin{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+
+  /* Yardım */
+  #help{position:fixed;inset:0;background:rgba(4,8,20,.88);z-index:40;display:none;
+    align-items:center;justify-content:center}
+  #help .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:24px;max-width:520px;line-height:1.7;font-size:14px}
+  #help h2{color:var(--neon);margin-bottom:10px}
+  kbd{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px}
+
+  #heatCtrl{position:fixed;left:10px;bottom:118px;z-index:15}
+  #hint{position:fixed;left:50%;transform:translateX(-50%);bottom:118px;z-index:15;
+    background:rgba(11,19,38,.8);padding:5px 14px;border-radius:999px;font-size:12px;
+    color:#9fb0d8;border:1px solid var(--line);display:none}
+  .bitem.locked{opacity:.55}
+  /* Yönetim paneli + mod seçimi + senaryo sonucu */
+  .ov{position:fixed;inset:0;background:rgba(4,8,20,.88);z-index:40;display:none;align-items:center;justify-content:center}
+  .ov .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:22px;max-width:640px;max-height:86vh;overflow-y:auto;line-height:1.55;font-size:13px;width:92%}
+  .ov h2{color:var(--neon);margin-bottom:8px}
+  .ov h4{color:var(--cyan);margin:14px 0 6px;border-bottom:1px solid var(--line);padding-bottom:3px}
+  .ov .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .achv{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line);border-radius:8px;margin:3px 0}
+  .achv.won{border-color:var(--lime)}
+  .achv.won .tick{color:var(--lime)} .achv .tick{color:#556}
+  .feedItem{border-bottom:1px solid var(--line);padding:5px 0;font-size:12px}
+  .feedItem b{color:var(--cyan)}
+  .modeBtn{display:block;width:100%;text-align:left;margin:6px 0;padding:12px 14px;font-size:14px}
+  #stGoal{color:var(--lime);font-weight:700}
+  #err{position:fixed;inset:0;background:#200;color:#fbb;z-index:99;padding:30px;display:none;white-space:pre-wrap;font-family:monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <span class="stat money">💰 <b id="stMoney">0₺</b></span>
+  <span class="stat">👥 <b id="stGuests">0</b></span>
+  <span class="stat">⭐ <b id="stRating">0</b></span>
+  <span class="stat">🗓️ <b id="stDay">1. Gün</b></span>
+  <span class="stat">🕐 <b id="stClock">08:00</b></span>
+  <span class="stat" id="stWeather">☀️ Güneşli</span>
+  <span class="stat" id="stGoal" style="display:none"></span>
+  <span class="stat">🎟️ Giriş: <b id="stFee">20₺</b>
+    <button style="padding:0 7px" onclick="LP.fee(-5)">−</button>
+    <button style="padding:0 7px" onclick="LP.fee(5)">+</button>
+  </span>
+  <div id="speedCtrl">
+    <button id="sp0" onclick="LP.speed(0)">⏸</button>
+    <button id="sp1" class="active" onclick="LP.speed(1)">1x</button>
+    <button id="sp2" onclick="LP.speed(2)">2x</button>
+    <button id="sp3" onclick="LP.speed(3)">3x</button>
+    <button onclick="LP.mgmt()" title="Yönetim: finans, pazarlama, araştırma, başarımlar">📊</button>
+    <button id="fpBtn" onclick="LP.fpToggle()" title="Ziyaretçi gözünden yürü (F)">🚶</button>
+    <button id="muteBtn" onclick="LP.mute()" title="Ses aç/kapat">🔊</button>
+    <button onclick="LP.save()">💾</button>
+    <button onclick="document.getElementById('loadFile').click()">📂</button>
+    <button onclick="LP.help()">❔</button>
+  </div>
+  <input type="file" id="loadFile" accept=".json" style="display:none">
+</div>
+
+<div id="hint"></div>
+<div id="heatCtrl"><button id="heatBtn" onclick="LP.heat()">🌡️ Isı: Kapalı</button></div>
+<canvas id="minimap" width="180" height="180"></canvas>
+
+<div id="buildbar">
+  <div id="buildTabs"></div>
+  <div id="buildItems"></div>
+</div>
+
+<div id="panel"><button class="close" onclick="LP.closePanel()">✕</button><div id="panelBody"></div></div>
+<div id="notifs"></div>
+
+<div id="help">
+  <div class="card">
+    <h2>🎡 LunaPark — Nasıl Oynanır?</h2>
+    <b>Kamera:</b> Sağ tık sürükle = döndür · Tekerlek = yakınlaştır · <kbd>W A S D</kbd>/oklar = kaydır · <kbd>T</kbd> = kuşbakışı · <kbd>F</kbd> = 🚶 ziyaretçi gözünden yürü<br>
+    <b>İnşa:</b> Alttaki menüden seç → yeşil hayalet görünümde sol tık ile yerleştir · <kbd>R</kbd> = döndür · <kbd>Esc</kbd> = iptal<br>
+    <b>Önemli:</b> Turlar ve dükkanlar ancak <u>bitişiğinde yol varsa</u> ziyaretçi alır! Girişten (alt kenar) yol ağını genişlet.<br>
+    <b>Yönetim:</b> Nesnelere/ziyaretçilere tıkla → sağ panelde bilet fiyatı, tamir, satış.<br><br>
+    <button onclick="document.getElementById('help').style.display='none'">Anladım, başla! ▶</button>
+  </div>
+</div>
+
+<div id="mgmt" class="ov"><div class="card" id="mgmtBody"></div></div>
+<div id="modeSel" class="ov"><div class="card" id="modeSelBody"></div></div>
+<div id="endOv" class="ov"><div class="card" id="endOvBody"></div></div>
+
+<div id="err"></div>
+
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script>
+"use strict";
+/* ============================================================
+   LUNAPARK — 3D inşa & yönetim oyunu (Oynava Originals)
+   Bölümler: [CFG] [DÜNYA] [KAMERA] [KATALOG] [İNŞA] [YOL/BFS]
+             [ZİYARETÇİ] [EKONOMİ/ZAMAN] [UI] [KAYIT] [DÖNGÜ]
+   ============================================================ */
+try{
+
+/* ---------- [CFG] ---------- */
+const N=60, T=2;                       // ızgara boyutu, karo kenarı (dünya birimi)
+const GATE={gx:30,gz:59};              // park girişi (alt kenar ortası)
+const CFG={maxGuests:70, startMoney:50000, spawnBase:3.5, dayRealSec:720};
+const state={
+  money:CFG.startMoney, fee:20, day:1, time:8*60, speed:1, weather:'sun',
+  build:null, rot:0, sel:null, income:0, expense:0, ratingSm:300,
+  // A5: yönetim
+  debt:0, research:null, campaign:null, history:[], eventMul:1,
+  // A6: senaryo/başarım/gösteri/sosyal
+  mode:{type:'sandbox'}, ach:[], feed:[],
+  totalGuests:0, photoSold:0, showsDone:0, scenWon:0, fwPlanned:false,
+};
+
+/* ---------- [DÜNYA] ---------- */
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0b1326,140,340);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputEncoding=THREE.sRGBEncoding;
+document.body.appendChild(renderer.domElement);
+
+const hemi=new THREE.HemisphereLight(0xbdd4ff,0x2a3a20,0.7); scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff3d6,1.0);
+sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+const sc=sun.shadow.camera; sc.left=-80; sc.right=80; sc.top=80; sc.bottom=-80; sc.far=400;
+scene.add(sun); scene.add(sun.target);
+
+const ground=new THREE.Mesh(
+  new THREE.PlaneGeometry(N*T,N*T),
+  new THREE.MeshLambertMaterial({color:0x4a7c3a}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+const gridHelper=new THREE.GridHelper(N*T,N,0x88aaff,0x334466);
+gridHelper.position.y=0.02; gridHelper.visible=false; scene.add(gridHelper);
+
+// dış dünya hissi: park sınır çiti + giriş kapısı
+{
+  const fenceMat=new THREE.MeshLambertMaterial({color:0x8a6f4d});
+  const mk=(w,d,x,z)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,1.6,d),fenceMat);
+    m.position.set(x,0.8,z); scene.add(m);};
+  const S=N*T/2;
+  mk(N*T,0.3,0,-S); mk(0.3,N*T,-S,0); mk(0.3,N*T,S,0);
+  mk(S-3*T,0.3,-(S/2+1.5*T),S); mk(S-3*T,0.3,(S/2+1.5*T),S); // altta kapı boşluğu
+  const arch=new THREE.Mesh(new THREE.BoxGeometry(6*T,1.2,1),
+    new THREE.MeshLambertMaterial({color:0xd0bcff}));
+  arch.position.set(0,4.4,S); scene.add(arch);
+  [-3,3].forEach(dx=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,4.4,8),fenceMat);
+    p.position.set(dx*T,2.2,S); scene.add(p);});
+}
+
+// yağmur parçacıkları (hava sistemine bağlı)
+const rain=(()=>{
+  const n=900, g=new THREE.BufferGeometry(), pos=new Float32Array(n*3);
+  for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*N*T; pos[i*3+1]=Math.random()*40; pos[i*3+2]=(Math.random()-.5)*N*T;}
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const p=new THREE.Points(g,new THREE.PointsMaterial({color:0x9db8e8,size:.22,transparent:true,opacity:.7}));
+  p.visible=false; scene.add(p); return p;
+})();
+
+function worldX(gx){return (gx-N/2+0.5)*T}
+function worldZ(gz){return (gz-N/2+0.5)*T}
+function tileAt(wx,wz){return {gx:Math.floor(wx/T+N/2), gz:Math.floor(wz/T+N/2)}}
+const inGrid=(gx,gz)=>gx>=0&&gz>=0&&gx<N&&gz<N;
+const idx=(gx,gz)=>gz*N+gx;
+
+/* ---------- [KAMERA] (özel orbit — OrbitControls bağımlılığı yok) ---------- */
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,600);
+const cam={yaw:Math.PI*0.05,pitch:0.72,dist:64,tx:0,tz:24,top:false};
+function updateCamera(){
+  const p=cam.top?1.52:cam.pitch;
+  const d=cam.dist;
+  camera.position.set(
+    cam.tx+Math.sin(cam.yaw)*Math.cos(p)*d,
+    Math.sin(p)*d,
+    cam.tz+Math.cos(cam.yaw)*Math.cos(p)*d);
+  camera.lookAt(cam.tx,0,cam.tz);
+}
+updateCamera();
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+let dragging=false,lastX=0,lastY=0;
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(fp.on)return; // birinci şahısta orbit/inşa yok
+  if(e.button===2){dragging=true;lastX=e.clientX;lastY=e.clientY;}
+  else if(e.button===0) onLeftClick(e);
+});
+addEventListener('pointerup',()=>dragging=false);
+addEventListener('pointermove',e=>{
+  if(dragging){
+    cam.yaw-=(e.clientX-lastX)*0.005;
+    cam.pitch=Math.min(1.45,Math.max(0.22,cam.pitch+(e.clientY-lastY)*0.004));
+    lastX=e.clientX;lastY=e.clientY;updateCamera();
+  }
+  onPointerMove(e);
+});
+renderer.domElement.addEventListener('wheel',e=>{
+  if(fp.on)return;
+  cam.dist=Math.min(140,Math.max(14,cam.dist+e.deltaY*0.05)); updateCamera();
+},{passive:true});
+const keys={};
+addEventListener('keydown',e=>{
+  keys[e.key.toLowerCase()]=true;
+  if(e.key==='r'||e.key==='R'){state.rot=(state.rot+1)%4; refreshGhost();}
+  if(e.key==='t'||e.key==='T'){if(!fp.on){cam.top=!cam.top; updateCamera();}}
+  if(e.key==='f'||e.key==='F'){LP.fpToggle();}
+  if(e.key==='Escape'){setBuild(null); LP.closePanel();
+    if(fp.on)LP.fpToggle();
+    if(state.rideCam){state.rideCam=null;updateCamera();}}
+});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+function camPan(dt){
+  const sp=cam.dist*0.9*dt;
+  const fx=Math.sin(cam.yaw),fz=Math.cos(cam.yaw);
+  let mx=0,mz=0;
+  if(keys['w']||keys['arrowup'])   {mx-=fx;mz-=fz;}
+  if(keys['s']||keys['arrowdown']) {mx+=fx;mz+=fz;}
+  if(keys['a']||keys['arrowleft']) {mx-=fz;mz+=fx;}
+  if(keys['d']||keys['arrowright']){mx+=fz;mz-=fx;}
+  if(mx||mz){cam.tx=Math.max(-N,Math.min(N,cam.tx+mx*sp));
+             cam.tz=Math.max(-N,Math.min(N,cam.tz+mz*sp)); updateCamera();}
+}
+
+/* ---------- [KATALOG] — malzemeler + mesh üreticiler ---------- */
+const M={
+  metal:new THREE.MeshLambertMaterial({color:0xb8c4d8}),
+  dark :new THREE.MeshLambertMaterial({color:0x3a4358}),
+  red  :new THREE.MeshLambertMaterial({color:0xe05555}),
+  blue :new THREE.MeshLambertMaterial({color:0x4c8ef6}),
+  yel  :new THREE.MeshLambertMaterial({color:0xf2c94c}),
+  pur  :new THREE.MeshLambertMaterial({color:0xa078ff}),
+  cyan :new THREE.MeshLambertMaterial({color:0x4cd7f6}),
+  wood :new THREE.MeshLambertMaterial({color:0x8a6f4d}),
+  leaf :new THREE.MeshLambertMaterial({color:0x3f8f3f}),
+  path :new THREE.MeshLambertMaterial({color:0xb9a88a}),
+  water:new THREE.MeshLambertMaterial({color:0x3fa8d8,transparent:true,opacity:.85}),
+};
+/* GPU bellek disiplini: paylaşılan kaynaklar 'shared' işaretlenir, gerisi
+   sahneden kaldırılırken MUTLAKA dispose edilir (yoksa GPU dolup WebGL
+   bağlamı kopar → kalıcı siyah ekran). */
+Object.values(M).forEach(m=>m.userData.shared=true);
+function disposeDeep(root){
+  if(!root)return;
+  root.traverse(c=>{
+    if(c.isInstancedMesh&&c.dispose)c.dispose();
+    if(c.geometry&&!(c.geometry.userData&&c.geometry.userData.shared))c.geometry.dispose();
+    const mats=Array.isArray(c.material)?c.material:(c.material?[c.material]:[]);
+    mats.forEach(m=>{
+      if(m.userData&&m.userData.shared)return;
+      if(m.map)m.map.dispose();
+      m.dispose();
+    });
+  });
+}
+const box=(w,h,d,mat)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.castShadow=true;return m};
+const cyl=(rt,rb,h,mat,seg=12)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),mat);m.castShadow=true;return m};
+
+function textSprite(txt,size=64){
+  const c=document.createElement('canvas'); c.width=c.height=size*2;
+  const x=c.getContext('2d'); x.font=(size*1.4)+'px serif';
+  x.textAlign='center'; x.textBaseline='middle'; x.fillText(txt,size,size+6);
+  const t=new THREE.CanvasTexture(c);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true}));
+  s.scale.set(2.2,2.2,1); return s;
+}
+
+/* Her tur: mesh grubu + userData.anim(t,obj) canlandırması döner */
+function buildFerris(){
+  const g=new THREE.Group();
+  const base=box(3,0.6,3,M.dark); base.position.y=0.3; g.add(base);
+  [-1.1,1.1].forEach(z=>{const leg=cyl(.18,.28,7,M.metal);leg.position.set(0,3.5,z);leg.rotation.x=z>0?-.12:.12;g.add(leg);});
+  const wheel=new THREE.Group(); wheel.position.y=6.6;
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(4.4,0.16,10,40),M.cyan);ring.castShadow=true;wheel.add(ring);
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*2;
+    const sp=cyl(.06,.06,8.8,M.metal); sp.rotation.z=a; wheel.add(sp);
+    const cab=box(.8,.9,.7,[M.red,M.yel,M.blue,M.pur][i%4]);
+    cab.position.set(Math.cos(a)*4.4,Math.sin(a)*4.4,0); cab.userData.cabAngle=a; wheel.add(cab);
+  }
+  wheel.rotation.y=0; g.add(wheel);
+  g.userData.anim=(t,o)=>{
+    wheel.rotation.z=t*(o.running?0.5:0.08);
+    wheel.children.forEach(c=>{ if(c.userData.cabAngle!==undefined){
+      const a=c.userData.cabAngle+wheel.rotation.z*0; // kabinler ringle döner, dik kalsın
+      c.rotation.z=-wheel.rotation.z; }});
+  };
+  return g;
+}
+function buildCarousel(){
+  const g=new THREE.Group();
+  const plat=cyl(2.6,2.8,0.4,M.pur,20); plat.position.y=0.2; g.add(plat);
+  const pole=cyl(.15,.15,3.2,M.metal); pole.position.y=1.8; g.add(pole);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(3,1.4,16),M.red); roof.position.y=3.9; roof.castShadow=true; g.add(roof);
+  const spin=new THREE.Group(); spin.position.y=0.4; g.add(spin);
+  for(let i=0;i<6;i++){
+    const a=i/6*Math.PI*2;
+    const horse=box(.4,.6,.9,[M.yel,M.cyan,M.red][i%3]);
+    horse.position.set(Math.cos(a)*1.9,0.8,Math.sin(a)*1.9);
+    horse.userData.ph=a; spin.add(horse);
+    const rod=cyl(.04,.04,2.4,M.metal); rod.position.set(Math.cos(a)*1.9,1.2,Math.sin(a)*1.9); spin.add(rod);
+  }
+  g.userData.anim=(t,o)=>{
+    spin.rotation.y=t*(o.running?1.2:0.15);
+    spin.children.forEach(c=>{if(c.userData.ph!==undefined)c.position.y=0.8+Math.sin(t*3+c.userData.ph)*0.25;});
+  };
+  return g;
+}
+function buildBumper(){
+  const g=new THREE.Group();
+  const floor=box(7.4,0.3,7.4,M.dark); floor.position.y=0.15; g.add(floor);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(5,0.25,8,4),M.yel); // kare hissi için 4 segment
+  rim.rotation.x=Math.PI/2; rim.rotation.z=Math.PI/4; rim.position.y=0.6; g.add(rim);
+  const cars=[];
+  for(let i=0;i<5;i++){
+    const c=box(.9,.5,1.2,[M.red,M.blue,M.cyan,M.pur,M.yel][i]);
+    c.position.set((Math.random()-.5)*5,0.55,(Math.random()-.5)*5);
+    c.userData.v={x:(Math.random()-.5)*2,z:(Math.random()-.5)*2}; cars.push(c); g.add(c);
+  }
+  g.userData.anim=(t,o,dt)=>{
+    if(!o.running) return;
+    cars.forEach(c=>{
+      c.position.x+=c.userData.v.x*dt*2; c.position.z+=c.userData.v.z*dt*2;
+      if(Math.abs(c.position.x)>2.9)c.userData.v.x*=-1;
+      if(Math.abs(c.position.z)>2.9)c.userData.v.z*=-1;
+      c.rotation.y=Math.atan2(c.userData.v.x,c.userData.v.z);
+    });
+  };
+  return g;
+}
+function buildDrop(){
+  const g=new THREE.Group();
+  const base=box(3,0.5,3,M.dark); base.position.y=0.25; g.add(base);
+  const tower=box(0.8,11,0.8,M.metal); tower.position.y=5.5; g.add(tower);
+  const carriage=new THREE.Group();
+  const seat=box(2.6,0.7,2.6,M.red); carriage.add(seat);
+  carriage.position.y=1.2; g.add(carriage);
+  const top=box(1.4,0.8,1.4,M.yel); top.position.y=11.2; g.add(top);
+  g.userData.anim=(t,o)=>{
+    if(o.running){const ph=(t*0.7)%3;
+      carriage.position.y= ph<2 ? 1.2+(ph/2)*8.6 : 9.8-((ph-2)/1)*8.6;
+    } else carriage.position.y+= (1.2-carriage.position.y)*0.1;
+  };
+  return g;
+}
+function buildPirate(){
+  const g=new THREE.Group();
+  [-2.4,2.4].forEach(x=>{
+    const l1=cyl(.16,.22,6,M.metal); l1.position.set(x,3,-1.4); l1.rotation.x=.25; g.add(l1);
+    const l2=cyl(.16,.22,6,M.metal); l2.position.set(x,3,1.4); l2.rotation.x=-.25; g.add(l2);
+  });
+  const pivot=new THREE.Group(); pivot.position.y=5.7; g.add(pivot);
+  const arm=cyl(.1,.1,4.4,M.metal); arm.position.y=-2.2; pivot.add(arm);
+  const boat=box(1.8,0.8,4.6,M.wood); boat.position.y=-4.5; pivot.add(boat);
+  const bow=new THREE.Mesh(new THREE.ConeGeometry(.6,1.2,8),M.wood);
+  bow.rotation.x=Math.PI/2; bow.position.set(0,-4.5,2.7); pivot.add(bow);
+  g.userData.anim=(t,o)=>{pivot.rotation.x=Math.sin(t*(o.running?1.6:0.4))*(o.running?0.95:0.1);};
+  return g;
+}
+function buildTeacups(){
+  const g=new THREE.Group();
+  const plat=cyl(2.7,2.9,0.35,M.cyan,20); plat.position.y=0.18; g.add(plat);
+  const spin=new THREE.Group(); spin.position.y=0.35; g.add(spin);
+  const cups=[];
+  for(let i=0;i<4;i++){
+    const a=i/4*Math.PI*2;
+    const cup=cyl(.8,.55,.8,[M.red,M.yel,M.pur,M.blue][i],14);
+    cup.position.set(Math.cos(a)*1.7,0.45,Math.sin(a)*1.7); cups.push(cup); spin.add(cup);
+  }
+  g.userData.anim=(t,o)=>{
+    spin.rotation.y=t*(o.running?1.4:0.1);
+    cups.forEach((c,i)=>c.rotation.y=t*(o.running?4:0.3)*(i%2?1:-1));
+  };
+  return g;
+}
+function buildShop(color,emoji){
+  return ()=> {
+    const g=new THREE.Group();
+    const body=box(2.6,1.8,2.2,color); body.position.y=0.9; g.add(body);
+    const awn=box(3,0.15,1,M.red); awn.position.set(0,1.95,1.4); g.add(awn);
+    const s=textSprite(emoji); s.position.y=3.0; g.add(s);
+    return g;
+  };
+}
+function buildTree(){const g=new THREE.Group();
+  const tr=cyl(.14,.2,1.2,M.wood);tr.position.y=.6;g.add(tr);
+  const c1=new THREE.Mesh(new THREE.SphereGeometry(.9,10,8),M.leaf);c1.position.y=1.7;c1.castShadow=true;g.add(c1);
+  const c2=new THREE.Mesh(new THREE.SphereGeometry(.6,10,8),M.leaf);c2.position.y=2.3;c2.castShadow=true;g.add(c2);
+  return g;}
+function buildBench(){const g=new THREE.Group();
+  const s=box(1.4,.1,.45,M.wood);s.position.y=.45;g.add(s);
+  const b=box(1.4,.5,.08,M.wood);b.position.set(0,.72,-.2);g.add(b);
+  [-0.6,0.6].forEach(x=>{const l=box(.08,.45,.4,M.dark);l.position.set(x,.22,0);g.add(l);});
+  return g;}
+function buildBin(){const g=new THREE.Group();
+  const b=cyl(.32,.26,.7,M.dark,10);b.position.y=.35;g.add(b);
+  const lid=cyl(.34,.34,.08,M.red,10);lid.position.y=.74;g.add(lid); return g;}
+function buildLamp(){const g=new THREE.Group();
+  const p=cyl(.07,.09,3,M.dark);p.position.y=1.5;g.add(p);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(.28,10,8),
+    new THREE.MeshLambertMaterial({color:0xfff2b0,emissive:0x000000}));
+  bulb.position.y=3.1;g.add(bulb); g.userData.bulb=bulb; lamps.push(g); return g;}
+function buildFountain(){const g=new THREE.Group();
+  const basin=cyl(1.6,1.8,.5,M.metal,16);basin.position.y=.25;g.add(basin);
+  const wat=cyl(1.45,1.45,.15,M.water,16);wat.position.y=.5;g.add(wat);
+  const jet=cyl(.18,.3,1,M.water,10);jet.position.y=1.0;g.add(jet);
+  g.userData.anim=t=>{jet.scale.y=1+Math.sin(t*4)*.3; jet.position.y=1+Math.sin(t*4)*.15;};
+  return g;}
+const lamps=[];
+
+function buildTrainRide(){
+  const g=new THREE.Group();
+  const track=new THREE.Mesh(new THREE.TorusGeometry(2.3,0.12,6,28),M.dark);
+  track.rotation.x=Math.PI/2; track.position.y=0.15; g.add(track);
+  const spin=new THREE.Group(); g.add(spin);
+  const mk=(len,mat,ph)=>{const c=box(0.7,0.6,len,mat);c.userData.ph=ph;spin.add(c);return c;};
+  const loco=mk(1.1,M.red,0); const chim=cyl(.1,.14,.4,M.dark); chim.position.y=.5; loco.add(chim);
+  mk(0.9,M.yel,0.5); mk(0.9,M.cyan,0.95);
+  g.userData.anim=(t,o)=>{
+    const sp=o.running?0.8:0.12;
+    spin.children.forEach(c=>{
+      const a=t*sp-c.userData.ph;
+      c.position.set(Math.cos(a)*2.3,0.5,Math.sin(a)*2.3);
+      c.rotation.y=-a; // teğet yönel
+    });
+  };
+  return g;
+}
+function buildWaterslide(){
+  const g=new THREE.Group();
+  const tower=box(1.2,4.2,1.2,M.metal); tower.position.set(-1,2.1,-1.6); g.add(tower);
+  const top=box(1.6,0.3,1.6,M.blue); top.position.set(-1,4.3,-1.6); g.add(top);
+  const slide=box(0.9,0.16,5.2,M.cyan);
+  slide.position.set(-0.2,2.2,0.6); slide.rotation.x=0.72; slide.rotation.y=-0.25; g.add(slide);
+  const pool=cyl(1.5,1.6,0.4,M.blue,14); pool.position.set(0.8,0.2,2.4); g.add(pool);
+  const wat=cyl(1.35,1.35,0.12,M.water,14); wat.position.set(0.8,0.42,2.4); g.add(wat);
+  const rider=new THREE.Mesh(new THREE.SphereGeometry(0.24,8,8),M.red); g.add(rider);
+  g.userData.anim=(t,o)=>{
+    if(!o.running){rider.visible=false;return;}
+    rider.visible=true;
+    const ph=(t*0.9)%1.4;
+    if(ph<1){ // kaydıraktan aşağı
+      rider.position.set(-1+ph*1.8, 4.2-ph*3.6, -1.6+ph*4.0);
+    } else rider.position.set(0.8,0.55,2.4); // havuzda
+  };
+  return g;
+}
+function buildGokart(){
+  const g=new THREE.Group();
+  const road=new THREE.Mesh(new THREE.TorusGeometry(2.9,0.55,4,30),M.dark);
+  road.rotation.x=Math.PI/2; road.position.y=0.1; g.add(road);
+  const mid=cyl(1.6,1.6,0.15,M.leaf,14); mid.position.y=0.1; g.add(mid);
+  const karts=[];
+  [M.red,M.yel,M.cyan].forEach((mat,i)=>{
+    const k=box(0.5,0.3,0.8,mat); k.userData.ph=i*2.1; k.userData.r=2.6+i*0.25; karts.push(k); g.add(k);
+  });
+  g.userData.anim=(t,o)=>{
+    const sp=o.running?1.5:0.15;
+    karts.forEach(k=>{
+      const a=t*sp+k.userData.ph, r=k.userData.r;
+      k.position.set(Math.cos(a)*r,0.35,Math.sin(a)*r);
+      k.rotation.y=-a-Math.PI/2;
+    });
+  };
+  return g;
+}
+function buildPond(){
+  const g=new THREE.Group();
+  const rim=cyl(1.9,2.0,0.25,M.wood,16); rim.position.y=0.12; g.add(rim);
+  const wat=cyl(1.75,1.75,0.14,M.water,16); wat.position.y=0.28; g.add(wat);
+  g.userData.anim=t=>{wat.position.y=0.28+Math.sin(t*1.6)*0.02;};
+  return g;
+}
+function buildPhoto(){
+  const g=new THREE.Group();
+  const pole=cyl(.09,.11,1.7,M.dark); pole.position.y=0.85; g.add(pole);
+  const cam=box(0.55,0.4,0.35,M.metal); cam.position.y=1.85; g.add(cam);
+  const lens=cyl(.1,.1,.15,M.dark,8); lens.rotation.x=Math.PI/2; lens.position.set(0,1.85,0.25); g.add(lens);
+  const s=textSprite('📸'); s.position.y=2.6; g.add(s);
+  return g;
+}
+
+function buildStation(){
+  const g=new THREE.Group();
+  const plat=box(7.6,0.55,3.4,M.dark); plat.position.y=0.28; g.add(plat);
+  const deck=box(7.6,0.1,1.2,M.yel); deck.position.set(0,0.62,1.0); g.add(deck);
+  [-3.2,3.2].forEach(x=>{const p=cyl(.12,.12,2.6,M.metal);p.position.set(x,1.6,1.2);g.add(p);});
+  const roof=box(7.8,0.18,1.8,M.red); roof.position.set(0,2.9,1.1); g.add(roof);
+  const s=textSprite('🎢'); s.position.y=4.0; g.add(s);
+  return g;
+}
+
+const DEFS={
+  path:    {cat:'Yollar', name:'Yol',            emoji:'🟫', cost:20,   foot:[1,1]},
+  coaster: {cat:'Turlar', name:'Hız Treni',      emoji:'🎢', cost:3000, foot:[4,2], coaster:true, build:buildStation,
+            locked:true, research:{cost:4000,min:300}},
+  ferris:  {cat:'Turlar', name:'Dönme Dolap',    emoji:'🎡', cost:9500, foot:[3,2], ride:{ticket:15,cap:16,dur:26,exc:6.6,int:3.1,nau:2.0,rel:.93}, build:buildFerris},
+  carousel:{cat:'Turlar', name:'Atlıkarınca',    emoji:'🎠', cost:4500, foot:[3,3], ride:{ticket:8, cap:12,dur:18,exc:4.1,int:1.6,nau:1.1,rel:.97}, build:buildCarousel},
+  bumper:  {cat:'Turlar', name:'Çarpışan Araba', emoji:'🚗', cost:6200, foot:[4,4], ride:{ticket:10,cap:10,dur:22,exc:5.4,int:3.6,nau:2.2,rel:.91}, build:buildBumper},
+  drop:    {cat:'Turlar', name:'Düşüş Kulesi',   emoji:'🗼', cost:7800, foot:[2,2], ride:{ticket:13,cap:8, dur:16,exc:7.4,int:6.8,nau:4.6,rel:.88}, build:buildDrop,
+            locked:true, research:{cost:1500,min:120}},
+  pirate:  {cat:'Turlar', name:'Korsan Gemisi',  emoji:'⛵', cost:6800, foot:[3,3], ride:{ticket:11,cap:14,dur:20,exc:6.1,int:4.4,nau:3.5,rel:.9},  build:buildPirate,
+            locked:true, research:{cost:2000,min:150}},
+  teacups: {cat:'Turlar', name:'Çay Fincanları', emoji:'☕', cost:5200, foot:[3,3], ride:{ticket:9, cap:8, dur:18,exc:4.6,int:2.8,nau:3.8,rel:.95}, build:buildTeacups},
+  train:   {cat:'Turlar', name:'Küçük Tren',     emoji:'🚂', cost:5200, foot:[3,3], ride:{ticket:7, cap:16,dur:24,exc:3.4,int:1.2,nau:0.6,rel:.97}, build:buildTrainRide,
+            locked:true, research:{cost:1800,min:150}},
+  waterslide:{cat:'Turlar',name:'Su Kaydırağı',  emoji:'🌊', cost:7200, foot:[2,3], ride:{ticket:12,cap:8, dur:20,exc:6.2,int:4.2,nau:2.4,rel:.9},  build:buildWaterslide,
+            locked:true, research:{cost:2600,min:210}},
+  gokart:  {cat:'Turlar', name:'Go-Kart',        emoji:'🏎️', cost:8600, foot:[4,4], ride:{ticket:14,cap:8, dur:28,exc:6.4,int:4.6,nau:1.6,rel:.9},  build:buildGokart,
+            locked:true, research:{cost:3200,min:240}},
+  burger:  {cat:'Dükkanlar', name:'Hamburgerci', emoji:'🍔', cost:2600, foot:[2,2], shop:{need:'hunger',price:14,relief:65}, build:buildShop(M.yel,'🍔')},
+  icecream:{cat:'Dükkanlar', name:'Dondurmacı',  emoji:'🍦', cost:2200, foot:[2,2], shop:{need:'hunger',price:9, relief:35,happy:6}, build:buildShop(M.pur,'🍦')},
+  drink:   {cat:'Dükkanlar', name:'İçecek Standı',emoji:'🥤',cost:1800, foot:[2,2], shop:{need:'thirst',price:7, relief:70}, build:buildShop(M.cyan,'🥤')},
+  wc:      {cat:'Dükkanlar', name:'Tuvalet',     emoji:'🚻', cost:1500, foot:[2,2], shop:{need:'toilet',price:2, relief:95}, build:buildShop(M.blue,'🚻')},
+  tree:    {cat:'Dekor', name:'Ağaç',    emoji:'🌳', cost:120, foot:[1,1], build:buildTree,  happyAura:1},
+  bench:   {cat:'Dekor', name:'Bank',    emoji:'🪑', cost:180, foot:[1,1], build:buildBench, rest:true},
+  bin:     {cat:'Dekor', name:'Çöp Kutusu',emoji:'🗑️',cost:90, foot:[1,1], build:buildBin},
+  lamp:    {cat:'Dekor', name:'Lamba',   emoji:'💡', cost:220, foot:[1,1], build:buildLamp},
+  fountain:{cat:'Dekor', name:'Fıskiye', emoji:'⛲', cost:900, foot:[2,2], build:buildFountain, happyAura:2},
+  pond:    {cat:'Dekor', name:'Gölet',   emoji:'💧', cost:700, foot:[2,2], build:buildPond, happyAura:2},
+  photo:   {cat:'Dekor', name:'Foto Noktası', emoji:'📸', cost:1200, foot:[1,1], build:buildPhoto, photo:true},
+};
+/* araştırma kilidi: kilitli tanımlar dışındakiler baştan açık */
+state.unlocked=new Set(Object.keys(DEFS).filter(k=>!DEFS[k].locked));
+
+/* Tur istatistikleri: normal turlarda sabittir (def.ride), hız treninde ray
+   tasarımından türetilir (o.stats). Ziyaretçi/işletme kodu hep bunu kullanır. */
+const rideStatsOf=o=>o.coaster ? (o.trackReady?o.stats:null) : (o.def.ride||null);
+const isRideOpen=o=>!o.broken && !!rideStatsOf(o);
+
+/* ---------- [İNŞA] ---------- */
+const grid=new Array(N*N).fill(null);   // null | 'path' | obje referansı
+const paths=new Set();                  // yol karoları (idx)
+const objects=[];                       // yerleştirilen her şey
+let nextId=1;
+
+function footTiles(defKey,gx,gz,rot){
+  const d=DEFS[defKey]; let [w,dep]=d.foot; if(rot%2===1)[w,dep]=[dep,w];
+  const out=[];
+  for(let dx=0;dx<w;dx++)for(let dz=0;dz<dep;dz++)out.push([gx+dx,gz+dz]);
+  return out;
+}
+function canPlace(defKey,gx,gz,rot){
+  return footTiles(defKey,gx,gz,rot).every(([x,z])=>inGrid(x,z)&&grid[idx(x,z)]===null);
+}
+function adjacentPathTile(o){ // objenin çevresindeki ilk yol karosu (ziyaretçi hedefi)
+  for(const [x,z] of o.tiles){
+    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx=x+dx,nz=z+dz;
+      if(inGrid(nx,nz)&&paths.has(idx(nx,nz))&&!o.tiles.some(([a,b])=>a===nx&&b===nz))
+        return {gx:nx,gz:nz};
+    }
+  } return null;
+}
+function placeObject(defKey,gx,gz,rot,free){
+  const def=DEFS[defKey];
+  if(!canPlace(defKey,gx,gz,rot)) return null;
+  if(!free){ if(state.money<def.cost){notify('Yetersiz para!','warn');return null;}
+    state.money-=def.cost; state.expense+=def.cost; sfx.place(); }
+  if(defKey==='path'){
+    const i=idx(gx,gz); paths.add(i); grid[i]='path';
+    const m=new THREE.Mesh(new THREE.BoxGeometry(T*0.98,0.12,T*0.98),M.path);
+    m.position.set(worldX(gx),0.06,worldZ(gz)); m.receiveShadow=true; scene.add(m);
+    pathMeshes.set(i,m); pathVersion++;
+    return {path:true};
+  }
+  const tiles=footTiles(defKey,gx,gz,rot);
+  const mesh=def.build?def.build():box(1,1,1,M.red);
+  let [w,dep]=def.foot; if(rot%2===1)[w,dep]=[dep,w];
+  mesh.position.set(worldX(gx)+ (w-1)*T/2, 0, worldZ(gz)+ (dep-1)*T/2);
+  mesh.rotation.y=rot*Math.PI/2;
+  scene.add(mesh);
+  const o={id:nextId++,defKey,def,gx,gz,rot,tiles,mesh,
+    running:false,broken:false,animT:Math.random()*10,
+    queue:[],riders:[],phase:'idle',phaseT:0,
+    ticket:def.ride?def.ride.ticket:0, totalRiders:0, income:0};
+  tiles.forEach(([x,z])=>grid[idx(x,z)]=o);
+  objects.push(o);
+  mesh.traverse(c=>{c.userData.obj=o;});
+  if(def.coaster) initCoaster(o);
+  return o;
+}
+function sellObject(o){
+  let base=o.def.cost;
+  if(o.coasterData) base+=o.coasterData.spent; // ray parçaları da iadeye dahil
+  const refund=Math.round(base*0.5);
+  state.money+=refund;
+  o.tiles.forEach(([x,z])=>grid[idx(x,z)]=null);
+  scene.remove(o.mesh); disposeDeep(o.mesh);
+  if(o.coasterData){
+    if(o.coasterData.trackGroup){scene.remove(o.coasterData.trackGroup);disposeDeep(o.coasterData.trackGroup);}
+    if(o.coasterData.train)o.coasterData.train.cars.forEach(c=>{scene.remove(c);disposeDeep(c);});
+    if(state.rideCam===o)state.rideCam=null;
+  }
+  objects.splice(objects.indexOf(o),1);
+  const li=lamps.indexOf(o.mesh); if(li>=0)lamps.splice(li,1);
+  notify(`${o.def.name} satıldı (+${refund}₺)`,'good');
+  sfx.sell();
+  LP.closePanel(); pathVersion++;
+}
+function removePath(gx,gz){
+  const i=idx(gx,gz);
+  if(!paths.has(i))return;
+  paths.delete(i); grid[i]=null;
+  const pm=pathMeshes.get(i);
+  scene.remove(pm); pm.geometry.dispose(); pathMeshes.delete(i);
+  state.money+=10; pathVersion++;
+}
+const pathMeshes=new Map();
+let pathVersion=0; // yol ağı değişince ziyaretçiler rota tazeler
+
+/* hayalet önizleme */
+let ghost=null, ghostKey=null, ghostOK=false, hoverTile=null;
+const ghostGreen=new THREE.MeshBasicMaterial({color:0x55ff77,transparent:true,opacity:.5});
+const ghostRed  =new THREE.MeshBasicMaterial({color:0xff5555,transparent:true,opacity:.5});
+ghostGreen.userData.shared=true; ghostRed.userData.shared=true;
+function clearGhost(){
+  if(ghost){scene.remove(ghost);disposeDeep(ghost);ghost=null;ghostKey=null;}
+}
+function refreshGhost(){
+  if(!state.build||!hoverTile){clearGhost();return;}
+  // hayalet mesh SEÇİM BAŞINA BİR KEZ üretilir, fare hareketinde sadece taşınır
+  // (her karo değişiminde yeniden üretmek geometri sızıntısıyla GPU'yu dolduruyordu)
+  if(!ghost||ghostKey!==state.build){
+    clearGhost();
+    const def=DEFS[state.build];
+    ghost=state.build==='path'
+      ? new THREE.Mesh(new THREE.BoxGeometry(T*.98,.14,T*.98),ghostGreen)
+      : (def.build?def.build():box(T,0.2,T,ghostGreen));
+    ghost.traverse(c=>{if(c.isSprite)c.visible=false;});
+    ghostKey=state.build; scene.add(ghost);
+  }
+  const def=DEFS[state.build];
+  ghostOK=canPlace(state.build,hoverTile.gx,hoverTile.gz,state.rot);
+  const mat=ghostOK?ghostGreen:ghostRed;
+  ghost.traverse(c=>{if(c.isMesh)c.material=mat;});
+  let [w,dep]=def.foot; if(state.rot%2===1)[w,dep]=[dep,w];
+  ghost.position.set(worldX(hoverTile.gx)+(w-1)*T/2,0.02,worldZ(hoverTile.gz)+(dep-1)*T/2);
+  ghost.rotation.y=state.rot*Math.PI/2;
+}
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), gplane=new THREE.Plane(new THREE.Vector3(0,1,0),0), hitV=new THREE.Vector3();
+function onPointerMove(e){
+  if(!state.build)return;
+  ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(ptr,camera);
+  if(ray.ray.intersectPlane(gplane,hitV)){
+    const t=tileAt(hitV.x,hitV.z);
+    if(!hoverTile||t.gx!==hoverTile.gx||t.gz!==hoverTile.gz){hoverTile=inGrid(t.gx,t.gz)?t:null; refreshGhost();}
+  }
+}
+function onLeftClick(e){
+  if(e.target!==renderer.domElement)return;
+  ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(ptr,camera);
+  if(state.build){ // yerleştir
+    if(hoverTile&&ghostOK){
+      const o=placeObject(state.build,hoverTile.gx,hoverTile.gz,state.rot,false);
+      if(o&&!o.path){ if(!adjacentPathTile(o)) notify('⚠ Bitişiğinde yol yok — ziyaretçi ulaşamaz!','warn'); }
+      refreshGhost();
+    }
+    return;
+  }
+  // seçim: önce ziyaretçi/obje raycast
+  const hits=ray.intersectObjects(scene.children,true);
+  for(const h of hits){
+    let n=h.object;
+    while(n){
+      if(n.userData.staffRef){selectStaff(n.userData.staffRef);return;}
+      if(n.userData.guest){selectGuest(n.userData.guest);return;}
+      if(n.userData.obj){selectObject(n.userData.obj);return;}
+      n=n.parent;}
+  }
+  // yol karosuna tıklama → sök seçeneği yok, boşluk = panel kapat
+  LP.closePanel();
+}
+
+/* ---------- [YOL/BFS] ---------- */
+function bfs(fromIdx,toIdx){
+  if(fromIdx===toIdx)return [fromIdx];
+  const prev=new Map([[fromIdx,-1]]);
+  const q=[fromIdx];
+  while(q.length){
+    const cur=q.shift();
+    const cx=cur%N, cz=(cur-cx)/N;
+    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx=cx+dx,nz=cz+dz; if(!inGrid(nx,nz))continue;
+      const ni=idx(nx,nz);
+      if(prev.has(ni)||!paths.has(ni))continue;
+      prev.set(ni,cur);
+      if(ni===toIdx){ // yolu geri sar
+        const out=[ni]; let p=cur;
+        while(p!==-1){out.push(p);p=prev.get(p);}
+        return out.reverse();
+      }
+      q.push(ni);
+    }
+  }
+  return null;
+}
+function randomPathTile(){
+  if(!paths.size)return null;
+  const arr=[...paths]; return arr[Math.floor(Math.random()*arr.length)];
+}
+
+/* ---------- [ZİYARETÇİ] ---------- */
+const guests=[];
+const NAMES=['Ali','Ayşe','Mehmet','Zeynep','Emre','Elif','Can','Deniz','Mert','Selin','Burak','Ece','Kaan','İrem','Ozan','Naz','Cem','Yağmur','Efe','Duru'];
+const guestGeoBody=new THREE.CylinderGeometry(.22,.28,.7,8);
+const guestGeoHead=new THREE.SphereGeometry(.2,8,8);
+guestGeoBody.userData.shared=true; guestGeoHead.userData.shared=true;
+const skin=new THREE.MeshLambertMaterial({color:0xe8c39e});
+skin.userData.shared=true;
+/* ziyaretçi gövdeleri için paylaşılan palet — kişi başına yeni materyal
+   üretmek hem sızıntı hem gereksiz GPU yüküydü */
+const GUEST_MATS=Array.from({length:12},(_,i)=>{
+  const m=new THREE.MeshLambertMaterial({color:new THREE.Color().setHSL(i/12,0.6,0.5)});
+  m.userData.shared=true; return m;
+});
+function spawnGuest(){
+  if(guests.length>=CFG.maxGuests)return;
+  if(!paths.has(idx(GATE.gx,GATE.gz-1)))return; // kapı içinde yol yoksa giren olmaz
+  const fee=effFee();
+  state.money+=fee; state.income+=fee; state.totalGuests++;
+  const g={
+    id:nextId++, name:NAMES[Math.floor(Math.random()*NAMES.length)]+' '+String.fromCharCode(65+Math.random()*26|0)+'.',
+    tile:idx(GATE.gx,GATE.gz-1), path:[], pi:0, prog:0, state:'wander', target:null,
+    money:80+Math.random()*220|0, happiness:55+Math.random()*20,
+    hunger:20+Math.random()*30, thirst:20+Math.random()*30, toilet:10+Math.random()*20,
+    energy:70+Math.random()*30, nauseaTol:2+Math.random()*4, rideTimer:0,
+    thought:'', thoughtT:0, favorite:null, decideT:1+Math.random()*2, pathVer:pathVersion,
+  };
+  const mesh=new THREE.Group();
+  const body=new THREE.Mesh(guestGeoBody,GUEST_MATS[Math.floor(Math.random()*GUEST_MATS.length)]);
+  body.position.y=.35; body.castShadow=true; mesh.add(body);
+  const head=new THREE.Mesh(guestGeoHead,skin); head.position.y=.85; mesh.add(head);
+  mesh.position.set(worldX(GATE.gx),0,worldZ(GATE.gz-1));
+  mesh.userData.guest=g; mesh.traverse(c=>c.userData.guest=g);
+  g.mesh=mesh; scene.add(mesh);
+  guests.push(g);
+}
+function guestBubble(g,txt){
+  g.thought=txt; g.thoughtT=3.2;
+  if(!g.bub){
+    const c=document.createElement('canvas');c.width=256;c.height=72;
+    g.bubCanvas=c; g.bubTex=new THREE.CanvasTexture(c);
+    g.bub=new THREE.Sprite(new THREE.SpriteMaterial({map:g.bubTex,transparent:true}));
+    g.bub.scale.set(3.4,0.95,1); g.bub.position.y=1.7; g.mesh.add(g.bub);
+  }
+  const x=g.bubCanvas.getContext('2d');
+  x.clearRect(0,0,256,72);
+  x.fillStyle='rgba(240,244,255,0.94)';
+  x.beginPath();
+  x.moveTo(14,4);x.lineTo(242,4);x.quadraticCurveTo(252,4,252,14);x.lineTo(252,50);
+  x.quadraticCurveTo(252,60,242,60);x.lineTo(140,60);x.lineTo(128,71);x.lineTo(120,60);
+  x.lineTo(14,60);x.quadraticCurveTo(4,60,4,50);x.lineTo(4,14);x.quadraticCurveTo(4,4,14,4);
+  x.fill();
+  x.fillStyle='#1a2340';x.font='bold 22px system-ui';x.textAlign='center';x.textBaseline='middle';
+  x.fillText(txt.slice(0,22),128,32);
+  g.bubTex.needsUpdate=true; g.bub.visible=true;
+}
+function guestGoTo(g,toIdx,newState){
+  const p=bfs(g.tile,toIdx);
+  if(!p){guestBubble(g,'Oraya yol yok!');return false;}
+  g.path=p; g.pi=0; g.prog=0; g.state=newState; g.pathVer=pathVersion; return true;
+}
+function guestLeave(g,reason){
+  const gateIdx=idx(GATE.gx,GATE.gz-1);
+  if(g.tile===gateIdx){removeGuest(g);return;}
+  if(!guestGoTo(g,gateIdx,'leaving')) removeGuest(g);
+  if(reason)guestBubble(g,reason);
+}
+function removeGuest(g){
+  scene.remove(g.mesh);
+  disposeDeep(g.mesh); // baloncuk canvas dokusu dahil — sızıntı yok
+  guests.splice(guests.indexOf(g),1);
+  if(state.sel&&state.sel.guest===g)LP.closePanel();
+}
+function guestDecide(g){
+  if(g.state!=='wander')return;
+  const larr=litterMap.get(g.tile); // pis zemin memnuniyeti düşürür
+  if(larr&&larr.length>=2){g.happiness-=3;if(Math.random()<0.3)guestBubble(g,'Her yer çöp! 🤢');}
+  // öncelik: ihtiyaçlar
+  const wants=[];
+  if(g.toilet>70)wants.push(['toilet',3]);
+  if(g.hunger>65)wants.push(['hunger',2.5]);
+  if(g.thirst>65)wants.push(['thirst',2.5]);
+  if(g.energy<20||g.money<8||g.happiness<20){guestLeave(g,g.happiness<20?'Berbat bir park!':'Eve gidiyorum...');return;}
+  if(wants.length){
+    wants.sort((a,b)=>b[1]-a[1]);
+    const need=wants[0][0];
+    const shop=objects.filter(o=>o.def.shop&&o.def.shop.need===need&&adjacentPathTile(o));
+    if(shop.length){
+      const s=shop[Math.floor(Math.random()*shop.length)];
+      const t=adjacentPathTile(s);
+      if(guestGoTo(g,idx(t.gx,t.gz),'toShop')){g.target=s;return;}
+    } else {
+      guestBubble(g,need==='toilet'?'Tuvalet yok!!':need==='hunger'?'Karnım aç ama büfe yok':'Susadım, büfe yok');
+      g.happiness-=4;
+    }
+  }
+  // tur seç
+  const rides=objects.filter(o=>isRideOpen(o)&&adjacentPathTile(o)&&o.queue.length<rideStatsOf(o).cap*2);
+  if(rides.length&&Math.random()<0.75){
+    const r=rides[Math.floor(Math.random()*rides.length)];
+    if(rideStatsOf(r).nau>g.nauseaTol+1.8){guestBubble(g,'O tur midemi bulandırır');}
+    else if(g.money<r.ticket){guestBubble(g,'Param yetmiyor 😞');g.happiness-=2;}
+    else{
+      const t=adjacentPathTile(r);
+      if(guestGoTo(g,idx(t.gx,t.gz),'toRide')){g.target=r;return;}
+    }
+  }
+  // amaçsız gezin
+  const rt=randomPathTile(); if(rt!==null)guestGoTo(g,rt,'wander');
+}
+function guestArrived(g){
+  if(g.state==='leaving'){ // çıkışta parka yorum bırak
+    if(Math.random()<0.35){
+      const h=g.happiness;
+      feedPush(g.name, h>=75?'Bayıldım, kesin yine geleceğim! ⭐⭐⭐⭐⭐'
+        : h>=50?'Güzel parkti, biraz daha tur olabilirdi. ⭐⭐⭐⭐'
+        : h>=30?'İdare eder. Sıralar uzun, ortalık kirliydi. ⭐⭐'
+        : 'Berbat bir deneyim, paramı boşa harcadım. ⭐');
+    }
+    removeGuest(g);return;
+  }
+  if(g.state==='toShop'&&g.target){
+    const s=g.target, sh=s.def.shop;
+    if(g.money>=sh.price){
+      g.money-=sh.price; s.income+=sh.price; state.income+=sh.price; state.money+=sh.price;
+      g[sh.need]=Math.max(0,g[sh.need]-sh.relief);
+      g.happiness=Math.min(100,g.happiness+(sh.happy||3));
+      guestBubble(g,s.def.emoji+' '+(sh.need==='toilet'?'Ohh be':'Nefisti!'));
+      if(sh.need!=='toilet')g.litterT=6+Math.random()*10; // ambalaj birazdan çöp olur
+    }
+    g.state='wander';g.target=null;g.decideT=1.5+Math.random()*2;return;
+  }
+  if(g.state==='toRide'&&g.target){
+    const r=g.target, RS=rideStatsOf(r);
+    if(r.broken||!RS){guestBubble(g,'Arızalıymış 😠');g.happiness-=5;}
+    else if(r.queue.length>=RS.cap*2){guestBubble(g,'Sıra çok uzun!');g.happiness-=3;}
+    else if(g.money>=r.ticket){
+      r.queue.push(g); g.state='queuing'; g.queuedAt=r;
+      return;
+    }
+    g.state='wander';g.target=null;g.decideT=1;return;
+  }
+  g.state='wander'; g.decideT=0.5+Math.random()*2;
+}
+function updateGuests(dt){
+  const speed=2.4;
+  for(let i=guests.length-1;i>=0;i--){
+    const g=guests[i];
+    // ihtiyaç artışı
+    g.hunger=Math.min(100,g.hunger+dt*0.7);
+    g.thirst=Math.min(100,g.thirst+dt*0.9);
+    g.toilet=Math.min(100,g.toilet+dt*0.55);
+    g.energy=Math.max(0,g.energy-dt*0.28);
+    if(g.thoughtT>0){g.thoughtT-=dt;if(g.thoughtT<=0&&g.bub)g.bub.visible=false;}
+    if(g.litterT){ // elindeki ambalajı at: yakında çöp kutusu varsa oraya, yoksa YERE
+      g.litterT-=dt;
+      if(g.litterT<=0){g.litterT=0;
+        const gx=g.tile%N,gz=(g.tile-gx)/N;
+        if(!binNear(gx,gz))addLitter(g.tile);
+      }
+    }
+    if(g.state==='queuing'||g.state==='riding'){continue;}
+    // rota geçersizleşti mi?
+    if(g.path.length&&g.pathVer!==pathVersion){
+      const dest=g.path[g.path.length-1];
+      if(!guestGoTo(g,paths.has(dest)?dest:randomPathTile()??g.tile,g.state)){g.state='wander';g.path=[];}
+    }
+    if(g.path.length){
+      g.prog+=dt*speed/T;
+      while(g.prog>=1&&g.pi<g.path.length-1){g.prog-=1;g.pi++;g.tile=g.path[g.pi];}
+      if(g.pi>=g.path.length-1){ // son karo: var say (tek karoluk rotalar dahil)
+        const e=g.path[g.path.length-1], ex=e%N,ez=(e-ex)/N;
+        g.mesh.position.set(worldX(ex),0,worldZ(ez));
+        g.tile=e; g.path=[]; guestArrived(g);
+      } else {
+        const a=g.path[g.pi], b=g.path[g.pi+1];
+        const ax=a%N,az=(a-ax)/N,bx=b%N,bz=(b-bx)/N;
+        const x=worldX(ax)+(worldX(bx)-worldX(ax))*g.prog;
+        const z=worldZ(az)+(worldZ(bz)-worldZ(az))*g.prog;
+        g.mesh.position.set(x,0,z);
+        if(bx!==ax||bz!==az)g.mesh.rotation.y=Math.atan2(worldX(bx)-worldX(ax),worldZ(bz)-worldZ(az));
+      }
+    } else {
+      g.decideT-=dt;
+      if(g.decideT<=0){g.decideT=2+Math.random()*2;guestDecide(g);}
+    }
+  }
+}
+
+/* ---------- turların işleyişi ---------- */
+function updateRides(dt){
+  for(const o of objects){
+    const R=rideStatsOf(o);
+    if(!R)continue;
+    // arıza olasılığı (coaster hariç — A3'te bakım mekaniğiyle gelecek)
+    if(!o.coaster&&o.running&&Math.random()<(1-R.rel)*0.0006*dt*60){
+      o.broken=true;o.running=false;o.phase='idle';
+      o.riders.forEach(g=>dropRider(o,g,true)); o.riders=[];
+      notify(`⚠ ${o.def.name} ARIZALANDI! Panelden tamir et.`,'warn');
+      sfx.broken();
+    }
+    if(o.broken)continue;
+    o.phaseT-=dt;
+    if(o.phase==='idle'){
+      if(o.queue.length>0&&o.phaseT<=0){ // yolcu al
+        const take=o.queue.splice(0,R.cap);
+        take.forEach(g=>{
+          g.money-=o.ticket; o.income+=o.ticket; state.income+=o.ticket; state.money+=o.ticket;
+          g.state='riding'; g.mesh.visible=false; o.riders.push(g); o.totalRiders++;
+        });
+        o.phase='run'; o.running=true;
+        sfx.cash();
+        if(o.coaster){const tr=o.coasterData.train;
+          tr.active=true;tr.done=false;tr.travel=0;tr.s=0.6;tr.dir=1;tr.v=3.4;
+          sfx.ride();}
+        else o.phaseT=R.dur;
+      }
+    } else if(o.phase==='run'){
+      const finished=o.coaster ? o.coasterData.train.done : o.phaseT<=0;
+      if(finished){
+        o.running=false; o.phase='idle'; o.phaseT=2;
+        if(o.coaster)o.coasterData.train.done=false;
+        o.riders.forEach(g=>dropRider(o,g,false)); o.riders=[];
+      }
+    }
+    // sırada bekleyenleri turun girişinde diz
+    const ent=adjacentPathTile(o);
+    if(ent){o.queue.forEach((g,qi)=>{
+      g.mesh.visible=true;
+      g.mesh.position.set(worldX(ent.gx)+(qi%3-1)*0.5, 0, worldZ(ent.gz)+Math.floor(qi/3)*0.55);
+      g.tile=idx(ent.gx,ent.gz);
+    });}
+  }
+}
+function dropRider(o,g,wasBroken){
+  g.mesh.visible=true; g.state='wander'; g.decideT=1+Math.random()*2;
+  const ent=adjacentPathTile(o);
+  if(ent){g.tile=idx(ent.gx,ent.gz); g.mesh.position.set(worldX(ent.gx),0,worldZ(ent.gz));}
+  if(wasBroken){g.happiness-=8;guestBubble(g,'Tur bozuldu!! 😡');return;}
+  const R=rideStatsOf(o)||{exc:3,int:2,nau:1};
+  const joy=R.exc*2.2-Math.max(0,R.nau-g.nauseaTol)*4;
+  g.happiness=Math.min(100,Math.max(0,g.happiness+joy));
+  g.energy=Math.max(0,g.energy-R.int*1.2);
+  if(joy>8){guestBubble(g,'Harika bir turdu! 🎉');g.favorite=o.def.name;
+    if(Math.random()<0.2)feedPush(g.name,`${o.def.emoji||'🎡'} ${o.def.name} efsaneydi, tekrar bineceğim!`);}
+  else if(joy<0)guestBubble(g,'Midem bulandı...');
+  // 📸 foto noktası: tur çıkışında hatıra fotoğrafı satışı
+  const pp=objects.find(p=>p.def.photo&&Math.abs(p.gx-o.gx)<=6&&Math.abs(p.gz-o.gz)<=6);
+  if(pp&&joy>0&&g.money>=8&&Math.random()<0.4){
+    g.money-=8; pp.income+=8; state.income+=8; state.money+=8; state.photoSold++;
+    if(Math.random()<0.4)guestBubble(g,'📸 Harika kare!');
+  }
+}
+
+/* ---------- [EKONOMİ/ZAMAN] ---------- */
+let spawnT=2, pickT=70;
+function updateEconomy(dt){
+  // zaman
+  const minPerSec=1440/CFG.dayRealSec;
+  state.time+=dt*minPerSec;
+  // araştırma + kampanya ilerleyişi (oyun-dakikası bazlı)
+  if(state.research){
+    state.research.remain-=dt*minPerSec;
+    if(state.research.remain<=0){
+      state.unlocked.add(state.research.key);
+      notify(`🔬 Araştırma tamam: ${DEFS[state.research.key].emoji} ${DEFS[state.research.key].name} AÇILDI!`,'good');
+      sfx.cash(); state.research=null;
+      if(window.__rebuildMenu)window.__rebuildMenu();
+    }
+  }
+  if(state.campaign){
+    state.campaign.remain-=dt*minPerSec;
+    if(state.campaign.remain<=0){notify('📣 Pazarlama kampanyası sona erdi.');state.campaign=null;}
+  }
+  // planlı gece gösterisi 21:00'de başlar
+  if(state.fwPlanned&&state.time>=21*60&&state.time<21*60+3&&fw.show<=0)startShow(false);
+  if(state.time>=1440){
+    state.time-=1440; state.day++;
+    const sal=staff.reduce((s,x)=>s+x.d.salary,0); // gün sonu maaş ödemesi
+    if(sal){state.money-=sal;state.expense+=sal;}
+    let faiz=0;
+    if(state.debt>0){faiz=Math.round(state.debt*0.02);state.money-=faiz;state.expense+=faiz;}
+    const net=state.income-state.expense;
+    state.history.push({day:state.day-1,income:state.income,expense:state.expense,net});
+    if(state.history.length>30)state.history.shift();
+    notify(`📊 ${state.day-1}. gün bitti — Gelir ${state.income}₺, Gider ${state.expense}₺ (maaş ${sal}₺${faiz?', faiz '+faiz+'₺':''}), Net ${net>=0?'+':''}${net}₺`, net>=0?'good':'warn');
+    state.income=0; state.expense=0;
+    // mevsim & etkinlik takvimi
+    state.eventMul=1; state.halloween=false;
+    const dIn=(state.day-1)%7, sIdx=seasonIdx();
+    if(dIn===0){applySeason();notify(`${SEASONS[sIdx].e} ${SEASONS[sIdx].n} mevsimi başladı!`);}
+    if(state.day%10===0){state.eventMul=1.5;notify('🎪 Bugün FESTİVAL günü — ziyaretçi akını!','good');}
+    if(sIdx===1&&dIn===6){state.halloween=true;state.eventMul=Math.max(state.eventMul,1.3);
+      notify('🎃 Cadılar Bayramı! Park gece dolup taşacak.','good');}
+    if(sIdx===2&&dIn===6){state.fwPlanned=true;
+      notify('🎇 Yılbaşı gecesi! 21:00\'de ÜCRETSİZ havai fişek gösterisi.','good');}
+    checkScenario();
+  }
+  // yankesicilik: güvenlik yakınlarda değilse ziyaretçi soyulur
+  pickT-=dt;
+  if(pickT<=0){
+    pickT=50+Math.random()*70;
+    if(guests.length>5){
+      const g=guests[Math.floor(Math.random()*guests.length)];
+      if(g&&g.state!=='riding'&&g.state!=='queuing'){
+        if(securityNear(g.tile)){
+          if(Math.random()<0.5)notify('🛡️ Güvenlik bir yankesiciyi caydırdı!','good');
+        } else {
+          const loss=Math.min(g.money,30);
+          g.money-=loss; g.happiness-=15;
+          guestBubble(g,'Cüzdanım çalındı!! 😡');
+          notify('⚠ Parkta yankesicilik! Güvenlik görevlisi işe al.','warn');
+          feedPush(g.name,'Cüzdanım çalındı, güvenlik nerede?! 😡');
+        }
+      }
+    }
+  }
+  // hava değişimi (günde ~2 kez)
+  if(Math.random()<dt/300){
+    const w=['sun','sun','cloud','rain'][Math.floor(Math.random()*4)];
+    if(w!==state.weather){state.weather=w;
+      notify(w==='rain'?'🌧️ Yağmur başladı — ziyaretçi azalır':w==='cloud'?'⛅ Hava bulutlandı':'☀️ Güneş açtı');}
+  }
+  // ziyaretçi gelişi: gündüz + iyi hava + makul giriş ücreti + park puanı
+  const hour=state.time/60;
+  const open=hour>8.5&&hour<22;
+  const wMul=state.weather==='sun'?1:state.weather==='cloud'?0.65:0.25;
+  const feeMul=Math.max(0.15,1.6-effFee()/28);
+  const ratMul=0.4+rating()/650;
+  const campMul=state.campaign?state.campaign.mul:1;
+  const extraMul=SEASONS[seasonIdx()].mul*(state.eventMul||1)*campMul;
+  spawnT-=dt*(open?1:0)*wMul*feeMul*ratMul*extraMul;
+  if(spawnT<=0){spawnT=CFG.spawnBase*(0.6+Math.random()*0.8);spawnGuest();}
+}
+function rating(){
+  const rideN=objects.filter(o=>rideStatsOf(o)).length;
+  const broken=objects.filter(o=>o.broken).length;
+  const decor=objects.filter(o=>o.def.happyAura).length;
+  const avgH=guests.length?guests.reduce((s,g)=>s+g.happiness,0)/guests.length:50;
+  let r=140+rideN*55+Math.min(80,decor*8)+avgH*4-broken*70
+        -Math.min(140,litterTotal*4)+Math.min(40,staff.length*5);
+  r=Math.max(0,Math.min(999,r));
+  state.ratingSm+= (r-state.ratingSm)*0.02;
+  return Math.round(state.ratingSm);
+}
+
+/* gündüz/gece + hava görselleri */
+const skyDay=new THREE.Color(0x87b8e8), skyNight=new THREE.Color(0x0b1326),
+      skyRain=new THREE.Color(0x55606f);
+function updateSky(){
+  const h=state.time/60;
+  // 0 = gece, 1 = tam gündüz
+  let dayF= h<5?0 : h<7?(h-5)/2 : h<18?1 : h<20.5?1-(h-18)/2.5 : 0;
+  const target=state.weather==='rain'?skyRain.clone().multiplyScalar(Math.max(.25,dayF)):
+    skyNight.clone().lerp(skyDay,dayF);
+  scene.background=target; scene.fog.color=target;
+  const ang=((h-6)/12)*Math.PI; // 06:00 doğu → 18:00 batı
+  sun.position.set(Math.cos(ang)*80,Math.max(4,Math.sin(ang)*90),30);
+  sun.intensity=(state.weather==='sun'?1:state.weather==='cloud'?0.55:0.3)*Math.max(0.06,dayF);
+  hemi.intensity=0.25+dayF*0.5;
+  const nightGlow=dayF<0.35;
+  lamps.forEach(l=>{if(l.userData.bulb)l.userData.bulb.material.emissive.setHex(nightGlow?0xffe9a0:0x000000);});
+  rain.visible=state.weather==='rain';
+  if(rain.visible){
+    const snow=seasonIdx()===2; // kışın yağış kara döner
+    rain.material.color.setHex(snow?0xffffff:0x9db8e8);
+    rain.material.size=snow?0.34:0.22;
+    const fall=snow?0.55:1.6;
+    const p=rain.geometry.attributes.position;
+    for(let i=0;i<p.count;i++){let y=p.getY(i)-fall;if(y<0)y=40;p.setY(i,y);}
+    p.needsUpdate=true;
+  }
+}
+
+/* ---------- [UI] ---------- */
+const $=s=>document.querySelector(s);
+function notify(msg,kind){
+  const d=document.createElement('div');
+  d.className='notif'+(kind?' '+kind:''); d.textContent=msg;
+  $('#notifs').appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .5s';setTimeout(()=>d.remove(),500)},4200);
+}
+function buildMenu(){
+  const cats=[...new Set(Object.values(DEFS).map(d=>d.cat)),'Personel'];
+  const tabs=$('#buildTabs'), items=$('#buildItems');
+  let activeCat=cats[0];
+  function renderTabs(){
+    tabs.innerHTML='';
+    cats.forEach(c=>{
+      const b=document.createElement('button');
+      b.textContent=c; b.className=c===activeCat?'active':'';
+      b.onclick=()=>{activeCat=c;renderTabs();renderItems();};
+      tabs.appendChild(b);
+    });
+  }
+  function renderItems(){
+    items.innerHTML='';
+    if(activeCat==='Personel'){ // personel yerleştirilmez, anında işe alınır
+      Object.entries(STAFF_DEFS).forEach(([k,d])=>{
+        const c=staff.filter(s=>s.role===k).length;
+        const el=document.createElement('div');
+        el.className='bitem';
+        el.innerHTML=`<span class="em">${d.e}</span>${d.n}${c?` (${c})`:''}<br><span class="pr">${d.salary}₺/gün</span>`;
+        el.title=d.desc; el.onclick=()=>{LP.hire(k);renderItems();};
+        items.appendChild(el);
+      });
+      return;
+    }
+    Object.entries(DEFS).filter(([,d])=>d.cat===activeCat).forEach(([k,d])=>{
+      const el=document.createElement('div');
+      const locked=!state.unlocked.has(k);
+      el.className='bitem'+(state.build===k?' active':'')+(locked?' locked':'');
+      if(locked){
+        const r=state.research;
+        el.innerHTML=`<span class="em">🔒</span>${d.name}<br><span class="pr">${
+          r&&r.key===k?'⏳ %'+Math.round(100*(1-r.remain/r.total)):'🔬 '+d.research.cost+'₺'}</span>`;
+        el.title=`Araştır: ${d.research.cost}₺, ~${Math.round(d.research.min/60)} saat`;
+        el.onclick=()=>{LP.research(k);renderItems();};
+      } else {
+        el.innerHTML=`<span class="em">${d.emoji}</span>${d.name}<br><span class="pr">${d.cost}₺</span>`;
+        el.onclick=()=>{setBuild(state.build===k?null:k);renderItems();};
+      }
+      items.appendChild(el);
+    });
+  }
+  renderTabs();renderItems();
+  window.__rebuildMenu=renderItems;
+}
+function setBuild(k){
+  state.build=k; state.rot=0;
+  gridHelper.visible=!!k;
+  $('#hint').style.display=k?'block':'none';
+  if(k)$('#hint').textContent=`${DEFS[k].emoji} ${DEFS[k].name} — Sol tık: yerleştir · R: döndür · Esc: iptal`;
+  refreshGhost(); if(window.__rebuildMenu)window.__rebuildMenu();
+}
+function bar(val,color){return `<div class="bar"><i style="width:${Math.round(val)}%;background:${color}"></i></div>`}
+function selectObject(o){
+  state.sel={obj:o};
+  const b=$('#panelBody');
+  if(o.coaster){
+    const R=rideStatsOf(o), cd=o.coasterData;
+    b.innerHTML=`<h3>🎢 Hız Treni</h3>
+      <div class="row"><span>Durum</span><b style="color:${o.broken?'var(--red)':'var(--lime)'}">${o.broken?'ARIZALI':'Çalışıyor'}</b></div>
+      <div class="row"><span>Parça</span><b>${cd.pieces.length} · ${cd.closed?'kapalı devre ✓':'mekik modu'}</b></div>
+      <div class="row"><span>Ray uzunluğu</span><b>${cd.track?Math.round(cd.track.len):0} m</b></div>
+      <div class="row"><span>Maks hız</span><b>${o.maxV?o.maxV.toFixed(1)+' m/s':'—'}</b></div>
+      ${R?`<div class="row"><span>Heyecan</span><b>${R.exc.toFixed(1)}</b></div>
+      <div class="row"><span>Yoğunluk</span><b>${R.int.toFixed(1)}</b></div>
+      <div class="row"><span>Bulantı</span><b>${R.nau.toFixed(1)}</b></div>`
+      :`<div class="row"><b style="color:var(--red)">En az 4 parça döşe → ziyaretçi binsin</b></div>`}
+      <div class="row"><span>Sırada</span><b id="pQ">${o.queue.length}</b></div>
+      <div class="row"><span>Toplam binen</span><b>${o.totalRiders}</b></div>
+      <div class="row"><span>Gelir</span><b>${o.income}₺</b></div>
+      <div class="row"><span>Bilet</span><b><button onclick="LP.ticket(-1)">−</button> <span id="pT">${o.ticket}</span>₺ <button onclick="LP.ticket(1)">+</button></b></div>
+      ${cd.closed?'':`<div class="btnrow">${Object.entries(PIECES).map(([k,p])=>
+        `<button onclick="LP.piece('${k}')" title="${p.c}₺">${p.e} ${p.n}</button>`).join('')}</div>
+      <div class="btnrow"><button onclick="LP.coasterUndo()">↩ Geri Al</button>
+      <button onclick="LP.coasterClose()">✔ Devreyi Kapat</button></div>`}
+      <div class="btnrow">
+        ${o.broken?'<button onclick="LP.repair()">🔧 Tamir (500₺)</button>':''}
+        ${cd.closed?'<button onclick="LP.coasterUndo()">🔓 Devreyi Aç (düzenle)</button>':''}
+        <button onclick="LP.rideCamToggle()">🎥 Ride-Cam</button>
+        <button onclick="LP.sell()">💸 Sat (%50)</button>
+      </div>`;
+    $('#panel').style.display='block';
+    return;
+  }
+  if(o.def.ride){
+    const R=o.def.ride;
+    b.innerHTML=`<h3>${o.def.emoji} ${o.def.name}</h3>
+      <div class="row"><span>Durum</span><b style="color:${o.broken?'var(--red)':'var(--lime)'}">${o.broken?'ARIZALI':'Çalışıyor'}</b></div>
+      <div class="row"><span>Heyecan</span><b>${R.exc.toFixed(1)}</b></div>
+      <div class="row"><span>Yoğunluk</span><b>${R.int.toFixed(1)}</b></div>
+      <div class="row"><span>Bulantı</span><b>${R.nau.toFixed(1)}</b></div>
+      <div class="row"><span>Kapasite</span><b>${R.cap} kişi / ${R.dur}sn</b></div>
+      <div class="row"><span>Sırada</span><b id="pQ">${o.queue.length}</b></div>
+      <div class="row"><span>Toplam binen</span><b>${o.totalRiders}</b></div>
+      <div class="row"><span>Gelir</span><b>${o.income}₺</b></div>
+      <div class="row"><span>Bilet</span><b><button onclick="LP.ticket(-1)">−</button> <span id="pT">${o.ticket}</span>₺ <button onclick="LP.ticket(1)">+</button></b></div>
+      <div class="btnrow">
+        ${o.broken?'<button onclick="LP.repair()">🔧 Tamir (500₺)</button>':''}
+        <button onclick="LP.sell()">💸 Sat (%50 iade)</button>
+      </div>`;
+  } else {
+    b.innerHTML=`<h3>${o.def.emoji} ${o.def.name}</h3>
+      ${o.def.shop?`<div class="row"><span>Ürün fiyatı</span><b>${o.def.shop.price}₺</b></div>
+      <div class="row"><span>Gelir</span><b>${o.income}₺</b></div>`:''}
+      <div class="btnrow"><button onclick="LP.sell()">💸 Sat (%50 iade)</button></div>`;
+  }
+  $('#panel').style.display='block';
+}
+function selectGuest(g){
+  state.sel={guest:g};
+  const b=$('#panelBody');
+  b.innerHTML=`<h3>🧍 ${g.name}</h3>
+    <div class="row"><span>Para</span><b>${g.money|0}₺</b></div>
+    <span>Mutluluk</span>${bar(g.happiness,'var(--lime)')}
+    <span>Açlık</span>${bar(g.hunger,'#f2994a')}
+    <span>Susuzluk</span>${bar(g.thirst,'var(--cyan)')}
+    <span>Tuvalet</span>${bar(g.toilet,'#c8a2f0')}
+    <span>Enerji</span>${bar(g.energy,'#f2c94c')}
+    <div class="row"><span>Favori tur</span><b>${g.favorite??'—'}</b></div>
+    <div class="row"><span>Düşünce</span><b>${g.thought||'...'}</b></div>
+    <div class="row"><span>Durum</span><b>${{wander:'Geziniyor',toRide:'Tura gidiyor',toShop:'Dükkana gidiyor',queuing:'Sırada',riding:'Turda!',leaving:'Çıkıyor'}[g.state]??g.state}</b></div>`;
+  $('#panel').style.display='block';
+}
+function updateHUD(){
+  $('#stMoney').textContent=Math.round(state.money).toLocaleString('tr-TR')+'₺';
+  $('#stGuests').textContent=guests.length;
+  $('#stRating').textContent=rating();
+  $('#stDay').textContent=state.day+'. Gün '+SEASONS[seasonIdx()].e;
+  const h=Math.floor(state.time/60),m=Math.floor(state.time%60);
+  $('#stClock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  const snow=seasonIdx()===2&&state.weather==='rain';
+  $('#stWeather').textContent=snow?'❄️ Karlı':{sun:'☀️ Güneşli',cloud:'⛅ Bulutlu',rain:'🌧️ Yağmurlu'}[state.weather];
+  $('#stFee').textContent=state.campaign&&state.campaign.halfFee?`🏷️${effFee()}₺`:state.fee+'₺';
+  const mo=state.mode;
+  if(mo.type==='scen'&&!mo.done){
+    const sc=SCENARIOS[mo.id];
+    $('#stGoal').style.display='';
+    $('#stGoal').textContent=`${sc.e} ${sc.n} · kalan ${Math.max(0,mo.deadline-state.day)}g`;
+  }
+  // seçili ziyaretçi paneli canlı kalsın
+  if(state.sel&&state.sel.guest&&$('#panel').style.display==='block')selectGuest(state.sel.guest);
+  if(state.sel&&state.sel.obj&&rideStatsOf(state.sel.obj)){const q=$('#pQ');if(q)q.textContent=state.sel.obj.queue.length;}
+}
+
+/* ---------- [KAYIT] ---------- */
+const LP={
+  speed(s){state.speed=s;[0,1,2,3].forEach(i=>$('#sp'+i).classList.toggle('active',i===s));},
+  fee(d){state.fee=Math.max(0,Math.min(100,state.fee+d));},
+  ticket(d){const o=state.sel&&state.sel.obj;if(!o||!(o.def.ride||o.coaster))return;
+    o.ticket=Math.max(0,Math.min(60,o.ticket+d));$('#pT').textContent=o.ticket;
+    if(o.coaster&&o.stats)o.stats.ticket=o.ticket;},
+  piece(t){coasterAdd(state.sel&&state.sel.obj,t);},
+  coasterUndo(){coasterUndo(state.sel&&state.sel.obj);},
+  coasterClose(){coasterClose(state.sel&&state.sel.obj);},
+  rideCamToggle(){
+    const o=state.sel&&state.sel.obj;
+    if(!o||!o.coaster)return;
+    state.rideCam=state.rideCam===o?null:o;
+    if(state.rideCam)notify('🎥 Ride-Cam açık — tren kalkınca takip eder. Esc: çık.');
+    else updateCamera();
+  },
+  hire(role){hireStaff(role);},
+  fire(){const s=state.sel&&state.sel.staffM;if(s)fireStaff(s);},
+  heat(){
+    heat.mode=(heat.mode+1)%4;
+    heat.mesh.visible=heat.mode>0;
+    $('#heatBtn').textContent='🌡️ Isı: '+heat.names[heat.mode];
+    if(heat.mode>0)updateHeat();
+  },
+  fpToggle(){
+    fp.on=!fp.on;
+    if(fp.on){
+      fp.x=cam.tx; fp.z=cam.tz; fp.yaw=cam.yaw+Math.PI; fp.pitch=-0.05;
+      state.rideCam=null; setBuild(null); LP.closePanel();
+      if(renderer.domElement.requestPointerLock)renderer.domElement.requestPointerLock();
+      $('#hint').style.display='block';
+      $('#hint').textContent='🚶 Ziyaretçi modu — WASD: yürü · fare: bak · F/Esc: çık';
+    } else {
+      fp.hadLock=false;
+      if(document.exitPointerLock&&document.pointerLockElement)document.exitPointerLock();
+      $('#hint').style.display='none';
+      updateCamera();
+    }
+    $('#fpBtn').classList.toggle('active',fp.on);
+  },
+  mute(){
+    audioInit();
+    AU.muted=!AU.muted;
+    $('#muteBtn').textContent=AU.muted?'🔇':'🔊';
+  },
+  mgmt(){
+    const p=$('#mgmt');
+    if(p.style.display==='flex'){p.style.display='none';return;}
+    renderMgmt(); p.style.display='flex';
+  },
+  endClose(){$('#endOv').style.display='none';},
+  research(k){
+    const d=DEFS[k];
+    if(!d||!d.locked||state.unlocked.has(k))return;
+    if(state.research){notify('Zaten bir araştırma sürüyor!','warn');return;}
+    if(state.money<d.research.cost){notify('Yetersiz para!','warn');return;}
+    state.money-=d.research.cost; state.expense+=d.research.cost;
+    state.research={key:k,remain:d.research.min,total:d.research.min};
+    notify(`🔬 ${d.name} araştırması başladı (~${Math.round(d.research.min/60)} saat).`,'good');
+  },
+  campaign(k){
+    const c=CAMPAIGNS[k];
+    if(!c||state.campaign)return;
+    if(state.money<c.cost){notify('Yetersiz para!','warn');return;}
+    state.money-=c.cost; state.expense+=c.cost;
+    state.campaign={key:k,mul:c.mul,remain:c.days*1440,halfFee:!!c.halfFee};
+    notify(`${c.e} ${c.n} başladı — ${c.days} gün boyunca ziyaretçi ×${c.mul}!`,'good');
+    renderMgmt();
+  },
+  loan(){
+    if(state.debt>=30000){notify('Borç limiti (30.000₺) doldu!','warn');return;}
+    state.debt+=10000; state.money+=10000;
+    notify('🏦 10.000₺ kredi alındı — günlük %2 faiz işler.','warn');
+    renderMgmt();
+  },
+  payLoan(){
+    const p=Math.min(5000,state.debt,Math.floor(state.money));
+    if(p<=0){notify('Ödeme yapılamadı.','warn');return;}
+    state.debt-=p; state.money-=p;
+    notify(`💳 ${p}₺ borç ödendi. Kalan: ${state.debt}₺`,'good');
+    renderMgmt();
+  },
+  plan(){
+    if(state.fwPlanned)return;
+    if(state.money<800){notify('Yetersiz para!','warn');return;}
+    state.money-=800; state.expense+=800; state.fwPlanned=true;
+    notify('🎆 Bu gece 21:00\'de havai fişek gösterisi!','good');
+    renderMgmt();
+  },
+  chooseMode(k){
+    if(k==='sandbox'){
+      state.mode={type:'sandbox'};
+      Object.keys(DEFS).forEach(x=>state.unlocked.add(x)); // serbest modda her şey açık
+    } else {
+      const sc=SCENARIOS[k];
+      state.mode={type:'scen',id:k,startDay:state.day,deadline:state.day+sc.days,done:false};
+      state.money=sc.money;
+      notify(`${sc.e} Senaryo: ${sc.n} — ${sc.desc}`,'good');
+    }
+    if(window.__rebuildMenu)window.__rebuildMenu();
+    $('#modeSel').style.display='none';
+    LP.speed(1);
+  },
+  repair(){const o=state.sel&&state.sel.obj;if(!o||!o.broken)return;
+    if(state.money<500){notify('Tamir için 500₺ gerek!','warn');return;}
+    state.money-=500;state.expense+=500;o.broken=false;
+    notify(`🔧 ${o.def.name} tamir edildi`,'good');selectObject(o);},
+  sell(){const o=state.sel&&state.sel.obj;if(o)sellObject(o);},
+  closePanel(){$('#panel').style.display='none';state.sel=null;},
+  help(){$('#help').style.display='flex';},
+  save(){
+    const data={v:1,money:state.money,fee:state.fee,day:state.day,time:state.time,
+      staff:staff.map(s=>s.role),
+      debt:state.debt, research:state.research, campaign:state.campaign,
+      history:state.history, mode:state.mode, ach:state.ach, feed:state.feed,
+      totalGuests:state.totalGuests, photoSold:state.photoSold,
+      showsDone:state.showsDone, scenWon:state.scenWon,
+      unlocked:[...state.unlocked],
+      paths:[...paths],
+      objects:objects.map(o=>({k:o.defKey,gx:o.gx,gz:o.gz,rot:o.rot,ticket:o.ticket,broken:o.broken,income:o.income,total:o.totalRiders,
+        pieces:o.coasterData?o.coasterData.pieces:undefined, cl:o.coasterData?o.coasterData.closed:undefined}))};
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
+    a.download='lunapark-kayit.json'; a.click();
+    notify('💾 Oyun kaydedildi (indirildi)','good');
+  },
+  load(data){
+    // temizle (GPU kaynakları dahil)
+    [...objects].forEach(o=>{
+      o.tiles.forEach(([x,z])=>grid[idx(x,z)]=null);
+      scene.remove(o.mesh); disposeDeep(o.mesh);
+      if(o.coasterData){
+        if(o.coasterData.trackGroup){scene.remove(o.coasterData.trackGroup);disposeDeep(o.coasterData.trackGroup);}
+        if(o.coasterData.train)o.coasterData.train.cars.forEach(c=>{scene.remove(c);disposeDeep(c);});
+      }
+    });
+    objects.length=0; lamps.length=0;
+    [...paths].forEach(i=>{const pm=pathMeshes.get(i);scene.remove(pm);pm.geometry.dispose();});
+    paths.clear(); pathMeshes.clear(); grid.fill(null);
+    [...guests].forEach(removeGuest);
+    [...staff].forEach(s=>{scene.remove(s.mesh);disposeDeep(s.mesh);});staff.length=0;
+    litterMap.forEach(arr=>arr.forEach(m=>scene.remove(m)));litterMap.clear();litterTotal=0;
+    // yükle
+    state.money=data.money;state.fee=data.fee;state.day=data.day;state.time=data.time;
+    LOADING=true;
+    data.paths.forEach(i=>placeObject('path',i%N,(i-i%N)/N,0,true));
+    data.objects.forEach(s=>{const o=placeObject(s.k,s.gx,s.gz,s.rot,true);
+      if(o&&!o.path){o.ticket=s.ticket;o.broken=s.broken;o.income=s.income||0;o.totalRiders=s.total||0;
+        if(o.coaster&&s.pieces){
+          o.coasterData.pieces=s.pieces; o.coasterData.closed=!!s.cl;
+          o.coasterData.spent=s.pieces.reduce((sum,t)=>sum+(PIECES[t]?PIECES[t].c:0),0);
+          recalcCoaster(o);
+        }}});
+    (data.staff||[]).forEach(r=>hireStaff(r,true));
+    state.debt=data.debt||0; state.research=data.research||null;
+    state.campaign=data.campaign||null; state.history=data.history||[];
+    state.mode=data.mode||{type:'sandbox'}; state.ach=data.ach||[];
+    state.feed=data.feed||[]; state.totalGuests=data.totalGuests||0;
+    state.photoSold=data.photoSold||0; state.showsDone=data.showsDone||0;
+    state.scenWon=data.scenWon||0;
+    if(data.unlocked)state.unlocked=new Set(data.unlocked);
+    if(state.mode.type!=='scen')$('#stGoal').style.display='none';
+    applySeason();
+    if(window.__rebuildMenu)window.__rebuildMenu();
+    $('#modeSel').style.display='none';
+    LOADING=false;
+    pathVersion++;
+    notify('📂 Kayıt yüklendi','good');
+  },
+};
+window.LP=LP;
+$('#loadFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{LP.load(JSON.parse(r.result));}catch(err){notify('Kayıt dosyası okunamadı!','warn');}};
+  r.readAsText(f); e.target.value='';
+});
+
+/* ---------- [COASTER] hız treni: ray editörü + tren fiziği + ride-cam ---------- */
+const PIECES={
+  str:  {n:'Düz',     e:'⬆', c:150},
+  left: {n:'Sol',     e:'⬅', c:220},
+  right:{n:'Sağ',     e:'➡', c:220},
+  up:   {n:'Tırmanış',e:'⛰', c:320},
+  down: {n:'İniş',    e:'⬇', c:260},
+  loop: {n:'Loop',    e:'➰', c:950},
+  roll: {n:'Burgu',   e:'🌀', c:520},
+};
+const _Y=new THREE.Vector3(0,1,0);
+let LOADING=false;
+
+function initCoaster(o){
+  o.coaster=true;
+  o.coasterData={pieces:[],spent:0,closed:false,trackGroup:null,train:null,track:null};
+  o.ticket=18; o.stats=null; o.trackReady=false; o.maxV=0;
+  recalcCoaster(o);
+  if(!LOADING){
+    setBuild(null); selectObject(o);
+    notify('🎢 İstasyon kuruldu — sağ panelden ray parçaları ekle!','good');
+  }
+}
+/* parça listesinden ham nokta dizisi üretir (imleç: konum + yön) */
+function genTrackPoints(o){
+  const cd=o.coasterData;
+  const yaw=o.rot*Math.PI/2;
+  const heading=new THREE.Vector3(1,0,0).applyAxisAngle(_Y,yaw);
+  const pts=[];
+  const cur=o.mesh.position.clone().addScaledVector(heading,-3.4); cur.y=0.9;
+  const emit=(p,lift,roll)=>pts.push({p:p.clone(),lift:!!lift,roll:roll||0});
+  for(let i=0;i<=12;i++)emit(cur.clone().addScaledVector(heading,6.8*i/12),true,0); // istasyon rayı (zincirli)
+  cur.addScaledVector(heading,6.8);
+  for(const t of cd.pieces){
+    if(t==='str'){
+      const L=4,n=8;
+      for(let i=1;i<=n;i++)emit(cur.clone().addScaledVector(heading,L*i/n),false,0);
+      cur.addScaledVector(heading,L);
+    } else if(t==='left'||t==='right'){
+      const sgn=t==='left'?1:-1, r=5, n=12;
+      const side=new THREE.Vector3().crossVectors(_Y,heading).multiplyScalar(sgn);
+      const ctr=cur.clone().addScaledVector(side,r);
+      const a0=Math.atan2(cur.x-ctr.x,cur.z-ctr.z);
+      for(let i=1;i<=n;i++){
+        const a=a0+sgn*(Math.PI/2)*i/n;
+        emit(new THREE.Vector3(ctr.x+Math.sin(a)*r,cur.y,ctr.z+Math.cos(a)*r),false,0);
+      }
+      const a1=a0+sgn*Math.PI/2;
+      cur.set(ctr.x+Math.sin(a1)*r,cur.y,ctr.z+Math.cos(a1)*r);
+      heading.applyAxisAngle(_Y,sgn*Math.PI/2);
+    } else if(t==='up'||t==='down'){
+      const dh=t==='up'?4:-4, L=9, n=14;
+      for(let i=1;i<=n;i++){const tt=i/n;
+        const p=cur.clone().addScaledVector(heading,L*tt);
+        p.y=cur.y+dh*(1-Math.cos(Math.PI*tt))/2;
+        emit(p,t==='up',0);}
+      cur.addScaledVector(heading,L); cur.y+=dh;
+    } else if(t==='loop'){
+      const r=3.3,n=26;
+      const right=new THREE.Vector3().crossVectors(heading,_Y).normalize();
+      for(let i=1;i<=n;i++){const a=2*Math.PI*i/n;
+        const p=cur.clone().addScaledVector(heading,Math.sin(a)*r).addScaledVector(right,1.2*i/n);
+        p.y=cur.y+r*(1-Math.cos(a));
+        emit(p,false,0);}
+      cur.addScaledVector(right,1.2);
+    } else if(t==='roll'){
+      const L=8,n=16;
+      for(let i=1;i<=n;i++)emit(cur.clone().addScaledVector(heading,L*i/n),false,2*Math.PI*i/n);
+      cur.addScaledVector(heading,L);
+    }
+  }
+  if(cd.closed){ // devre bağlayıcı: uçtan istasyon başına düz köprü
+    const target=pts[0].p, d=cur.distanceTo(target), n=Math.max(4,Math.round(d/0.7));
+    for(let i=1;i<=n;i++){
+      const p=cur.clone().lerp(target,i/n);
+      emit(p,false,0);
+    }
+  }
+  return {pts,end:cur.clone(),heading:heading.clone()};
+}
+/* paralel taşımalı çerçeveler: loop/burgu boyunca ray yönelimi tutarlı kalır */
+function buildFrames(pts){
+  const n=pts.length, frames=[], cum=[0];
+  let right=null;
+  for(let i=0;i<n;i++){
+    const p0=pts[Math.max(0,i-1)].p, p1=pts[Math.min(n-1,i+1)].p;
+    const tan=p1.clone().sub(p0).normalize();
+    if(!right){
+      right=new THREE.Vector3().crossVectors(tan,_Y);
+      if(right.lengthSq()<1e-4)right.set(1,0,0);
+      right.normalize();
+    } else right.addScaledVector(tan,-right.dot(tan)).normalize();
+    const up=new THREE.Vector3().crossVectors(right,tan).normalize();
+    let R=right,U=up;
+    const roll=pts[i].roll||0;
+    if(roll){R=right.clone().applyAxisAngle(tan,roll);U=up.clone().applyAxisAngle(tan,roll);}
+    frames.push({p:pts[i].p,tan:tan.clone(),right:R.clone(),up:U.clone(),lift:pts[i].lift});
+    if(i>0)cum.push(cum[i-1]+pts[i].p.distanceTo(pts[i-1].p));
+  }
+  return {frames,cum,len:cum[n-1]};
+}
+function frameAt(track,s){
+  const {frames,cum}=track;
+  s=Math.max(0,Math.min(track.len-1e-4,s));
+  let lo=0,hi=cum.length-1;
+  while(lo<hi){const mid=(lo+hi)>>1; if(cum[mid]<s)lo=mid+1; else hi=mid;}
+  const i=Math.max(1,lo), t=(s-cum[i-1])/Math.max(1e-6,cum[i]-cum[i-1]);
+  const f0=frames[i-1],f1=frames[i];
+  return {p:f0.p.clone().lerp(f1.p,t),
+    tan:f0.tan.clone().lerp(f1.tan,t).normalize(),
+    up:f0.up.clone().lerp(f1.up,t).normalize(),
+    right:f0.right.clone().lerp(f1.right,t).normalize(),
+    lift:f0.lift||f1.lift};
+}
+function buildTrackMesh(o){
+  const cd=o.coasterData;
+  if(cd.trackGroup){scene.remove(cd.trackGroup);disposeDeep(cd.trackGroup);}
+  const g=new THREE.Group(), tk=cd.track, F=tk.frames;
+  class Rail extends THREE.Curve{
+    constructor(off){super();this.off=off;}
+    getPoint(t){
+      const i=Math.min(F.length-1,Math.max(0,Math.round(t*(F.length-1))));
+      return F[i].p.clone().addScaledVector(F[i].right,this.off);
+    }
+  }
+  const seg=Math.min(500,F.length*2);
+  [[-0.4],[0.4]].forEach(([off])=>{
+    const rail=new THREE.Mesh(new THREE.TubeGeometry(new Rail(off),seg,0.09,5,false),M.cyan);
+    rail.castShadow=true; g.add(rail);
+  });
+  // traversler
+  const tieN=Math.max(1,Math.floor(tk.len/1.1));
+  const ties=new THREE.InstancedMesh(new THREE.BoxGeometry(1.05,0.07,0.24),M.dark,tieN);
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),one=new THREE.Vector3(1,1,1),basis=new THREE.Matrix4();
+  for(let i=0;i<tieN;i++){
+    const f=frameAt(tk,(i+0.5)*(tk.len/tieN));
+    basis.makeBasis(f.right,f.up,f.tan); q.setFromRotationMatrix(basis);
+    m4.compose(f.p,q,one); ties.setMatrixAt(i,m4);
+  }
+  g.add(ties);
+  // destek kolonları (loop içi hariç)
+  const sup=[];
+  for(let s=2;s<tk.len;s+=3.6){
+    const f=frameAt(tk,s);
+    if(f.up.y>0.6&&f.p.y>1.15)sup.push(f.p.clone());
+  }
+  if(sup.length){
+    const cols=new THREE.InstancedMesh(new THREE.CylinderGeometry(.07,.07,1,6),M.metal,sup.length);
+    const qi=new THREE.Quaternion();
+    sup.forEach((p,i)=>{
+      m4.compose(new THREE.Vector3(p.x,(p.y-0.15)/2,p.z),qi,new THREE.Vector3(1,p.y-0.15,1));
+      cols.setMatrixAt(i,m4);
+    });
+    g.add(cols);
+  }
+  g.traverse(c=>{c.userData.obj=o;});
+  scene.add(g); cd.trackGroup=g;
+}
+function ensureTrain(o){
+  const cd=o.coasterData;
+  if(cd.train)return;
+  const cars=[];
+  for(let j=0;j<3;j++){
+    const c=box(0.9,0.55,1.3,j===0?M.red:M.pur);
+    scene.add(c); c.userData.obj=o; cars.push(c);
+  }
+  cd.train={cars,s:0.6,v:0,dir:1,active:false,done:false,travel:0};
+}
+function poseTrain(o){
+  const cd=o.coasterData,tr=cd.train,tk=cd.track;
+  if(!tr||!tk)return;
+  const basis=new THREE.Matrix4();
+  for(let j=0;j<tr.cars.length;j++){
+    const sj=Math.max(0.05,Math.min(tk.len-0.05,tr.s-j*1.55*tr.dir));
+    const f=frameAt(tk,sj);
+    const car=tr.cars[j];
+    car.position.copy(f.p).addScaledVector(f.up,0.36);
+    basis.makeBasis(f.right,f.up,f.tan);
+    car.quaternion.setFromRotationMatrix(basis);
+  }
+}
+/* ray değişince: noktalar → çerçeveler → mesh → istatistikler (GERÇEK ZAMANLI) */
+function recalcCoaster(o){
+  const cd=o.coasterData;
+  const gen=genTrackPoints(o);
+  cd.track=buildFrames(gen.pts);
+  cd.track.closed=cd.closed;
+  cd.end=gen.end; cd.endHeading=gen.heading;
+  buildTrackMesh(o); ensureTrain(o); poseTrain(o);
+  o.trackReady=cd.pieces.length>=4;
+  // hızlı enerji simülasyonu → maks hız + toplam iniş
+  let v=3.4,maxV=v,desc=0,prevY=gen.pts[0].p.y;
+  for(let i=1;i<gen.pts.length;i++){
+    const y=gen.pts[i].p.y;
+    let v2=v*v-2*10*(y-prevY);
+    if(gen.pts[i].lift)v2=Math.max(v2,3.4*3.4);
+    v=Math.sqrt(Math.max(1.2,v2)); maxV=Math.max(maxV,v);
+    if(y<prevY)desc+=prevY-y; prevY=y;
+  }
+  o.maxV=maxV;
+  const loops=cd.pieces.filter(p=>p==='loop').length;
+  const rolls=cd.pieces.filter(p=>p==='roll').length;
+  const L=cd.track.len;
+  const inten=Math.min(9.9,1.5+maxV*0.28+loops*1.4+rolls*0.7);
+  o.stats=o.trackReady?{
+    ticket:o.ticket,cap:12,dur:Math.round(L/4+8),
+    exc:Math.min(9.9,1.8+L/45+desc*0.35+loops*1.1+rolls*0.5+maxV*0.12),
+    int:inten,
+    nau:Math.min(9.9,0.8+loops*1.5+rolls*1.6+inten*0.18),
+    rel:0.9,
+  }:null;
+}
+function coasterAdd(o,t){
+  if(!o||!o.coaster)return;
+  const cd=o.coasterData;
+  if(cd.closed){notify('Devre kapalı — düzenlemek için sat ve yeniden kur.','warn');return;}
+  if(cd.pieces.length>=60){notify('Parça sınırı (60) doldu!','warn');return;}
+  const cost=PIECES[t].c;
+  if(state.money<cost){notify('Yetersiz para!','warn');return;}
+  if(t==='down'){ // yer altına inmeyi reddet
+    const test=[...cd.pieces,t]; const old=cd.pieces; cd.pieces=test;
+    const minY=Math.min(...genTrackPoints(o).pts.map(p=>p.p.y));
+    cd.pieces=old;
+    if(minY<0.7){notify('Yeterli yükseklik yok — önce tırmanış ekle!','warn');return;}
+  }
+  state.money-=cost; state.expense+=cost; cd.spent+=cost;
+  cd.pieces.push(t); recalcCoaster(o); selectObject(o);
+}
+function coasterUndo(o){
+  if(!o||!o.coaster)return;
+  const cd=o.coasterData;
+  if(cd.closed){cd.closed=false; recalcCoaster(o); selectObject(o); return;}
+  const t=cd.pieces.pop();
+  if(t){const c=PIECES[t].c; state.money+=c; cd.spent-=c;}
+  recalcCoaster(o); selectObject(o);
+}
+function coasterClose(o){
+  if(!o||!o.coaster)return;
+  const cd=o.coasterData;
+  const start=cd.track.frames[0].p;
+  const d=cd.end.distanceTo(start);
+  const yawOk=cd.endHeading.dot(new THREE.Vector3(1,0,0).applyAxisAngle(_Y,o.rot*Math.PI/2))>0.3;
+  if(d>10){notify(`Uçlar çok uzak (${d.toFixed(0)}m) — istasyona doğru dön.`,'warn');return;}
+  if(Math.abs(cd.end.y-start.y)>2.5){notify('İstasyon seviyesine in (İniş ekle).','warn');return;}
+  if(!yawOk){notify('Tren istasyona TERS giriyor — viraj ekleyip hizala.','warn');return;}
+  cd.closed=true; recalcCoaster(o); selectObject(o);
+  notify('🎢 Devre kapatıldı — tren tam tur atacak!','good');
+}
+function updateCoasters(dt){
+  for(const o of objects){
+    if(!o.coaster)continue;
+    const cd=o.coasterData,tr=cd.train;
+    if(!tr||!cd.track)continue;
+    if(!tr.active)continue;
+    const tk=cd.track;
+    const f=frameAt(tk,tr.s);
+    const slope=f.tan.y*tr.dir;
+    tr.v+=(-13*slope)*dt-(0.015*tr.v+0.05)*dt;
+    if(f.lift&&tr.dir>0)tr.v=Math.max(tr.v,3.4);
+    if(f.lift&&tr.dir<0&&tr.s>8)tr.v=Math.max(tr.v,3.0); // mekik dönüşünde zincir yardımı
+    if(tk.closed&&tr.v<1.4)tr.v=1.4;
+    if(!tk.closed&&tr.dir>0&&tr.v<0.15&&tr.travel>2){tr.dir=-1;tr.v=0.5;} // tepeden geri kayış
+    tr.v=Math.min(tr.v,26);
+    tr.s+=tr.v*tr.dir*dt; tr.travel+=Math.abs(tr.v)*dt;
+    if(tk.closed){
+      if(tr.s>=tk.len)tr.s-=tk.len;
+      if(tr.s<0)tr.s+=tk.len;
+      if(tr.travel>=tk.len-1&&tr.s>0.4&&tr.s<7){ // istasyon freni
+        tr.v=Math.max(0,tr.v-14*dt);
+        if(tr.v<=0.01)finishCoasterRun(o);
+      }
+    } else {
+      if(tr.dir>0&&tr.s>=tk.len-0.4){tr.dir=-1;tr.s=tk.len-0.4;tr.v=Math.max(tr.v*0.2,0.4);}
+      if(tr.dir<0&&tr.s<=7){
+        tr.v=Math.max(0.3,tr.v-14*dt);
+        if(tr.s<=0.8){tr.s=0.8;finishCoasterRun(o);}
+      }
+    }
+    poseTrain(o);
+  }
+}
+function finishCoasterRun(o){
+  const tr=o.coasterData.train;
+  tr.active=false; tr.done=true; tr.s=0.6; tr.dir=1; tr.v=0;
+  poseTrain(o);
+  if(Math.random()<0.13){ // tur sonrası arıza — tamirci (veya 500₺) ister
+    o.broken=true;
+    notify('⚠ Hız Treni ARIZALANDI! Tamirci işe al veya panelden tamir et.','warn');
+    sfx.broken();
+  }
+}
+
+/* ---------- [A3: ÇÖP] yere atılan çöpler — temizlikçinin işi ---------- */
+const litterMap=new Map(); // idx → mesh[]
+let litterTotal=0;
+const litterGeo=new THREE.BoxGeometry(0.22,0.1,0.22);
+litterGeo.userData.shared=true;
+const litterMats=[new THREE.MeshLambertMaterial({color:0xc9b458}),
+                  new THREE.MeshLambertMaterial({color:0x8a6f4d}),
+                  new THREE.MeshLambertMaterial({color:0xb85c5c})];
+litterMats.forEach(m=>m.userData.shared=true);
+function addLitter(i){
+  const arr=litterMap.get(i)||[];
+  if(arr.length>=3)return;
+  const gx=i%N, gz=(i-gx)/N;
+  const m=new THREE.Mesh(litterGeo,litterMats[Math.floor(Math.random()*3)]);
+  m.position.set(worldX(gx)+(Math.random()-.5)*1.2,0.17,worldZ(gz)+(Math.random()-.5)*1.2);
+  m.rotation.y=Math.random()*Math.PI;
+  scene.add(m); arr.push(m); litterMap.set(i,arr); litterTotal++;
+}
+function sweepLitter(i){
+  const arr=litterMap.get(i);
+  if(!arr||!arr.length)return false;
+  scene.remove(arr.pop()); litterTotal--;
+  if(!arr.length)litterMap.delete(i);
+  return true;
+}
+function binNear(gx,gz,r=3){
+  return objects.some(o=>o.defKey==='bin'&&Math.abs(o.gx-gx)<=r&&Math.abs(o.gz-gz)<=r);
+}
+/* hedef-koşullu BFS (temizlikçi: en yakın çöp) */
+function bfsFind(fromIdx,isTarget){
+  if(isTarget(fromIdx))return [fromIdx];
+  const prev=new Map([[fromIdx,-1]]); const q=[fromIdx];
+  while(q.length){
+    const cur=q.shift(), cx=cur%N, cz=(cur-cx)/N;
+    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx=cx+dx,nz=cz+dz; if(!inGrid(nx,nz))continue;
+      const ni=idx(nx,nz);
+      if(prev.has(ni)||!paths.has(ni))continue;
+      prev.set(ni,cur);
+      if(isTarget(ni)){const out=[ni];let p=cur;while(p!==-1){out.push(p);p=prev.get(p);}return out.reverse();}
+      q.push(ni);
+    }
+  }
+  return null;
+}
+
+/* ---------- [A3: PERSONEL] işe al / kov / görev AI ---------- */
+const STAFF_DEFS={
+  cleaner: {n:'Temizlikçi',e:'🧹',salary:120,color:0x2fbf71,desc:'Yerdeki çöpleri süpürür'},
+  mechanic:{n:'Tamirci',   e:'🔧',salary:180,color:0xf2994a,desc:'Arızalı turları ücretsiz tamir eder'},
+  security:{n:'Güvenlik',  e:'🛡️',salary:150,color:0x4c6ef5,desc:'Yankesicileri caydırır'},
+  mascot:  {n:'Maskot',    e:'🎭',salary:140,color:0xd0bcff,desc:'Çevresine neşe saçar'},
+};
+const staff=[];
+const STAFF_MATS={};
+const staffGeoBody=new THREE.CylinderGeometry(.24,.3,.75,8);
+staffGeoBody.userData.shared=true;
+function hireStaff(role,silent){
+  if(staff.length>=12){notify('Personel sınırı (12) doldu!','warn');return null;}
+  const d=STAFF_DEFS[role];
+  const s={id:nextId++,role,d,tile:idx(GATE.gx,GATE.gz-1),path:[],pi:0,prog:0,
+    state:'idle',target:null,timer:0,name:d.n+' #'+(staff.filter(x=>x.role===role).length+1)};
+  if(!STAFF_MATS[role]){
+    STAFF_MATS[role]=new THREE.MeshLambertMaterial({color:d.color});
+    STAFF_MATS[role].userData.shared=true;
+  }
+  const mesh=new THREE.Group();
+  const body=new THREE.Mesh(staffGeoBody,STAFF_MATS[role]);
+  body.position.y=.38; body.castShadow=true; mesh.add(body);
+  const head=new THREE.Mesh(guestGeoHead,skin); head.position.y=.92; mesh.add(head);
+  const tag=textSprite(d.e); tag.scale.set(1.1,1.1,1); tag.position.y=1.55; mesh.add(tag);
+  mesh.position.set(worldX(GATE.gx),0,worldZ(GATE.gz-1));
+  mesh.traverse(c=>c.userData.staffRef=s);
+  s.mesh=mesh; scene.add(mesh); staff.push(s);
+  if(!silent)notify(`${d.e} ${d.n} işe alındı (maaş ${d.salary}₺/gün)`,'good');
+  return s;
+}
+function fireStaff(s){
+  if(s.fixing)s.fixing.mechAssigned=null;
+  scene.remove(s.mesh); disposeDeep(s.mesh);
+  staff.splice(staff.indexOf(s),1);
+  notify(`${s.d.e} ${s.name} işten çıkarıldı.`);
+  LP.closePanel();
+}
+function staffGoTo(s,toIdx){
+  const p=bfs(s.tile,toIdx);
+  if(!p)return false;
+  s.path=p;s.pi=0;s.prog=0;return true;
+}
+function securityNear(tileIdx,r=8){
+  const gx=tileIdx%N, gz=(tileIdx-gx)/N;
+  return staff.some(s=>s.role==='security'&&Math.abs(s.tile%N-gx)<=r&&Math.abs(((s.tile-s.tile%N)/N)-gz)<=r);
+}
+function updateStaff(dt){
+  for(const s of staff){
+    // yürüyüş (ziyaretçiyle aynı desen)
+    if(s.path.length){
+      const speed=s.role==='mascot'?1.7:2.1;
+      s.prog+=dt*speed/T;
+      while(s.prog>=1&&s.pi<s.path.length-1){s.prog-=1;s.pi++;s.tile=s.path[s.pi];}
+      if(s.pi>=s.path.length-1){
+        const e=s.path[s.path.length-1],ex=e%N,ez=(e-ex)/N;
+        s.mesh.position.set(worldX(ex),0,worldZ(ez));
+        s.tile=e;s.path=[];
+      } else {
+        const a=s.path[s.pi],b=s.path[s.pi+1];
+        const ax=a%N,az=(a-ax)/N,bx=b%N,bz=(b-bx)/N;
+        s.mesh.position.set(worldX(ax)+(worldX(bx)-worldX(ax))*s.prog,0,
+                            worldZ(az)+(worldZ(bz)-worldZ(az))*s.prog);
+        if(bx!==ax||bz!==az)s.mesh.rotation.y=Math.atan2(worldX(bx)-worldX(ax),worldZ(bz)-worldZ(az));
+      }
+      continue;
+    }
+    s.timer-=dt;
+    if(s.role==='cleaner'){
+      if(s.sweeping){
+        s.mesh.position.y=Math.abs(Math.sin(s.timer*14))*0.12; // süpürme animasyonu
+        if(s.timer<=0){s.mesh.position.y=0;s.sweeping=false;sweepLitter(s.tile);}
+        continue;
+      }
+      if(litterMap.has(s.tile)){s.sweeping=true;s.timer=1.2;continue;}
+      if(s.timer<=0){
+        s.timer=1.5;
+        const p=bfsFind(s.tile,i=>litterMap.has(i));
+        if(p)
+          {s.path=p;s.pi=0;s.prog=0;}
+        else{const rt=randomPathTile();if(rt!==null)staffGoTo(s,rt);}
+      }
+    } else if(s.role==='mechanic'){
+      if(s.fixing){
+        s.mesh.position.y=Math.abs(Math.sin(s.timer*10))*0.1;
+        if(s.timer<=0){
+          s.mesh.position.y=0;
+          const r=s.fixing; r.broken=false; r.mechAssigned=null; s.fixing=null;
+          notify(`🔧 ${r.def.name} tamirci tarafından onarıldı!`,'good');
+        }
+        continue;
+      }
+      if(s.timer<=0){
+        s.timer=2;
+        const target=objects.find(o=>o.broken&&!o.mechAssigned&&adjacentPathTile(o));
+        if(target){
+          const ent=adjacentPathTile(target);
+          if(staffGoTo(s,idx(ent.gx,ent.gz))){target.mechAssigned=s;s.goal=target;}
+        } else if(Math.random()<0.4){const rt=randomPathTile();if(rt!==null)staffGoTo(s,rt);}
+      }
+      if(s.goal&&!s.path.length){ // arızaya vardı
+        if(s.goal.broken){s.fixing=s.goal;s.timer=6;}
+        s.goal=null;
+      }
+    } else if(s.role==='security'){
+      if(s.timer<=0){s.timer=3;const rt=randomPathTile();if(rt!==null)staffGoTo(s,rt);}
+    } else if(s.role==='mascot'){
+      if(s.auraT===undefined)s.auraT=0;
+      s.auraT-=dt;
+      if(s.auraT<=0){
+        s.auraT=3;
+        const sx=s.tile%N, sz=(s.tile-s.tile%N)/N;
+        for(const g of guests){
+          const gx=g.tile%N, gz=(g.tile-g.tile%N)/N;
+          if(Math.abs(gx-sx)<=3&&Math.abs(gz-sz)<=3){
+            g.happiness=Math.min(100,g.happiness+2.5);
+            if(Math.random()<0.12)guestBubble(g,'🎭 Maskot süper!');
+          }
+        }
+      }
+      if(s.timer<=0){s.timer=4;const rt=randomPathTile();if(rt!==null)staffGoTo(s,rt);}
+    }
+  }
+}
+function selectStaff(s){
+  state.sel={staffM:s};
+  $('#panelBody').innerHTML=`<h3>${s.d.e} ${s.name}</h3>
+    <div class="row"><span>Görev</span><b>${s.d.desc}</b></div>
+    <div class="row"><span>Maaş</span><b>${s.d.salary}₺/gün</b></div>
+    <div class="row"><span>Durum</span><b>${s.sweeping?'Süpürüyor':s.fixing?'Tamir ediyor':s.path.length?'Yolda':'Bekliyor'}</b></div>
+    <div class="btnrow"><button onclick="LP.fire()">🚪 İşten Çıkar</button></div>`;
+  $('#panel').style.display='block';
+}
+
+/* ---------- [A3: ISI HARİTASI] kalabalık / çöp / mutluluk katmanları ---------- */
+const heat={mode:0,names:['Kapalı','Kalabalık 👥','Çöp 🗑️','Mutluluk 🙂'],t:0};
+heat.data=new Uint8Array(N*N*4);
+heat.tex=new THREE.DataTexture(heat.data,N,N,THREE.RGBAFormat);
+heat.mesh=new THREE.Mesh(new THREE.PlaneGeometry(N*T,N*T),
+  new THREE.MeshBasicMaterial({map:heat.tex,transparent:true,depthWrite:false,opacity:.62}));
+heat.mesh.rotation.x=-Math.PI/2; heat.mesh.position.y=0.14; heat.mesh.visible=false;
+scene.add(heat.mesh);
+const _heatCol=new THREE.Color();
+function heatPixel(gx,gz,v,inverse){
+  const o=((N-1-gz)*N+gx)*4; // plane yönelimi: v=0 ↔ gz=N-1 (bkz. rotation.x=-π/2)
+  if(v<=0.02){heat.data[o+3]=0;return;}
+  v=Math.min(1,v);
+  _heatCol.setHSL(inverse?v*0.33:(1-v)*0.66,1,0.5); // normal: mavi→kırmızı, ters: kırmızı→yeşil
+  heat.data[o]=_heatCol.r*255; heat.data[o+1]=_heatCol.g*255; heat.data[o+2]=_heatCol.b*255;
+  heat.data[o+3]=80+v*175;
+}
+function updateHeat(){
+  heat.data.fill(0);
+  if(heat.mode===1){ // kalabalık
+    const cnt=new Map();
+    for(const g of guests)cnt.set(g.tile,(cnt.get(g.tile)||0)+1);
+    for(const s of staff)cnt.set(s.tile,(cnt.get(s.tile)||0)+0.5);
+    cnt.forEach((c,i)=>heatPixel(i%N,(i-i%N)/N,c/3,false));
+  } else if(heat.mode===2){ // çöp
+    litterMap.forEach((arr,i)=>heatPixel(i%N,(i-i%N)/N,arr.length/3,false));
+  } else if(heat.mode===3){ // mutluluk (yeşil=mutlu, kırmızı=mutsuz)
+    const sum=new Map(),n=new Map();
+    for(const g of guests){sum.set(g.tile,(sum.get(g.tile)||0)+g.happiness);n.set(g.tile,(n.get(g.tile)||0)+1);}
+    sum.forEach((s,i)=>heatPixel(i%N,(i-i%N)/N,(s/n.get(i))/100,true));
+  }
+  heat.tex.needsUpdate=true;
+}
+
+/* ---------- [A4: SES] Web Audio — tamamen sentezlenmiş, dosya yok ---------- */
+const AU={ctx:null,master:null,amb:null,muted:false,musicStep:0};
+function audioInit(){
+  if(AU.ctx)return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;
+    AU.ctx=new C();
+    AU.master=AU.ctx.createGain(); AU.master.gain.value=0.5;
+    AU.master.connect(AU.ctx.destination);
+    // kalabalık uğultusu: kahverengi gürültü + lowpass, gain ziyaretçi sayısına bağlı
+    const len=2*AU.ctx.sampleRate;
+    const buf=AU.ctx.createBuffer(1,len,AU.ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    let last=0;
+    for(let i=0;i<len;i++){const w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3;}
+    const src=AU.ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+    const lp=AU.ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=480;
+    AU.amb=AU.ctx.createGain(); AU.amb.gain.value=0;
+    src.connect(lp); lp.connect(AU.amb); AU.amb.connect(AU.master); src.start();
+    // neşeli arka plan arpeji (8 adımlı döngü)
+    const notes=[523,659,784,880,784,659,587,659];
+    setInterval(()=>{
+      if(AU.muted||state.speed===0)return;
+      tone(notes[AU.musicStep%8],0.22,'triangle',0.045);
+      if(AU.musicStep%2===0)tone(notes[AU.musicStep%8]/2,0.3,'sine',0.035);
+      AU.musicStep++;
+    },300);
+  }catch(e){/* ses desteklenmiyorsa oyun sessiz devam eder */}
+}
+function tone(freq,dur,type,vol,slide){
+  if(!AU.ctx||AU.muted)return;
+  try{
+    const t=AU.ctx.currentTime;
+    const o=AU.ctx.createOscillator(), g=AU.ctx.createGain();
+    o.type=type||'square'; o.frequency.setValueAtTime(freq,t);
+    if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);
+    g.gain.setValueAtTime(vol||0.15,t);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(g); g.connect(AU.master); o.start(t); o.stop(t+dur);
+  }catch(e){}
+}
+const sfx={
+  click:()=>tone(660,0.05,'square',0.06),
+  place:()=>tone(220,0.15,'triangle',0.2,120),
+  sell:()=>tone(320,0.18,'sawtooth',0.1,90),
+  cash:()=>{tone(880,0.07,'square',0.09);setTimeout(()=>tone(1320,0.09,'square',0.09),70);},
+  ride:()=>tone(140,0.6,'sawtooth',0.12,480),
+  broken:()=>{tone(300,0.2,'sawtooth',0.14,150);setTimeout(()=>tone(210,0.3,'sawtooth',0.14,80),180);},
+};
+addEventListener('pointerdown',audioInit,{once:true});
+document.addEventListener('click',e=>{if(e.target.closest('button'))sfx.click();});
+
+/* ---------- [A4: BİRİNCİ ŞAHIS] ziyaretçi gözünden yürüyüş ---------- */
+const fp={on:false,x:0,z:0,yaw:0,pitch:-0.05,hadLock:false};
+document.addEventListener('pointerlockchange',()=>{
+  if(document.pointerLockElement===renderer.domElement)fp.hadLock=true;
+  else if(fp.on&&fp.hadLock){fp.hadLock=false;LP.fpToggle();} // kilitten çıkınca modu kapat
+});
+addEventListener('mousemove',e=>{
+  if(fp.on&&document.pointerLockElement===renderer.domElement){
+    fp.yaw-=e.movementX*0.0025;
+    fp.pitch=Math.max(-1.25,Math.min(1.25,fp.pitch-e.movementY*0.0025));
+  }
+});
+function fpUpdate(dt){
+  const sp=6*dt;
+  let mx=0,mz=0;
+  const add=a=>{mx+=Math.sin(a);mz+=Math.cos(a);};
+  if(keys['w']||keys['arrowup'])add(fp.yaw);
+  if(keys['s']||keys['arrowdown'])add(fp.yaw+Math.PI);
+  if(keys['a']||keys['arrowleft'])add(fp.yaw+Math.PI/2);
+  if(keys['d']||keys['arrowright'])add(fp.yaw-Math.PI/2);
+  if(mx||mz){
+    const B=N*T/2-1.2;
+    fp.x=Math.max(-B,Math.min(B,fp.x+mx*sp));
+    fp.z=Math.max(-B,Math.min(B,fp.z+mz*sp));
+  }
+  camera.position.set(fp.x,1.6,fp.z);
+  camera.lookAt(
+    fp.x+Math.sin(fp.yaw)*Math.cos(fp.pitch),
+    1.6+Math.sin(fp.pitch),
+    fp.z+Math.cos(fp.yaw)*Math.cos(fp.pitch));
+}
+
+/* ---------- [A4: MİNİMAP] köşede kuş bakışı park özeti ---------- */
+const mm={cv:document.getElementById('minimap'),t:0};
+mm.ctx=mm.cv.getContext('2d');
+mm.cv.addEventListener('click',e=>{ // haritaya tıkla → kamerayı oraya taşı
+  const r=mm.cv.getBoundingClientRect();
+  const gx=(e.clientX-r.left)/r.width*N, gz=(e.clientY-r.top)/r.height*N;
+  cam.tx=worldX(Math.round(gx)); cam.tz=worldZ(Math.round(gz));
+  if(fp.on){fp.x=cam.tx;fp.z=cam.tz;} else updateCamera();
+});
+function drawMinimap(){
+  const c=mm.ctx, s=180/N;
+  c.fillStyle='#2e5d2e'; c.fillRect(0,0,180,180);
+  c.fillStyle='#b9a88a';
+  paths.forEach(i=>{const gx=i%N,gz=(i-gx)/N;c.fillRect(gx*s,gz*s,s,s);});
+  for(const o of objects){
+    c.fillStyle=o.coaster?'#ff6b6b':o.def.ride?'#a078ff':o.def.shop?'#f2c94c':'#3f8f3f';
+    let [w,d]=o.def.foot; if(o.rot%2===1)[w,d]=[d,w];
+    c.fillRect(o.gx*s,o.gz*s,w*s,d*s);
+  }
+  c.fillStyle='#ffffff';
+  for(const g of guests){const gx=g.tile%N,gz=(g.tile-gx)/N;c.fillRect(gx*s+s*0.25,gz*s+s*0.25,1.6,1.6);}
+  c.fillStyle='#4cd7f6';
+  for(const st of staff){const gx=st.tile%N,gz=(st.tile-gx)/N;c.fillRect(gx*s,gz*s,2.2,2.2);}
+  // kamera işareti + bakış yönü
+  const cx=(fp.on?fp.x:cam.tx)/T+N/2, cz=(fp.on?fp.z:cam.tz)/T+N/2;
+  const yaw=fp.on?fp.yaw:cam.yaw+Math.PI;
+  c.strokeStyle='#d0bcff'; c.lineWidth=2;
+  c.beginPath(); c.arc(cx*s,cz*s,4,0,Math.PI*2); c.stroke();
+  c.beginPath(); c.moveTo(cx*s,cz*s);
+  c.lineTo(cx*s+Math.sin(yaw)*9,cz*s+Math.cos(yaw)*9); c.stroke();
+}
+
+/* ---------- [A5/A6] mevsim · kampanya · kredi · senaryo · başarım · gösteri · sosyal akış ---------- */
+const SEASONS=[
+  {n:'Yaz',e:'☀️',mul:1.3,ground:0x4a7c3a},
+  {n:'Sonbahar',e:'🍂',mul:1.0,ground:0x6e7a35},
+  {n:'Kış',e:'❄️',mul:0.75,ground:0x9aa89a},
+  {n:'İlkbahar',e:'🌸',mul:1.1,ground:0x4f8f42},
+];
+const seasonIdx=()=>Math.floor((state.day-1)/7)%4;
+function applySeason(){ground.material.color.setHex(SEASONS[seasonIdx()].ground);}
+
+const CAMPAIGNS={
+  social:  {n:'Sosyal Medya Reklamı',e:'📱',cost:1500,mul:1.6,days:2},
+  tv:      {n:'TV Reklamı',          e:'📺',cost:4000,mul:2.2,days:3},
+  discount:{n:'İndirim Günü',        e:'🏷️',cost:300, mul:1.8,days:1,halfFee:true},
+};
+const effFee=()=>state.campaign&&state.campaign.halfFee?Math.round(state.fee/2):state.fee;
+
+const SCENARIOS={
+  s1:{n:'İlk Adımlar', e:'🎯',days:10,money:30000,
+      desc:'10 gün içinde park puanını 600\'e VE anlık ziyaretçiyi 30\'a çıkar.',
+      check:()=>rating()>=600&&guests.length>=30},
+  s2:{n:'Kâr Makinesi',e:'💰',days:15,money:25000,
+      desc:'15 gün içinde toplam +40.000₺ kâr et (krediler kâr sayılmaz).',
+      check:()=>scenProfit()>=40000},
+  s3:{n:'Beş Yıldız',  e:'⭐',days:20,money:35000,
+      desc:'20 gün içinde park puanını 800\'e çıkar.',
+      check:()=>rating()>=800},
+};
+function scenProfit(){
+  const m=state.mode;
+  const past=state.history.filter(h=>h.day>=m.startDay).reduce((s,h)=>s+h.net,0);
+  return past+(state.income-state.expense);
+}
+function checkScenario(){
+  const m=state.mode;
+  if(m.type!=='scen'||m.done)return;
+  const sc=SCENARIOS[m.id];
+  if(sc.check()){
+    m.done=true; state.scenWon++;
+    showEnd(`<h2>🎉 SENARYO TAMAMLANDI!</h2>
+      <p><b>${sc.e} ${sc.n}</b> hedefine ${m.deadline-state.day} gün kala ulaştın. Tebrikler!</p>
+      <p>Park serbest modda devam ediyor — sınır yok.</p>
+      <button onclick="LP.endClose()">Devam Et ▶</button>`);
+    state.mode={type:'sandbox'};
+    $('#stGoal').style.display='none';
+  } else if(state.day>m.deadline){
+    m.done=true;
+    showEnd(`<h2>⏰ Süre doldu</h2>
+      <p><b>${sc.e} ${sc.n}</b> hedefine ulaşılamadı. Üzülme — park serbest modda devam ediyor,
+      istersen kaydedip yeni oyunda tekrar dene.</p>
+      <button onclick="LP.endClose()">Devam Et ▶</button>`);
+    state.mode={type:'sandbox'};
+    $('#stGoal').style.display='none';
+  }
+}
+function showEnd(html){$('#endOvBody').innerHTML=html;$('#endOv').style.display='flex';}
+
+const ACH=[
+  {id:'ilk_tur', n:'İlk Tur',        d:'Bir gezinti aracı kur',            c:()=>objects.some(o=>rideStatsOf(o))},
+  {id:'coaster', n:'Coaster Ustası', d:'Kapalı devre hız treni kur',       c:()=>objects.some(o=>o.coaster&&o.coasterData.closed)},
+  {id:'kalabalik',n:'Kalabalık',     d:'Aynı anda 40 ziyaretçi ağırla',    c:()=>guests.length>=40},
+  {id:'toplam100',n:'Yüzler Kulübü', d:'Toplam 100 ziyaretçi ağırla',      c:()=>state.totalGuests>=100},
+  {id:'yildiz',  n:'Beş Yıldız',     d:'Park puanı 800+',                  c:()=>state.ratingSm>=800},
+  {id:'zengin',  n:'Zengin',         d:'100.000₺ biriktir',                c:()=>state.money>=100000},
+  {id:'kadro',   n:'Tam Kadro',      d:'4 farklı rolde personel çalıştır', c:()=>new Set(staff.map(s=>s.role)).size>=4},
+  {id:'foto',    n:'Fotoğrafçı',     d:'İlk hatıra fotoğrafını sat',       c:()=>state.photoSold>0},
+  {id:'gosteri', n:'Gökyüzü Ressamı',d:'Havai fişek gösterisi düzenle',    c:()=>state.showsDone>0},
+  {id:'senaryo', n:'Görev Tamam',    d:'Bir senaryoyu başarıyla bitir',    c:()=>state.scenWon>0},
+];
+function checkAchievements(){
+  for(const a of ACH){
+    if(state.ach.includes(a.id))continue;
+    let ok=false; try{ok=a.c();}catch(e){}
+    if(ok){state.ach.push(a.id);notify(`🏆 Başarım: ${a.n} — ${a.d}`,'good');sfx.cash();}
+  }
+}
+function feedPush(name,txt){
+  state.feed.unshift({name,txt,d:state.day});
+  if(state.feed.length>30)state.feed.pop();
+}
+
+/* havai fişek: partikül patlamaları + park geneli mutluluk */
+const fw={show:0,burstT:0,parts:[]};
+function fwBurst(){
+  const n=90, g=new THREE.BufferGeometry(), pos=new Float32Array(n*3), vel=[];
+  const cx=(Math.random()-.5)*70, cy=16+Math.random()*12, cz=(Math.random()-.5)*70;
+  for(let i=0;i<n;i++){
+    pos[i*3]=cx;pos[i*3+1]=cy;pos[i*3+2]=cz;
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1), sp=5+Math.random()*6;
+    vel.push([Math.sin(ph)*Math.cos(th)*sp,Math.cos(ph)*sp,Math.sin(ph)*Math.sin(th)*sp]);
+  }
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const col=new THREE.Color().setHSL(Math.random(),1,0.6);
+  const p=new THREE.Points(g,new THREE.PointsMaterial({color:col,size:0.5,transparent:true,opacity:1}));
+  scene.add(p); fw.parts.push({p,vel,life:1.7});
+  tone(90,0.5,'sawtooth',0.18,42);
+  setTimeout(()=>tone(1800,0.25,'square',0.05,600),120);
+}
+function updateFireworks(dt){
+  if(fw.show>0){
+    fw.show-=dt; fw.burstT-=dt;
+    if(fw.burstT<=0){fw.burstT=0.7;fwBurst();}
+    for(const g of guests){g.happiness=Math.min(100,g.happiness+dt*1.2);}
+    if(fw.show<=0){guests.forEach(g=>{if(Math.random()<0.2)guestBubble(g,'🎆 Muhteşemdi!');});}
+  }
+  for(let i=fw.parts.length-1;i>=0;i--){
+    const b=fw.parts[i]; b.life-=dt;
+    if(b.life<=0){scene.remove(b.p);b.p.geometry.dispose();b.p.material.dispose();fw.parts.splice(i,1);continue;}
+    const pos=b.p.geometry.attributes.position;
+    for(let j=0;j<pos.count;j++){
+      b.vel[j][1]-=8*dt;
+      pos.setXYZ(j,pos.getX(j)+b.vel[j][0]*dt,pos.getY(j)+b.vel[j][1]*dt,pos.getZ(j)+b.vel[j][2]*dt);
+    }
+    pos.needsUpdate=true;
+    b.p.material.opacity=Math.max(0,b.life/1.7);
+  }
+}
+function startShow(free){
+  fw.show=13; fw.burstT=0; state.fwPlanned=false; state.showsDone++;
+  notify(free?'🎇 Yılbaşı gösterisi başladı!':'🎆 Havai fişek gösterisi başladı!','good');
+}
+
+/* 📊 Yönetim paneli */
+function renderMgmt(){
+  const m=state.mode, r=state.research, c=state.campaign;
+  let goal='';
+  if(m.type==='scen'&&!m.done){
+    const sc=SCENARIOS[m.id];
+    goal=`<h4>🎯 Senaryo: ${sc.n}</h4><p>${sc.desc}<br>Kalan süre: <b>${Math.max(0,m.deadline-state.day)} gün</b>
+      ${m.id==='s2'?` · Kâr: <b>${Math.round(scenProfit()).toLocaleString('tr-TR')}₺ / 40.000₺</b>`:''}</p>`;
+  }
+  $('#mgmtBody').innerHTML=`
+    <button style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:16px" onclick="LP.mgmt()">✕</button>
+    <h2>📊 Park Yönetimi</h2>
+    ${goal}
+    <h4>💹 Finans — Günlük Net Kâr/Zarar</h4>
+    <canvas id="mgChart" width="560" height="110" style="width:100%;background:#0d1526;border-radius:8px"></canvas>
+    <div class="row" style="display:flex;justify-content:space-between;margin-top:6px">
+      <span>Borç: <b style="color:${state.debt?'var(--red)':'var(--lime)'}">${state.debt.toLocaleString('tr-TR')}₺</b> (günlük %2 faiz)</span>
+      <span>
+        <button onclick="LP.loan()">🏦 10.000₺ Kredi Al</button>
+        <button onclick="LP.payLoan()" ${state.debt?'':'disabled'}>💳 5.000₺ Öde</button>
+      </span>
+    </div>
+    <h4>📣 Pazarlama</h4>
+    ${c?`<p>${CAMPAIGNS[c.key].e} <b>${CAMPAIGNS[c.key].n}</b> sürüyor — kalan ~${Math.ceil(c.remain/1440)} gün (ziyaretçi ×${c.mul})</p>`
+      :`<div class="grid2">${Object.entries(CAMPAIGNS).map(([k,cp])=>
+        `<button onclick="LP.campaign('${k}')">${cp.e} ${cp.n}<br><small>${cp.cost}₺ · ${cp.days} gün · ziyaretçi ×${cp.mul}${cp.halfFee?' · giriş yarı fiyat':''}</small></button>`).join('')}</div>`}
+    <h4>🔬 Araştırma</h4>
+    ${r?`<p>⏳ <b>${DEFS[r.key].name}</b> araştırılıyor — %${Math.round(100*(1-r.remain/r.total))}</p>`
+      :`<p>Aktif araştırma yok. Kilitli (🔒) turlara inşa menüsünden tıklayarak araştırma başlat.</p>`}
+    <p><small>Açık: ${[...state.unlocked].filter(k=>DEFS[k].locked).map(k=>DEFS[k].emoji).join(' ')||'—'} ·
+       Kilitli: ${Object.keys(DEFS).filter(k=>DEFS[k].locked&&!state.unlocked.has(k)).map(k=>DEFS[k].emoji).join(' ')||'—'}</small></p>
+    <h4>🎆 Gece Gösterisi</h4>
+    <p>${state.fwPlanned?'Bu gece 21:00\'de gösteri planlandı ✓':
+      '<button onclick="LP.plan()">🎆 Havai Fişek Planla (800₺ — bu gece 21:00)</button>'}
+      <small>Gösteri tüm ziyaretçilerin keyfini artırır.</small></p>
+    <h4>🏆 Başarımlar (${state.ach.length}/${ACH.length})</h4>
+    ${ACH.map(a=>`<div class="achv${state.ach.includes(a.id)?' won':''}">
+      <span class="tick">${state.ach.includes(a.id)?'✔':'○'}</span><b>${a.n}</b><span style="color:#8fa">${a.d}</span></div>`).join('')}
+    <h4>💬 Ziyaretçi Yorumları</h4>
+    ${state.feed.length?state.feed.slice(0,8).map(f=>
+      `<div class="feedItem"><b>${f.name}</b> · ${f.d}. gün<br>${f.txt}</div>`).join(''):'<p><small>Henüz yorum yok.</small></p>'}`;
+  drawChart();
+}
+function drawChart(){
+  const cv=document.getElementById('mgChart'); if(!cv)return;
+  const c=cv.getContext('2d'), W=cv.width, H=cv.height;
+  c.clearRect(0,0,W,H);
+  const hist=state.history.slice(-14);
+  if(!hist.length){c.fillStyle='#5a6a8a';c.font='13px system-ui';c.fillText('İlk gün tamamlanınca grafik burada başlar.',12,H/2);return;}
+  const maxAbs=Math.max(1000,...hist.map(h=>Math.abs(h.net)));
+  const zero=H/2, bw=W/14;
+  c.strokeStyle='#2d3449';c.beginPath();c.moveTo(0,zero);c.lineTo(W,zero);c.stroke();
+  hist.forEach((h,i)=>{
+    const bh=(Math.abs(h.net)/maxAbs)*(H/2-12);
+    c.fillStyle=h.net>=0?'#90db00':'#ff6b6b';
+    c.fillRect(i*bw+3,h.net>=0?zero-bh:zero,bw-6,Math.max(2,bh));
+    c.fillStyle='#8fa0c8';c.font='9px system-ui';
+    c.fillText(h.day+'g',i*bw+5,H-3);
+  });
+}
+
+/* ---------- başlangıç parkı (öğretici mini düzen) ---------- */
+function starterPark(){
+  for(let z=58;z>=40;z--)placeObject('path',30,z,0,true);          // giriş omurgası
+  for(let x=24;x<=36;x++)placeObject('path',x,44,0,true);          // plaza
+  for(let x=24;x<=36;x++)placeObject('path',x,50,0,true);          // ikinci cadde
+  for(let z=45;z<50;z++){placeObject('path',24,z,0,true);placeObject('path',36,z,0,true);}
+  placeObject('carousel',26,41,0,true);
+  placeObject('teacups',32,41,0,true);
+  placeObject('burger',22,45,0,true);
+  placeObject('drink',37,46,0,true);
+  placeObject('tree',23,43,0,true);placeObject('tree',37,43,0,true);
+  placeObject('tree',25,51,0,true);placeObject('tree',35,51,0,true);
+  placeObject('bench',29,45,0,true);placeObject('bench',31,45,0,true);
+  placeObject('lamp',29,43,0,true);placeObject('lamp',35,45,0,true);
+  placeObject('lamp',29,52,0,true);
+  placeObject('fountain',28,46,0,true);
+  placeObject('bin',25,45,0,true);placeObject('bin',35,49,0,true);
+}
+
+/* ---------- [DÖNGÜ] ---------- */
+buildMenu(); starterPark(); updateSky(); applySeason();
+notify('🎡 LunaPark\'a hoş geldin! ❔ tuşundan yardıma bak.','good');
+// açılışta mod seçimi (kayıt yüklenirse kendiliğinden kapanır)
+$('#modeSelBody').innerHTML=`<h2>🎡 LunaPark'a Hoş Geldin!</h2>
+  <p>Nasıl oynamak istersin?</p>
+  <button class="modeBtn" onclick="LP.chooseMode('sandbox')">🏖️ <b>Serbest Mod (Sandbox)</b><br>
+    <small>50.000₺ başlangıç · TÜM turlar baştan açık · hedef yok, keyfince kur</small></button>
+  ${Object.entries(SCENARIOS).map(([k,sc])=>`
+  <button class="modeBtn" onclick="LP.chooseMode('${k}')">${sc.e} <b>Senaryo: ${sc.n}</b><br>
+    <small>${sc.desc} · Başlangıç: ${sc.money.toLocaleString('tr-TR')}₺ · turlar araştırmayla açılır</small></button>`).join('')}
+  <p><small>💡 Kayıtlı oyunun varsa: önce bir mod seç, sonra 📂 ile yükle — kayıt her şeyi geri getirir.</small></p>`;
+$('#modeSel').style.display='flex';
+LP.speed(0);
+/* WebGL bağlam kaybı kurtarma: GPU sürücüsü sıfırlanırsa (bellek baskısı,
+   sürücü hatası vb.) tuval siyah kalır — preventDefault ile three.js'in
+   bağlamı geri kurmasına izin verilir; kurtarılamazsa kullanıcıya
+   ilerlemeyi kaydetme şansı sunulur. */
+let glLostTimer=null;
+renderer.domElement.addEventListener('webglcontextlost',e=>{
+  e.preventDefault();
+  LP.speed(0);
+  notify('⚠ Grafik bağlamı koptu — kurtarılıyor...','warn');
+  glLostTimer=setTimeout(()=>{
+    showEnd(`<h2>⚠ Grafik sürücüsü sıfırlandı</h2>
+      <p>Görüntü otomatik kurtarılamadı. İlerlemeni kaydedip sayfayı yenileyebilirsin —
+      kaydı 📂 ile geri yüklersin.</p>
+      <button onclick="LP.save();setTimeout(()=>location.reload(),700)">💾 Kaydet ve Yenile</button>
+      <button onclick="location.reload()">🔄 Sadece Yenile</button>`);
+  },4000);
+},false);
+renderer.domElement.addEventListener('webglcontextrestored',()=>{
+  clearTimeout(glLostTimer);
+  $('#endOv').style.display='none';
+  notify('✅ Grafikler kurtarıldı, oyun devam ediyor.','good');
+  LP.speed(1);
+},false);
+
+let last=performance.now(), animClock=0, achT=2, loopErrs=0;
+function loop(now){
+  requestAnimationFrame(loop);
+  try{
+  let dt=Math.min(0.1,(now-last)/1000); last=now;
+  if(fp.on)fpUpdate(dt); else camPan(dt);
+  mm.t-=dt; if(mm.t<=0){mm.t=0.5;drawMinimap();}
+  if(AU.amb)AU.amb.gain.value=AU.muted?0:Math.min(0.12,guests.length*0.004);
+  const gdt=dt*state.speed;
+  if(gdt>0){
+    animClock+=gdt;
+    updateEconomy(gdt);
+    updateGuests(gdt);
+    updateRides(gdt);
+    updateCoasters(gdt);
+    updateStaff(gdt);
+    updateFireworks(gdt);
+    achT-=gdt;
+    if(achT<=0){achT=2;checkAchievements();checkScenario();}
+    heat.t-=gdt;
+    if(heat.t<=0){heat.t=0.5;if(heat.mode>0)updateHeat();}
+    for(const o of objects){o.animT+=gdt;if(o.mesh.userData.anim)o.mesh.userData.anim(o.animT,o,gdt);}
+    updateSky();
+  }
+  // ride-cam: tren çalışıyorsa ön vagondan birinci şahıs görüş
+  if(state.rideCam&&!fp.on){
+    const o=state.rideCam,cd=o.coasterData;
+    if(cd&&cd.track&&cd.train&&cd.train.active){
+      const f=frameAt(cd.track,cd.train.s);
+      camera.position.copy(f.p).addScaledVector(f.up,1.15).addScaledVector(f.tan,-1.2*cd.train.dir);
+      camera.lookAt(f.p.clone().addScaledVector(f.tan,cd.train.dir*8).addScaledVector(f.up,0.6));
+    }
+  }
+  updateHUD();
+  renderer.render(scene,camera);
+  }catch(err){ // tek karelik hata oyunu öldürmesin; tekrarlıyorsa kurtarma sun
+    loopErrs++;
+    if(loopErrs===1)console.error('[loop]',err);
+    if(loopErrs===12){
+      LP.speed(0);
+      showEnd(`<h2>⚠ Beklenmeyen oyun hatası</h2>
+        <p><code style="font-size:11px">${String(err&&err.message||err).slice(0,160)}</code></p>
+        <p>İlerlemeni kaydedip sayfayı yenilemen önerilir.</p>
+        <button onclick="LP.save();setTimeout(()=>location.reload(),700)">💾 Kaydet ve Yenile</button>
+        <button onclick="document.getElementById('endOv').style.display='none';LP.speed(1)">Yine de Devam Et</button>`);
+    }
+  }
+}
+requestAnimationFrame(loop);
+
+/* test/doğrulama kancası */
+window.__lp={state,objects,guests,paths,placeObject,spawnGuest,rating,
+  coasterAdd,coasterClose,coasterUndo,rideStatsOf,selectObject,
+  staff,hireStaff,litterMap,addLitter,heat,updateHeat,
+  fp,AU,sfx,drawMinimap,camera,renderer,disposeDeep,refreshGhost,clearGhost,
+  setHover(t){hoverTile=t;},
+  SCENARIOS,ACH,CAMPAIGNS,SEASONS,seasonIdx,fw,startShow,feedPush,
+  checkAchievements,checkScenario,scenProfit,renderMgmt,effFee,
+  get litterTotal(){return litterTotal;}};
+
+}catch(err){
+  const e=document.getElementById('err');
+  e.style.display='block';
+  e.textContent='OYUN HATASI:\n'+(err.stack||err.message||err);
+  console.error(err);
+}
+</script>
+</body>
+</html>

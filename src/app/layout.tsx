@@ -13,6 +13,8 @@ import { LocaleHtml } from "@/components/LocaleHtml";
 import { JsonLd } from "@/components/JsonLd";
 import { AdsenseScript } from "@/components/AdsenseScript";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { Onboarding } from "@/components/Onboarding";
+import { RateNudge } from "@/components/RateNudge";
 import { SITE } from "@/lib/site";
 
 // CYBERPULSE tipografi: Sora (başlık), Hanken Grotesk (gövde), JetBrains Mono (etiket/veri)
@@ -51,8 +53,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html lang="tr" suppressHydrationWarning className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
+        {/* Tema FOUC önleme: ilk boyamadan ÖNCE data-theme uygula (ThemeToggle ile aynı mantık) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var m=localStorage.getItem("oh:theme");var t=m==="light"?"light":m==="system"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):"dark";document.documentElement.dataset.theme=t;}catch(e){}`,
+          }}
+        />
         {/* Oyun görseli CDN'lerine erken bağlan → LCP/görsel yükleme hızlanır */}
         <link rel="preconnect" href="https://img.gamemonetize.com" />
         <link rel="preconnect" href="https://img.gamedistribution.com" />
@@ -122,6 +130,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <CookieConsent />
         <LoginModal />
+        <Onboarding />
+        <RateNudge />
         <ServiceWorkerRegister />
       </body>
     </html>

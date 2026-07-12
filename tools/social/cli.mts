@@ -36,7 +36,7 @@ import type { SocialConfig } from "./types.mts";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 function parseArgs(argv: string[]) {
-  const out: { force: boolean; all: boolean; limit?: number; only?: string; concurrency?: number } = {
+  const out: { force: boolean; all: boolean; limit?: number; only?: string; concurrency?: number; config?: string } = {
     force: false,
     all: false,
   };
@@ -46,13 +46,18 @@ function parseArgs(argv: string[]) {
     else if (argv[i] === "--limit") out.limit = Number(argv[++i]);
     else if (argv[i] === "--only") out.only = argv[++i];
     else if (argv[i] === "--concurrency") out.concurrency = Number(argv[++i]);
+    else if (argv[i] === "--config") out.config = argv[++i];
   }
   return out;
 }
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const config: SocialConfig = JSON.parse(fs.readFileSync(path.join(ROOT, "tools/social/config.json"), "utf8"));
+  // --config ile alternatif bir config dosyası verilebilir (ör. config.hooks.json)
+  // — farklı outputDir/stateFile taşıyarak ÖNCEKİ üretimi (tools/social/output/,
+  // state/ledger.json) hiç dokunmadan ayrı bir üretim çalıştırmayı sağlar.
+  const configFileName = args.config ?? "tools/social/config.json";
+  const config: SocialConfig = JSON.parse(fs.readFileSync(path.join(ROOT, configFileName), "utf8"));
   // config.json'daki yollar proje köküne görelidir; mutlak yola çeviriyoruz.
   config.outputDir = path.join(ROOT, config.outputDir);
   config.cacheDir = path.join(ROOT, config.cacheDir);

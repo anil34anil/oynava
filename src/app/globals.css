@@ -7,6 +7,78 @@
   --font-display: "Sora", system-ui, sans-serif;
   --font-body: "Hanken Grotesk", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ── KOYU TEMA (varsayılan — marka görünümü) ─────────────────────────
+     RGB üçlüsü olarak tutulur; tailwind.config bunları
+     rgb(var(--c-*) / <alpha>) ile okur. */
+  --c-base: 11 19 38;        /* #0b1326 */
+  --c-surface: 19 27 46;     /* #131b2e */
+  --c-card: 23 31 51;        /* #171f33 */
+  --c-line: 45 52 73;        /* #2d3449 */
+  --c-ink: 218 226 253;      /* #dae2fd */
+  --c-white: 255 255 255;
+  --c-neon: 208 188 255;     /* #d0bcff */
+  --c-neon-purple: 160 120 255;
+  --c-neon-pink: 255 180 171;
+  --c-neon-lime: 144 219 0;
+  --c-secondary: 76 215 246;
+  --c-slate-50: 243 245 255;
+  --c-slate-100: 228 232 251;
+  --c-slate-200: 203 210 236;
+  --c-slate-300: 170 179 212;
+  --c-slate-400: 139 147 176;
+  --c-slate-500: 111 119 150;
+  --c-slate-600: 88 96 121;
+  --c-slate-700: 65 72 99;
+  --c-slate-800: 45 52 73;
+  --c-slate-900: 28 34 53;
+
+  /* Tema-duyarlı yardımcılar */
+  --glass-bg: rgba(11, 19, 38, 0.7);
+  --glass-border: rgba(73, 68, 84, 0.25);
+  --mesh-1: rgba(208, 188, 255, 0.14);
+  --mesh-2: rgba(76, 215, 246, 0.10);
+  --mesh-3: rgba(144, 219, 0, 0.06);
+  --scroll-track: #060e20;
+  --scroll-thumb: #2d3449;
+  --scroll-thumb-h: #494454;
+}
+
+/* ── AÇIK TEMA (kullanıcı seçimi / sistem) ─────────────────────────────
+   Aynı marka kimliği, aydınlık zemin: vurgular koyulaştırılır (kontrast),
+   slate ölçeği ters çevrilir, "white" koyu laciverte döner ki text-white
+   ve bg-white/[x] kullanımları açık zeminde de okunur kalsın. */
+:root[data-theme="light"] {
+  --c-base: 244 246 252;     /* #f4f6fc */
+  --c-surface: 255 255 255;
+  --c-card: 255 255 255;
+  --c-line: 209 216 238;     /* #d1d8ee */
+  --c-ink: 28 34 53;         /* #1c2235 */
+  --c-white: 28 34 53;
+  --c-neon: 124 77 255;      /* #7c4dff */
+  --c-neon-purple: 106 61 232;
+  --c-neon-pink: 211 56 44;
+  --c-neon-lime: 92 143 0;
+  --c-secondary: 8 128 160;
+  --c-slate-50: 28 34 53;
+  --c-slate-100: 36 43 66;
+  --c-slate-200: 47 55 82;
+  --c-slate-300: 65 72 99;
+  --c-slate-400: 88 96 121;
+  --c-slate-500: 111 119 150;
+  --c-slate-600: 139 147 176;
+  --c-slate-700: 170 179 212;
+  --c-slate-800: 203 210 236;
+  --c-slate-900: 228 232 251;
+
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(124, 77, 255, 0.18);
+  --mesh-1: rgba(124, 77, 255, 0.08);
+  --mesh-2: rgba(8, 128, 160, 0.06);
+  --mesh-3: rgba(92, 143, 0, 0.05);
+  --scroll-track: #e8ecf7;
+  --scroll-thumb: #c3cbe4;
+  --scroll-thumb-h: #a99fc0;
 }
 
 html {
@@ -15,29 +87,29 @@ html {
 
 body {
   @apply bg-base text-slate-200 font-body antialiased;
-  /* Köşelerde mor/cyan mesh gradyan parıltıları (deep space) */
+  /* Köşelerde mor/cyan mesh gradyan parıltıları (tema-duyarlı) */
   background-image:
-    radial-gradient(circle at 10% -8%, rgba(208, 188, 255, 0.14), transparent 45%),
-    radial-gradient(circle at 92% 4%, rgba(76, 215, 246, 0.10), transparent 45%),
-    radial-gradient(circle at 50% 110%, rgba(144, 219, 0, 0.06), transparent 50%);
+    radial-gradient(circle at 10% -8%, var(--mesh-1), transparent 45%),
+    radial-gradient(circle at 92% 4%, var(--mesh-2), transparent 45%),
+    radial-gradient(circle at 50% 110%, var(--mesh-3), transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
 }
 
-/* İnce, koyu kaydırma çubuğu */
+/* İnce, tema-duyarlı kaydırma çubuğu */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #060e20;
+  background: var(--scroll-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2d3449;
+  background: var(--scroll-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #494454;
+  background: var(--scroll-thumb-h);
 }
 
 @layer components {
@@ -61,18 +133,18 @@ body {
     contain-intrinsic-size: auto 640px;
   }
 
-  /* Glassmorphism panel — buzlu cam */
+  /* Glassmorphism panel — buzlu cam (tema-duyarlı) */
   .glass {
-    background-color: rgba(11, 19, 38, 0.7);
+    background-color: var(--glass-bg);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(73, 68, 84, 0.25);
+    border: 1px solid var(--glass-border);
   }
 
   /* Mor neon vurgu metni */
   .neon-text {
-    color: #d0bcff;
-    text-shadow: 0 0 12px rgba(208, 188, 255, 0.5);
+    color: rgb(var(--c-neon));
+    text-shadow: 0 0 12px rgb(var(--c-neon) / 0.5);
   }
 
   .btn {

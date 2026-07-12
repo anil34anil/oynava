@@ -38,7 +38,7 @@ export function AccountDeletion() {
   }
 
   return (
-    <button onClick={clearAll} className="rounded-xl bg-neon-pink/90 px-6 py-3 font-semibold text-white transition hover:bg-neon-pink">
+    <button onClick={clearAll} className="rounded-xl bg-neon-pink/90 px-6 py-3 font-semibold text-[#fff] transition hover:bg-neon-pink">
       🗑️ Tüm verilerimi sil
     </button>
   );

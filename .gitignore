@@ -14,3 +14,4 @@ screenshots/
 # tekrar uretilebilir; ledger.json (state/) KASITLI olarak commit'lenir)
 tools/social/output/
 tools/social/.cache/
+tools/social/output-hooks/

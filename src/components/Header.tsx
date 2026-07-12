@@ -5,6 +5,7 @@ import { SearchBar } from "./SearchBar";
 import { ProfileChip } from "./ProfileChip";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { useToggleSidebar } from "@/lib/useSidebar";
 
 export function Header() {
@@ -32,6 +33,7 @@ export function Header() {
           <SearchBar />
         </div>
 
+        <ThemeToggle />
         <LanguageSwitcher />
         <ProfileChip />
       </div>

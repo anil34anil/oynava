@@ -6,9 +6,11 @@ import { COLLECTIONS } from "@/lib/collections";
 import { SITE } from "@/lib/site";
 import { Logo } from "./Logo";
 import { useT, useAutoTr } from "@/lib/useLocaleClient";
+import { useIsTwa, openPlayRating } from "@/lib/useTwa";
 
 export function Footer() {
   const { t, href } = useT();
+  const isTwa = useIsTwa();
   const [slogan, tagline, info, faq, contact, partners, ageRating, dataProtection, privacyPrefs, accessibility, rights, popularSearches] =
     useAutoTr([
       "Bir tık, bin oyun",
@@ -102,6 +104,14 @@ export function Footer() {
           <Link href={href("/gizlilik-tercihleri")} className="hover:text-neon">{privacyPrefs}</Link>
           <span className="text-line">·</span>
           <Link href={href("/erisilebilirlik")} className="hover:text-neon">{accessibility}</Link>
+          {isTwa && (
+            <>
+              <span className="text-line">·</span>
+              <button onClick={openPlayRating} className="hover:text-neon">
+                ⭐ Uygulamayı Puanla
+              </button>
+            </>
+          )}
         </div>
       </div>
 

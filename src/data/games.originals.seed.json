@@ -1,5 +1,18 @@
 [
   {
+    "id": "ov-lunapark",
+    "title": "LunaPark",
+    "description": "LunaPark is Oynava's own 3D amusement park building and management game. Design your dream park on a 3D grid: build paths, place more than ten rides including a Ferris wheel, drop tower, pirate ship and go-karts, and design your own roller coaster piece by piece with loops and corkscrews, then watch the train ride it with real physics — or ride along in first-person ride-cam. Every visitor is simulated individually with hunger, thirst and happiness; hire cleaners, mechanics, security and mascots, run marketing campaigns, take loans, research new rides and follow your profit on daily charts. Play free-form sandbox or take on goal-based scenarios, unlock achievements, schedule fireworks shows and experience four seasons with snow, Halloween and New Year events. Walk your park in first-person mode and save your progress as a file.",
+    "instructions": "Rotate the camera with right-click drag, zoom with the mouse wheel and pan with WASD or arrow keys. Press T for a top-down view and F to walk through your park in first person. Pick buildings from the bottom menu and place them with left click; press R to rotate and Esc to cancel. Click any ride, shop, guest or staff member to inspect and manage it. Build paths from the gate so visitors can reach your rides. Use the management panel for loans, marketing, research and fireworks. Save and load your park as a file from the top bar.",
+    "url": "/originals/lunapark/index.html",
+    "category": "Originals",
+    "tags": "originals, theme park, lunapark, tycoon, simulation, management, roller coaster, building, strategy, 3d, sandbox",
+    "thumb": "/originals/lunapark/thumb.jpg",
+    "width": "1280",
+    "height": "720",
+    "isNew": true
+  },
+  {
     "id": "ov-blokkraft",
     "title": "BlokKraft",
     "description": "BlokKraft is Oynava's own Minecraft-style 3D sandbox game. Explore a procedurally generated world of hills, lakes, beaches and forests. Choose your play style: in Gatherer mode you mine blocks, collect resources in your inventory and craft new materials like planks, glass and bricks; in Creative mode all blocks are unlimited so you can build freely. Watch the sun rise and set in a full day-night cycle with a starry night sky, and your world is saved automatically so you can continue building whenever you return. Works on both desktop and mobile with touch controls.",

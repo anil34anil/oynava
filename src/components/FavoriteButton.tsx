@@ -17,7 +17,7 @@ export function FavoriteButton({ id }: { id: string }) {
       className={`absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full border backdrop-blur transition
         ${active
           ? "border-neon-pink bg-neon-pink/20 text-neon-pink"
-          : "border-white/20 bg-black/40 text-white/70 hover:text-neon-pink"}`}
+          : "border-[#fff]/20 bg-black/40 text-[#fff]/70 hover:text-neon-pink"}`}
     >
       {active ? "♥" : "♡"}
     </button>
