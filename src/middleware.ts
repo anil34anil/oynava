@@ -39,6 +39,12 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // _next, api, admin ve dosya uzantılı istekler hariç
-  matcher: ["/((?!_next|api|admin|.*\\.).*)"],
+  // Middleware YALNIZCA dil önekli yollarda çalışır (/en, /es/... ve kanonikleştirilecek /tr).
+  // Öneksiz TR yolları (trafiğin ~tamamı) middleware'i HİÇ tetiklemez — zaten sadece
+  // next() dönüyordu → gereksiz Function/Edge çağrısı ortadan kalkar (Netlify compute tasarrufu).
+  // NOT: Bu liste i18n.ts'teki LOCALE_CODES ile senkron tutulmalı (matcher statik olmalı, dinamik olamaz).
+  matcher: [
+    "/(en|nl|es|ko|id|az|ar|tr)",
+    "/(en|nl|es|ko|id|az|ar|tr)/:path*",
+  ],
 };
