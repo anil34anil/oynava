@@ -14,6 +14,7 @@ import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
 import { getTopPlayedIds } from "@/lib/kv";
 import { COLLECTION_CONTENT } from "@/lib/collectionContent";
+import { relatedPostsForCollectionKeywords } from "@/lib/relatedContent";
 
 export const revalidate = 3600;
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: { collection: strin
   if (!c) return { title: "Sayfa bulunamadı" };
   const desc = c.intro.slice(0, 160);
   return {
-    title: `${c.title} — Ücretsiz Oyna | OYNAVA`,
+    title: `${c.title} — Ücretsiz Oyna`,
     description: desc,
     keywords: c.keywords,
     alternates: seoAlternates(`/${c.slug}`),
@@ -61,6 +62,7 @@ export default async function CollectionPage({ params }: { params: { collection:
   const L = (p: string) => localePath(p, locale);
   // Özgün gövde metni — yalnız en yüksek öncelikli koleksiyonlarda ve yalnız TR'de (çeviri maliyeti)
   const bodyTr = locale === "tr" ? COLLECTION_CONTENT[c.slug] ?? [] : [];
+  const relatedPosts = locale === "tr" ? relatedPostsForCollectionKeywords(c.keywords) : [];
 
   return (
     <div className="container-x space-y-6 py-6">
@@ -122,6 +124,24 @@ export default async function CollectionPage({ params }: { params: { collection:
           <div className="max-w-3xl space-y-3">
             {bodyTr.map((p, i) => (
               <p key={i} className="text-slate-400">{p}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* İlgili rehberler: blog'dan bu koleksiyona link denkliği geri akışı (SEO) */}
+      {relatedPosts.length > 0 && (
+        <section className="border-t border-line pt-6">
+          <h2 className="mb-3 font-display text-lg font-bold text-ink">İlgili Rehberler</h2>
+          <div className="flex flex-wrap gap-2">
+            {relatedPosts.map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-tertiary hover:text-tertiary"
+              >
+                📖 {p.label}
+              </Link>
             ))}
           </div>
         </section>

@@ -11,6 +11,7 @@ import { t, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/localize";
 import { translateText } from "@/lib/translate";
 import { CATEGORY_CONTENT } from "@/lib/categoryContent";
+import { relatedPostsForCategorySlug } from "@/lib/relatedContent";
 
 // Kategori başına SSS (rich snippet + içerik derinliği). Şablon ama kategori adıyla özgünleşir.
 function catFaq(catTr: string, topTitles: string[], count: number) {
@@ -79,6 +80,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   const relatedCollections = COLLECTIONS.filter(
     (c) => c.filter && games.slice(0, 30).some((g) => c.filter!(g)),
   ).slice(0, 6);
+  const relatedPosts = relatedPostsForCategorySlug(cat.slug);
 
   return (
     <div className="container-x space-y-6 py-6">
@@ -166,6 +168,24 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           <div className="max-w-3xl space-y-3">
             {bodyTr.map((p, i) => (
               <p key={i} className="text-slate-400">{p}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* İlgili rehberler: blog'dan bu kategoriye link denkliği geri akışı (SEO) */}
+      {relatedPosts.length > 0 && locale === "tr" && (
+        <section className="border-t border-line pt-6">
+          <h2 className="mb-3 font-display text-lg font-bold text-ink">İlgili Rehberler</h2>
+          <div className="flex flex-wrap gap-2">
+            {relatedPosts.map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-tertiary hover:text-tertiary"
+              >
+                📖 {p.label}
+              </Link>
             ))}
           </div>
         </section>

@@ -8,6 +8,12 @@ import { SITE } from "@/lib/site";
 
 const BASE = SITE.url;
 
+// Kategori/koleksiyon sayfalarının içeriği (özgün metin + "İlgili Rehberler" iç
+// linkleri) bu tarihte güncellendi. SABİT bir tarih — her build'de "şimdi"ye
+// çekilmez; Google build zamanına göre her zaman değişen lastmod'u güvenilmez
+// sayıp yok sayar, bu yüzden yalnız gerçek içerik değiştiğinde elle güncellenir.
+const CONTENT_UPDATED = new Date("2026-07-12");
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const games = await getGames();
 
@@ -21,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Kategoriler — dil alternatifleriyle (hreflang)
   const catUrls = CATEGORIES.map((c) => ({
     url: `${BASE}/kategori/${c.slug}`,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "daily" as const,
     priority: 0.8,
     alternates: { languages: sitemapLanguages(`/kategori/${c.slug}`) },
@@ -29,6 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Programmatic SEO koleksiyonları — yüksek öncelik + hreflang
   const collectionUrls = COLLECTIONS.map((c) => ({
     url: `${BASE}/${c.slug}`,
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "daily" as const,
     priority: 0.9,
     alternates: { languages: sitemapLanguages(`/${c.slug}`) },

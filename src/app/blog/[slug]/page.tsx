@@ -4,6 +4,7 @@ import Link from "next/link";
 import { POSTS, getPost } from "@/lib/blog";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
+import { relatedLinksForPost } from "@/lib/relatedContent";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -108,6 +109,29 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         {new Date(post.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
       </p>
       <div className="legal-prose mt-6 space-y-4">{renderBody(post.body)}</div>
+
+      {(() => {
+        // Konuya göre kategori/koleksiyon linkleri: gerçek oyun sayfalarına link
+        // denkliği akıtır ve okuyucuyu içerikten oyuna yönlendirir (SEO + navigasyon).
+        const gameLinks = relatedLinksForPost(post);
+        if (!gameLinks.length) return null;
+        return (
+          <div className="mt-10 border-t border-line pt-6">
+            <h2 className="font-display text-lg font-bold text-ink">İlgili Oyunlar</h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {gameLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="rounded-lg border border-line px-3 py-1.5 text-sm text-slate-300 hover:border-neon hover:text-neon"
+                >
+                  {l.label} →
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {(() => {
         const related = POSTS.filter((p) => p.slug !== post.slug)
