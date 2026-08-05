@@ -1,0 +1,24 @@
+# OYNAVA
+
+> OYNAVA, binlerce ücretsiz HTML5 tarayıcı oyununu tek çatı altında toplayan
+> Türkçe bir oyun portalıdır. Kullanıcılar hiçbir indirme veya kurulum
+> yapmadan, tarayıcıda anında oyun oynayabilir.
+
+OYNAVA aksiyon, yarış, .io çok oyunculu, bulmaca, zekâ/strateji, spor, dövüş,
+kız, çocuk ve 3D oyunları dahil geniş bir kategori yelpazesi sunar. Tüm
+oyunlar ücretsizdir; site reklam gelirleriyle desteklenir. Ayrıca OYNAVA
+Originals adı altında stüdyonun kendi geliştirdiği özgün oyunlar (GölgeDiyarı,
+BlokKraft, LunaPark) barındırılır.
+
+## Ana Bölümler
+
+- [Ana Sayfa](https://www.oynava.com/): Popüler oyunlar, kategoriler, günün oyunu
+- [Tüm Oyunlar](https://www.oynava.com/oyunlar): Kataloğun tamamı
+- [Kategoriler](https://www.oynava.com/kategori/aksiyon): Aksiyon, yarış, bulmaca, zekâ/strateji, spor, dövüş, .io, kız, çocuk, arcade, 3D
+- [Oynava Originals](https://www.oynava.com/kategori/originals): Stüdyonun kendi geliştirdiği oyunlar
+- [Koleksiyonlar](https://www.oynava.com/koleksiyonlar): Konu bazlı oyun listeleri (en iyi araba oyunları, 2 kişilik oyunlar vb.)
+- [Blog](https://www.oynava.com/blog): Oyun rehberleri ve ipuçları
+
+## Sitemap
+
+Tam URL listesi için: https://www.oynava.com/sitemap.xml

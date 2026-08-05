@@ -78,6 +78,11 @@ export default async function HomePage() {
 
   return (
     <div className="container-x space-y-6 py-6">
+      {/* Görsel tasarımı değiştirmeden sayfanın gerçek konusunu taşıyan tek H1
+          (SEO: H1 sayfanın asıl konusunu yansıtmalı, alt bölüm başlığı değil —
+          "Popüler Oyunlar" aşağıda doğru şekilde h2'ye çevrildi). */}
+      <h1 className="sr-only">OYNAVA — Ücretsiz Oyun Oyna, Binlerce Online Oyun</h1>
+
       {/* Kategori hızlı erişim ikonları — EN ÜSTTE */}
       <section>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-[repeat(13,minmax(0,1fr))]">
@@ -115,7 +120,7 @@ export default async function HomePage() {
 
       {/* Popüler oyunlar */}
       <section>
-        <h1 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h1>
+        <h2 className="mb-4 font-display text-2xl font-black text-ink">🔥 {t(locale, "home.popular")}</h2>
         <GameGrid games={popular} priorityCount={6} />
       </section>
 

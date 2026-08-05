@@ -14,7 +14,7 @@ export function ProfileChip() {
 
   if (ready && !user) {
     return (
-      <button onClick={openLogin} className="btn-primary py-2 text-xs">
+      <button onClick={openLogin} className="btn-primary px-3 py-2 text-xs sm:px-5">
         {t("common.login")}
       </button>
     );
