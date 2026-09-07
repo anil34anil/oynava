@@ -84,6 +84,11 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   gladyator: ["gladiator"], samuray: ["samurai"], ejder: ["dragon"],
   fps: ["fps", "shooter", "first person shooter", "shooting"], online: ["online", "multiplayer", ".io"],
   cokoyunculu: ["multiplayer", "online"], arena: ["arena", "battle"], sniper: ["sniper", "shooting"],
+  yarisma: ["quiz", "trivia", "competition"], sinav: ["quiz", "test"],
+  kurye: ["delivery"], teslimat: ["delivery"], insaat: ["construction", "building"],
+  kazma: ["dig", "mining"], surucu: ["driver", "driving"], kutu: ["box"], zar: ["dice"],
+  kaplumbaga: ["turtle"], gorev: ["mission"], ordu: ["army", "military"], kasiyer: ["cashier"],
+  gizli: ["hidden"], nesne: ["object"], cizim: ["drawing", "draw"], yildiz: ["star"], bilye: ["marble"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

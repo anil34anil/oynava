@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getGames } from "@/lib/games";
 import { categorySlug, slugifyTitle } from "@/lib/catalog";
+import { COLLECTIONS } from "@/lib/collections";
 import { InfiniteGrid } from "@/components/InfiniteGrid";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
-import { t } from "@/lib/i18n";
+import { t, localePath } from "@/lib/i18n";
 import { getLocale, localizeText } from "@/lib/localize";
+
+const PREMIUM_COLLECTION_SLUGS = ["en-iyi-3d-oyunlar", "en-iyi-nisanci-oyunlari", "en-iyi-yaris-oyunlari", "ucretsiz-online-oyunlar"];
 
 export const revalidate = 3600;
 
@@ -19,7 +23,9 @@ const PREMIUM_CATS = ["3d", "aksiyon", "yaris", "io"];
 
 export default async function PremiumPage() {
   const locale = getLocale();
+  const L = (p: string) => localePath(p, locale);
   const all = await getGames();
+  const relatedCollections = COLLECTIONS.filter((c) => PREMIUM_COLLECTION_SLUGS.includes(c.slug));
   const intro =
     locale === "tr"
       ? "Yüksek grafikli 3D, WebGL, FPS, yarış ve .io savaş oyunlarının en iyileri — hepsi ücretsiz, indirme yok, tarayıcında akıcı."
@@ -36,6 +42,27 @@ export default async function PremiumPage() {
 
   return (
     <div className="container-x space-y-6 py-6">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Premium Oyunlar",
+          description: "En kaliteli 3D, WebGL, FPS, yarış ve .io savaş oyunları.",
+          url: `${SITE.url}/premium`,
+          inLanguage: "tr-TR",
+          isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: SITE.url },
+            { "@type": "ListItem", position: 2, name: "Premium Oyunlar", item: `${SITE.url}/premium` },
+          ],
+        }}
+      />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -59,6 +86,24 @@ export default async function PremiumPage() {
       <p className="max-w-2xl text-slate-400">{intro}</p>
 
       <InfiniteGrid games={premium} />
+
+      {/* İç linkleme: ilgili koleksiyonlar (yetim sayfa bırakma, crawl derinliği) */}
+      {relatedCollections.length > 0 && (
+        <section className="space-y-3 border-t border-line pt-6">
+          <h2 className="font-display text-lg font-bold text-ink">İlgili Koleksiyonlar</h2>
+          <div className="flex flex-wrap gap-2">
+            {relatedCollections.map((c) => (
+              <Link
+                key={c.slug}
+                href={L(`/${c.slug}`)}
+                className="rounded-lg border border-line bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-secondary hover:text-secondary"
+              >
+                {c.title}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
