@@ -495,6 +495,14 @@ export const COLLECTIONS: Collection[] = [
     keywords: ["bilgi yarışması oyunları", "quiz oyunları", "trivia games", "soru cevap oyunları"],
     filter: (g) => has(g, re("\\bquiz\\b|trivia|bilgi ?yarış")),
   },
+  {
+    slug: "squid-game-oyunlari",
+    title: "Squid Game Oyunları",
+    intro:
+      "Kırmızı ışık yeşil ışık, hayatta kalma yarışları ve Squid Game esinli arenalar! Ücretsiz Squid Game oyunlarının en iyileri tarayıcında, indirmeden.",
+    keywords: ["squid game oyunları", "squid game oyna", "kalamar oyunu", "red light green light oyunu"],
+    filter: (g) => has(g, re("squid ?game|squid")),
+  },
 ];
 
 export function collectionBySlug(slug: string): Collection | undefined {

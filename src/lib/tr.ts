@@ -89,6 +89,7 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
   kazma: ["dig", "mining"], surucu: ["driver", "driving"], kutu: ["box"], zar: ["dice"],
   kaplumbaga: ["turtle"], gorev: ["mission"], ordu: ["army", "military"], kasiyer: ["cashier"],
   gizli: ["hidden"], nesne: ["object"], cizim: ["drawing", "draw"], yildiz: ["star"], bilye: ["marble"],
+  kalamar: ["squid"],
 };
 
 /** Aramayı Türkçe terim + İngilizce karşılıklarıyla genişletir. */

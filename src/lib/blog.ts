@@ -16,9 +16,27 @@ import { ORIGINAL_POSTS } from "./blogOriginal";
 
 const BASE_POSTS: Post[] = [
   {
+    slug: "squid-game-esinli-oyunlar-rehberi",
+    title: "Squid Game Esinli Oyunlar: Kırmızı Işık Yeşil Işık Rehberi",
+    date: "2026-09-07",
+    excerpt:
+      "Squid Game esinli ücretsiz tarayıcı oyunları nerede oynanır? Kırmızı ışık yeşil ışık modunda elenmemek için pratik ipuçları.",
+    body: [
+      "Dizinin dünya çapında yarattığı ilgi, aynı temaları taşıyan ücretsiz tarayıcı oyunlarını da popüler hale getirdi. Kırmızı ışık yeşil ışık, halat çekme ve bilye gibi sahneler artık HTML5 oyunlarında yeniden canlanıyor — indirmeden, doğrudan tarayıcıda.",
+      "## Kırmızı Işık Yeşil Işık nasıl oynanır?",
+      "- Işık yeşilken ilerle, kırmızıya döner dönmez tamamen dur; en ufak hareket elenmene sebep olur.",
+      "- Ekranın kenarlarına değil, ritme odaklan — çoğu oyun sesli veya görsel bir uyarı verir.",
+      "- Panik yaparak son anda koşmak yerine, sabit bir tempo tutturmak daha güvenlidir.",
+      "## Neden bu kadar bağımlılık yapıyor?",
+      "Basit bir kural (dur-kalk) yüksek gerilimle birleşince, kısa bir tur bile nefes kesici olabiliyor. Kaybettiğinde hemen yeniden başlamak, 'bir tur daha' hissini güçlendiriyor.",
+      "## Nereden oynanır?",
+      "Oynava'nın [Squid Game Oyunları](/squid-game-oyunlari) sayfasında kalamar oyunu esinli en iyi ücretsiz oyunlar bir arada. Gerçek rakiplere karşı rekabet etmek istersen [Online Oyunlar](/online) sayfasındaki çok oyunculu arenalara da göz atabilirsin — hepsi üyeliksiz ve indirmeden tarayıcıda oynanır.",
+    ],
+  },
+  {
     slug: "online-oyunlarda-ping-gecikme-rehberi",
     title: "Online Oyunlarda Ping ve Gecikmeyi Azaltma Rehberi",
-    date: "2026-09-06",
+    date: "2026-09-07",
     excerpt:
       "Online FPS ve .io oyunlarında ani takılmalar mı yaşıyorsun? Ping ve gecikmeyi azaltmanın pratik yolları burada.",
     body: [
@@ -41,7 +59,7 @@ const BASE_POSTS: Post[] = [
   {
     slug: "bilgi-yarismasi-oyunlari-genel-kultur-testi",
     title: "Bilgi Yarışması Oyunları: Eğlenirken Genel Kültürünü Test Et",
-    date: "2026-09-06",
+    date: "2026-09-07",
     excerpt:
       "Quiz ve trivia oyunları neden bu kadar bağımlılık yapar? En iyi ücretsiz bilgi yarışması oyunları ve puan toplama ipuçları.",
     body: [
@@ -63,7 +81,7 @@ const BASE_POSTS: Post[] = [
   {
     slug: "blok-bulmaca-oyunlari-tetris-rehberi",
     title: "Blok Bulmaca Oyunları: Tetris Tarzından İlham Alanlar",
-    date: "2026-09-06",
+    date: "2026-09-07",
     excerpt:
       "Düşen bloklar, dolan satırlar: Tetris tarzı blok bulmaca oyunlarının mantığı ve yüksek skor için temel teknikler.",
     body: [

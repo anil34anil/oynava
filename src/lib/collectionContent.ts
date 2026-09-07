@@ -92,4 +92,8 @@ export const COLLECTION_CONTENT: Record<string, string[]> = {
     "Satranç, binlerce yıldır oynanan ve hâlâ en derin strateji oyunlarından biri olmayı sürdüren bir masa oyunudur. Bu koleksiyondaki oyunlarda bilgisayara karşı pratik yapabilir veya bir arkadaşına karşı klasik bir düello oynayabilirsin; zorluk seviyeleri genellikle yeni başlayandan ileri seviyeye kadar ayarlanabilir.",
     "Açılışta merkezi kontrol etmek (piyonları ve atları tahtanın ortasına doğru geliştirmek) neredeyse her oyunda avantaj sağlar. Taşları erken feda etmek yerine her hamlede 'bu hamle beni nasıl bir pozisyona sokar' diye bir adım ileriyi düşünmek, satrançta gelişimin en önemli adımıdır.",
   ],
+  "squid-game-oyunlari": [
+    "Squid Game esinli oyunlar, dizinin kırmızı ışık yeşil ışık, halat çekme ve bilye gibi ikonik yarışmalarını tarayıcıya taşır. Kimi oyunda tek yanlış hareket eleme getirirken, kimi oyunda hayatta kalmak için hız ve refleksin bir arada çalışması gerekir — basit kurallar, yüksek gerilim.",
+    "Kırmızı ışık yeşil ışık modlarında en büyük hata acele etmektir; ışık yeşile döner dönmez atılmak yerine ritmi öğrenip doğru anda hareket etmek eleme riskini büyük ölçüde azaltır. Bu koleksiyondaki oyunların çoğu tek oturuşta bitiyor, yani kısa bir mola için de birebir uyuyor.",
+  ],
 };

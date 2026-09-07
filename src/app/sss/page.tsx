@@ -70,6 +70,17 @@ const QA: { q: string; a: React.ReactNode }[] = [
     ),
   },
   {
+    q: "Başka oyuncularla aynı anda oynayabileceğim oyunlar var mı?",
+    a: (
+      <p>
+        Evet. <a href="/online">Online Oyunlar</a> sayfasında dünyanın dört bir
+        yanından oyuncularla rekabet edebileceğin .io arenaları ve çok oyunculu FPS
+        oyunları yer alır. Daha yüksek grafikli başlıklar için{" "}
+        <a href="/premium">Premium Oyunlar</a> bölümüne de göz atabilirsin.
+      </p>
+    ),
+  },
+  {
     q: "Oyunu başlatınca siyah ekran görüyorum, ne yapmalıyım?",
     a: (
       <ul>
